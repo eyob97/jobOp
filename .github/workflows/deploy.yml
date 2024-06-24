@@ -26,6 +26,6 @@ jobs:
         HEROKU_APP_NAME: jobop-frontend
       run: |
         git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ env.HEROKU_APP_NAME }}.git
-        git fetch heroku main
+        git fetch heroku main || true
         git merge -X ours heroku/main --allow-unrelated-histories
         git push heroku development:main --force
