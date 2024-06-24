@@ -1,6 +1,6 @@
 {
-  "root": ".",
-  "clean_urls": false,
+  "root": "jobOp-frontend",
+  "clean_urls": true,
   "routes": {
     "/**": "index.html"
   }

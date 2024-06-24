@@ -13,7 +13,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       with:
-        fetch-depth: 0  
+        fetch-depth: 0
 
     - name: Set up Git
       run: |
@@ -27,5 +27,6 @@ jobs:
       run: |
         git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ env.HEROKU_APP_NAME }}.git
         git fetch heroku main || true
-        git merge -X ours heroku/main --allow-unrelated-histories
-        git push heroku development:main --force
+        git checkout -B heroku-deploy
+        git merge -X ours heroku/main --allow-unrelated-histories || true
+        git push heroku heroku-deploy:main --force
