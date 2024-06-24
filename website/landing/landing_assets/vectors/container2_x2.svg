@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 960 1038" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="pf_0_22_2001" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="matrix(224.006485 0 0 17.035063 239.544 493.377)">
+      <stop stop-color="#098C5D"/>
+      <stop offset="1" stop-color="#098C5D" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="pf_0_22_2128" x1="479.083" y1="941.244" x2="479.083" y2="980.163" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#CCCCCC"/>
+    </linearGradient>
+  </defs>
+  <path d="M479.088,1036.033C743.68,1036.033 958.176,1013.98 958.176,986.776C958.176,959.571 743.68,937.518 479.088,937.518C214.494,937.518 0,959.571 0,986.776C0,1013.98 214.494,1036.033 479.088,1036.033Z" fill="url(#pf_0_22_2001)"/>
+  <path d="M242.392,946.011C251.509,965.369 271.192,978.808 293.972,978.808L664.178,978.808C686.96,978.808 706.642,965.369 715.784,946.011L242.392,946.011Z" fill="url(#pf_0_22_2128)"/>
+</svg>
