@@ -31,6 +31,7 @@ export default function Home() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+  
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
