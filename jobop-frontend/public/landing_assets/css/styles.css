@@ -1,3 +1,4 @@
+
 .container-fluid {
     padding-left: 0rem;
     padding-right: 0rem;
@@ -32,18 +33,11 @@
     font-size: 1rem;
     /* width: 66.66%; */
 }
-.logo {
-    border-radius: 35px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    height: 78px;
-    box-sizing: border-box;
-    margin-left: 1rem;
-}
+
 .logo-img {
     width: 74.4px;
     height: 78px;
+    margin-left: 3rem;
 }
 .rounded-corner {
     border-radius: 25px;
@@ -1193,11 +1187,27 @@
   }
   
   
+  
+  
 
+  .phone-chat-container {
+    max-width: 100%; 
+    max-height: 100%;
+  }
+  
+  .phone-chat {
+    max-width: 100%;
+    max-height: 44%;
+    display: block;
+  }
+  @media (max-width: 768px) {
+    .phone-chat {
+      max-width: 100%;
+      max-height: 80%;
 
-.phone-chat {
-    height: 44%;
-}
+    }
+  }
+  
 .div-icon-box {
     border-radius: 97.5px;
     border: 5px solid #E3EEFF;

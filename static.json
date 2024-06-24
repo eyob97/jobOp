@@ -1,7 +1,0 @@
-{
-  "root": "jobOp-frontend",
-  "clean_urls": true,
-  "routes": {
-    "/**": "index.html"
-  }
-}

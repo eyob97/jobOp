@@ -27,6 +27,4 @@ jobs:
       run: |
         git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ env.HEROKU_APP_NAME }}.git
         git fetch heroku main || true
-        git checkout -B heroku-deploy
-        git merge -X ours heroku/main --allow-unrelated-histories || true
-        git push heroku heroku-deploy:main --force
+        git push heroku development:main --force
