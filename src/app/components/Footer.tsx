@@ -1,40 +1,90 @@
-// "use client";
-// import { useState } from "react";
+"use client";
+import { useState, FC } from "react";
 
-// const Footer = () => {
-//   const [email, setEmail] = useState("");
-//   const [phone, setPhone] = useState("");
+const DynamicFooter = ({}) => {
+  const [email, setEmail] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [subscribeNumber, setSubscribeNumber] = useState<string>("");
 
-//   const handleEmailChange = (e:any) => setEmail(e.target.value);
-//   const handlePhoneChange = (e:any) => setPhone(e.target.value);
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setEmail(e.target.value);
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setPhone(e.target.value);
+  const handleSubscribeChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setSubscribeNumber(e.target.value);
 
-//   const handleSubmit = () => {
-//     console.log("Email:", email);
-//     console.log("Phone:", phone);
-//   };
+  const handleSubmit = () => {
+    // Handle form submission logic here
+    console.log("Email:", email);
+    console.log("Phone:", phone);
+    console.log("Subscribe Number:", subscribeNumber);
+  };
 
-//   return (
-//     <footer>
-//       <div className="container">
-//         <div className="row">
-//           <div className="col-md-6 text-center">
-//             <nav id="footer-navbar">
-//               <ul style="list-style: none; padding: 0; display: flex; justify-content: center;">
-//                 <li style="margin: 0 10px;"><a className="nav-link scrollto" href="#blog">Privacy Policy</a></li>
-//                 <li style="margin: 0 10px;"><a className="nav-link scrollto" href="#about">Terms of Service</a></li>
-//                 <li style="margin: 0 10px;"><a className="nav-link scrollto" href="#services">Careers</a></li>
-//                 <li style="margin: 0 10px;"><a className="nav-link scrollto" href="#work">Blog</a></li>
-//               </ul>
-//             </nav>
-//           </div>
-//           <div className="col-md-6 text-center">
-//             <p>&copy; 2024 Datawise Software Solutions. All rights reserved.</p>
-//           </div>
-//         </div>
-//       </div>
-//     </footer>
+  return (
+    <>
+      <footer id="contact">
+        <div className="container-fluid">
+          <div className="row contact-form">
+            <div className="col-lg-6">
+              <div className="policy-term">
+                <span className="item-link-about-us"> Privacy Policy </span>
+                <span className="item-link-carrer"> Terms of Service </span>
+              </div>
+              <div className="career-blog">
+                <span className="item-link-blogs"> Careers </span>
+                <span className="item-link-faqs"> Blog </span>
+              </div>
+              <div className="social-media">
+                <img
+                  className="social-link"
+                  src="/landing_assets/vectors/group7_x2.svg"
+                />
+                <img
+                  className="social-link"
+                  src="/landing_assets/vectors/group2_x2.svg"
+                />
+                <img
+                  className="social-link"
+                  src="/landing_assets/vectors/group1_x2.svg"
+                />
+              </div>
+            </div>
+            <div className="col-lg-6">
+              <div className="heading-3-subscribe-newsletter">
+                Contact Information
+              </div>
+              <div className="contact-input">
+                <div className="span-wpcf-7-form-control-wrap">
+                  <input
+                    type="email"
+                    placeholder="Email* "
+                    className="input"
+                    value={email}
+                    onChange={handleEmailChange}
+                  />
+                </div>
+                <div className="span-wpcf-7-form-control-wrap-1">
+                  <input
+                    type="tel"
+                    placeholder="Phone* "
+                    className="input"
+                    value={phone}
+                    onChange={handlePhoneChange}
+                  />
+                </div>
+              </div>
+              <button
+                onClick={handleSubmit}
+                className=" input-send text-white btn "
+              >
+                Subscribe
+              </button>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </>
+  );
+};
 
-//   );
-// };
-
-// export default Footer;
+export default DynamicFooter;

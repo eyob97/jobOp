@@ -1,6 +1,6 @@
 "use client";
 
-import DynamicFooter from "./components/DynamicFooter";
+import Footer from "./components/Footer";
 import Faqs from "./components/Faqs";
 import Header from "./components/Home";
 import Newsletter from "./components/Newsletter";
@@ -43,7 +43,7 @@ export default function Home() {
                     <div className="col-lg-4 col-md-6 col-sm-12 mb-2">
                       <a
                         href="#"
-                        className="btn btn-warning rounded fw-bold text-black w-100"
+                        className="btn btn-warning rounded-more fw-bold text-black w-100"
                       >
                         Subscribe
                       </a>
@@ -231,14 +231,14 @@ export default function Home() {
                     List out benefits such as unlimited job alerts, priority
                     support, and additional resources.
                   </div>
-                  <div className="item-link">
-                    <a
-                      href="#"
-                      className="btn btn-warning rounded-corner fw-bold"
-                    >
-                      Subscribe
-                    </a>
-                  </div>
+                  <div className="col-lg-4 col-md-6 col-sm-12 mb-2">
+                      <a
+                        href="#"
+                        className="btn btn-warning rounded-more fw-bold text-black w-100"
+                      >
+                        Subscribe
+                      </a>
+                    </div>
                 </div>
               </div>
               <div className="col-sm-12 col-md-6 col-lg-6 position-relative">
@@ -259,7 +259,7 @@ export default function Home() {
         <Faqs />
         <Newsletter/>
               </main>
-      <DynamicFooter />
+      <Footer />
     </>
   );
 }

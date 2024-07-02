@@ -60,7 +60,7 @@ const Header = () => {
               </a>
             </li>
             <div className="form-container ml-3">
-              <a href="#" className="btn btn-warning rounded fw-bold text-dark p-1">
+              <a href="#" className="btn btn-warning rounded-more fw-bold text-dark p-2">
                 Sign Up
               </a>
             </div>
