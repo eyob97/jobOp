@@ -28,36 +28,38 @@ const FAQComponent = () => {
   };
 
   return (
-    <section id="faqs">
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-sm col-lg-4">
-            <div className="img-explore-jpg"></div>
+<section id="faqs">
+  <div className="container-fluid">
+    <div className="row">
+      <div className="col-sm-12 col-md-4">
+        <img src="/landing_assets/images/imgExploreJpg.jpeg" alt="Explore" className="img-fluid img-explore-jpg" />
+      </div>
+      <div className="col-sm-12 col-md-8">
+        <div className="row mb-3">
+          <div className="features-ask text-left">
+            <h1 className="frequently-ask-questions">Frequently Ask</h1>
+            <p className="heading-3-create-account text-left">Questions</p>
           </div>
-          <div className="col-sm col-lg-8">
-            <div className="row mb-3">
-              <div className="features-ask text-left">
-                <h1>Frequently Ask</h1>
-                <p className="heading-3-create-account text-left">Questions</p>
+          {faqs.map((faq, index) => (
+            <div key={index} className={`accordion ${activeIndex === index ? "active" : ""}`}>
+              <div className="accordion-header" onClick={() => handleToggle(index)}>
+                <span className="accordion-question">{faq.question}</span>
+                <div className="icon">{activeIndex === index ? "✕" : "+"}</div>
               </div>
-              {faqs.map((faq, index) => (
-                <div key={index} className={`accordion ${activeIndex === index ? "active" : ""}`}>
-                  <div className="accordion-header" onClick={() => handleToggle(index)}>
-                    <span className="accordion-question">{faq.question}</span>
-                    <div className="icon">{activeIndex === index ? "✕" : "+"}</div>
-                  </div>
-                  {activeIndex === index && (
-                    <div className="accordion-body">
-                      <span className="accordion-answer">{faq.answer}</span>
-                    </div>
-                  )}
+              {activeIndex === index && (
+                <div className="accordion-body">
+                  <span className="accordion-answer">{faq.answer}</span>
                 </div>
-              ))}
+              )}
             </div>
-          </div>
+          ))}
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
+
+
   );
 };
 

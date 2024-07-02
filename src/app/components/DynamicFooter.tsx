@@ -22,10 +22,11 @@ const DynamicFooter = ({}) => {
 
   return (
     <>
-      <footer className="bgr-dark text-white" id="contact">
-        <div className="row contact-form">
-          <div className="row bgr-dark form-main">
-            <div className="col-lg-9 ">
+      <footer>
+      
+        <div className="container-fluid">
+          <div className="row contact-form">
+            <div className="col-lg-6">
               <div className="policy-term">
                 <span className="item-link-about-us"> Privacy Policy </span>
                 <span className="item-link-carrer"> Terms of Service </span>
@@ -49,66 +50,40 @@ const DynamicFooter = ({}) => {
                 />
               </div>
             </div>
-            <div className="col-lg-3">
+            <div className="col-lg-6">
               <div className="heading-3-subscribe-newsletter">
                 Contact Information
               </div>
               <div className="contact-input">
                 <div className="span-wpcf-7-form-control-wrap">
-                  <div className="input">
                   <input
-                type="tel"
-                placeholder="Email* "
-              />
-                  </div>
+                    type="email"
+                    placeholder="Email* "
+                    className="input"
+                    value={email}
+                    onChange={handleEmailChange}
+                  />
                 </div>
-                <div className="span-wpcf-7-form-control-wrap">
-                  <div className="input">
+                <div className="span-wpcf-7-form-control-wrap-1">
                   <input
-                type="tel"
-                placeholder="Phone* "
-              />
-                  </div>
+                    type="tel"
+                    placeholder="Phone* "
+                    className="input"
+                    value={phone}
+                    onChange={handlePhoneChange}
+                  />
                 </div>
               </div>
-              <div className="input-send">
-                <span className="send text-white fw-bold"> Send </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
-
-      <div className="section">
-        <div className="div-textbox">
-          <div className="heading-3-subscribe-newsletter-1">
-            Subscribe Newsletter
-          </div>
-          <div className="well-keep-you-updated-with-the-best-new-jobs">
-            We'll keep you updated with the best new jobs.
-          </div>
-          <div className="form">
-            <div className="input-3">
-              <input
-                type="tel"
-                value={subscribeNumber}
-                onChange={handleSubscribeChange}
-                placeholder="Enter Your Number"
-                className="input-3"
-              />
-            </div>
-            <div className="button">
               <button
                 onClick={handleSubmit}
-                className="subscribe-btn text-white btn "
+                className=" input-send text-white btn "
               >
                 Subscribe
               </button>
             </div>
           </div>
         </div>
-        <div className="img-newsletter-png"></div>
-      </div>
+      </footer>
     </>
   );
 };

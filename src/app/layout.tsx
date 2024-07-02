@@ -60,6 +60,7 @@ const Layout = ({ children }: LayoutProps) => {
           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" rel="stylesheet" />
           <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
           <link rel="stylesheet" href="/landing_assets/css/styles.css" />
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.3/font/bootstrap-icons.min.css"/>
           <link rel="icon" type="image/x-icon" href="/landing_assets/favicon.ico" />
         </head>
         <body>

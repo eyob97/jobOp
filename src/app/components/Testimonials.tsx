@@ -107,7 +107,7 @@ const Testimonials = () => {
                       })`,
                     }}
                   ></div>
-                  <div className="testimonial-name">
+                  <div className="testimonial-name text-dark">
                     {
                       testimonials[
                         (currentIndex + offset) % testimonials.length

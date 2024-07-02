@@ -10,7 +10,7 @@ html {
 }
 .bgr-dark {
     background-color: #000000;
-  }
+}
 /*--------------------------------------------------------------
 # Header
 --------------------------------------------------------------*/
@@ -375,16 +375,6 @@ html {
 }
 
 
-.footer-content {
-    background: #000000;
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    padding: 225px 0 60px 0;
-    width: 1440px;
-    height: fit-content;
-    box-sizing: border-box;
-}
 
 .container {
     overflow: hidden;
@@ -757,9 +747,6 @@ html {
 
 
 
-section {
-    padding: 20px 50px;
-}
 
 section .features {
     text-align: center;
@@ -1284,15 +1271,6 @@ section .row {
     height: 1px;
 }
 
-.footer {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding-top: 140px;
-    width: 1440px;
-    box-sizing: border-box;
-}
 
 
 .policy-term {
@@ -1368,10 +1346,6 @@ section .row {
     height: 32px;
 }
 
-
-
-
-
 .contact-input {
     margin-bottom: 30.5px;
     display: flex;
@@ -1387,10 +1361,10 @@ section .row {
 }
 
 .input {
-    border-radius: 60px;
+    border-radius: 70px;
     border: 1px solid var(--themetechmount-com-porcelain, #F1F4F5);
     background: #FBFBFB;
-    padding: 8px 15px;
+    padding: 10px 60px 10px 10px;
     box-sizing: border-box;
 }
 
@@ -1419,21 +1393,17 @@ section .row {
     margin-bottom: 46px;
 }
 
-.section {
-    border-radius: 30px;
-    background: #FFC424;
-    margin-left: 5rem;
-    top: 0px;
-    margin-right: 5rem;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 0 54.5px 15.5px 80px;
-    box-sizing: border-box;
-    margin-top: -38rem;
-    position: relative;
-    z-index: 9999;
+.input-send:focus {
+    outline: 0;
 }
+
+.input-send:hover {
+    background-color: #2f2f2f;
+    color: #fff;
+    transition: all 500ms ease;
+}
+
+
 
 .div-textbox {
     margin: 64.7px 99.5px 49.9px 0;
@@ -1445,16 +1415,16 @@ section .row {
 }
 
 .contact-form {
-    margin-left: 2rem;
+    margin-left: 5rem;
     z-index: -1;
-    margin-top: 15rem;
+    margin-top: 10rem;
 
 }
 
 .form-main {
-    padding-top: 10rem;
+    padding-top: 5rem;
     ;
-    margin-left: 0.5rem;
+    margin-left: 10%;
 }
 
 .form {
@@ -1468,6 +1438,9 @@ section .row {
     box-sizing: border-box;
 }
 
+
+
+
 .heading-3-subscribe-newsletter-1 {
     margin-bottom: 9.9px;
     display: inline-block;
@@ -1478,6 +1451,15 @@ section .row {
     font-size: 36px;
     line-height: 1.35;
     color: #000000;
+}
+
+.heading-3-subscribe-newsletter {
+    margin-bottom: 20.5px;
+
+    font-family: 'Poppins';
+    font-weight: 500;
+    font-size: 24px;
+    color: #FFFFFF;
 }
 
 .well-keep-you-updated-with-the-best-new-jobs {
@@ -1522,37 +1504,9 @@ section .row {
     color: #A7A7A7;
 }
 
-.button {
-    border-radius: 35px;
-    background: #000000;
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding: 16px 0 16px 0.3px;
-    width: 180px;
-    height: fit-content;
-    box-sizing: border-box;
-}
 
-.button .subscribe-btn {
-    padding: 0px;
-    background-color: #000000;
-    color: #ffffff;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    font-size: 18px;
-    border-radius: 120px;
-    cursor: pointer;
-  }
 
-.img-newsletter-png {
-    background: url(/landing_assets/images/imgNewsletterPng.png);
-    height: 335px;
-    flex-grow: 1;
-    flex-basis: 448px;
-    background-repeat: repeat-y;
-}
+
 
 .menu-link {
     color: white !important;
@@ -1708,37 +1662,13 @@ section .row {
         margin-left: 11px;
     }
 
-  
-    .footer-content {
-        background: #000000;
-        position: relative;
-        display: block;
-        flex-direction: row;
-        padding: 225px 0 60px 0;
-        width: 1440px;
-        height: fit-content;
-        box-sizing: border-box;
-    }
+
 
     .menu-text {
         font-size: .5rem;
     }
 
-    .section {
-        border-radius: 30px;
-        background: #FFC424;
-        margin-left: 0.5rem;
-        top: 0px;
-        margin-right: 1rem;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        padding: 0 54.5px 15.5px 80px;
-        box-sizing: border-box;
-        margin-top: -49rem;
-        position: relative;
-        z-index: 9999;
-    }
+
 
     .form {
         position: relative;
@@ -1751,28 +1681,9 @@ section .row {
         box-sizing: border-box;
     }
 
-    .span-wpcf-7-form-control-wrap-1 {
-        width: 164px;
-        box-sizing: border-box;
-    }
 
-    .span-wpcf-7-form-control-wrap {
-        margin-right: 20px;
-        width: 164px;
-        box-sizing: border-box;
-    }
 
-    .input-send {
-        border-radius: 60px;
-        border: 1px solid #FFFFFF;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        padding: 10px 0 10px 0px;
-        width: 100%;
-        box-sizing: border-box;
-        margin-bottom: 46px;
-    }
+
 
     .image-circle-png {
         background: url(/landing_assets/images/imageCirclePng.png);
@@ -1939,7 +1850,7 @@ a:hover {
 
 .bg-image {
     background-repeat: no-repeat;
-    background-attachment:local;
+    background-attachment: local;
     background-position: center center;
 }
 
@@ -2250,26 +2161,28 @@ a:hover {
 
 /*------/ Button /------*/
 .button {
-    display: inline-block;
-    padding: 0.3rem 0.6rem;
-    text-align: center;
+    background: #000000;
+    position: relative;
+    box-sizing: border-box;
+    border-radius: 30px;
     vertical-align: middle;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
     font-size: 1rem;
-    border-radius: 0.3rem;
     border: 1px solid transparent;
     transition: all 500ms ease;
     cursor: pointer;
+    padding: 10px 24px 10px 20px;
+    color: #ffffff;
+    font-weight: 600;
 }
+
+
 
 .button:focus {
     outline: 0;
 }
 
 .button:hover {
-    background-color: #0062d3;
+    background-color: #2f2f2f;
     color: #fff;
     transition: all 500ms ease;
 }
@@ -2302,10 +2215,10 @@ a:hover {
   # Hero Section
   --------------------------------------------------------------*/
 .hero {
-    height: 70vh;
+    height: 100vh;
     position: relative;
     color: #000;
-    background-size:cover;
+    background-size: cover;
     background-position: center;
 }
 
@@ -2325,4 +2238,34 @@ a:hover {
     height: 100%;
     width: 100%;
     opacity: 0.9;
+}
+
+footer {
+    padding: 40px 0;
+    color: white;
+    background: black;
+}
+
+
+.section {
+    border-radius: 30px;
+    background: #FFC424;
+    margin: 0 auto;
+    max-width: 80%;
+    display: flex;
+    padding: 0 54.5px 15.5px 80px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 10;
+    align-items: center;
+    margin-bottom: -10rem;
+}
+
+.img-newsletter-png {
+    background: url('/landing_assets/images/imgNewsletterPng.png');
+    height: 200px;
+    width: 400px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin: auto;
 }

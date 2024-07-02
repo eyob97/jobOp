@@ -26,8 +26,7 @@ const Header = () => {
       <div className="container d-flex align-items-center justify-content-between">
         <h1 className="logo">
           <a href="#home" style={{ display: "flex", alignItems: "center" }}>
-            <img
-              className="logo-img"
+            <img 
               src="/landing_assets/vectors/group3_x2.svg"
               alt="Logo"
             />
@@ -61,7 +60,7 @@ const Header = () => {
               </a>
             </li>
             <div className="form-container ml-3">
-              <a href="#" className="btn btn-warning rounded fw-bold p-1">
+              <a href="#" className="btn btn-warning rounded fw-bold text-dark p-1">
                 Sign Up
               </a>
             </div>

@@ -3,6 +3,7 @@
 import DynamicFooter from "./components/DynamicFooter";
 import Faqs from "./components/Faqs";
 import Header from "./components/Home";
+import Newsletter from "./components/Newsletter";
 import Testimonials from "./components/Testimonials";
 
 export default function Home() {
@@ -26,37 +27,37 @@ export default function Home() {
         }}
       >
         <div className="rectangle-4"></div>
-        <div className="hero-content display-table">
-          <div className="table-cell">
+        <div className="hero-content d-table">
+          <div className="d-table-cell align-middle">
             <div className="container">
               <div className="row align-items-center justify-content-between">
-                <div className="col-lg-6">
-                  <h1 className="text-white text-left ">
+                <div className="col-lg-7">
+                  <h1 className="text-white text-left empowering-text">
                     Empowering South Africa's Workforce
                   </h1>
-                  <div className="text-white text-left ">
+                  <div className="text-white text-left">
                     Connecting workers with meaningful job opportunities through
                     a simple WhatsApp interface
                   </div>
                   <div className="row mt-4">
-                    <div className="col-4">
+                    <div className="col-lg-4 col-md-6 col-sm-12 mb-2">
                       <a
                         href="#"
-                        className="btn btn-warning rounded fw-bold text-white"
+                        className="btn btn-warning rounded fw-bold text-black w-100"
                       >
                         Subscribe
                       </a>
                     </div>
-                    <div className="col-4 text-white">
+                    <div className="col-lg-4 col-md-6 col-sm-12 text-white text-left mt-2">
                       Join Free for 30 Days
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-4 text-center">
+                <div className="col-lg-5 text-center">
                   <img
-                    src="/landing_assets/images/Group 1057.png"
+                    src="/landing_assets/images/Group 1057.svg"
                     alt="Phone Chat"
-                    className="img-fluid"
+                    className="phone-chat img-fluid"
                   />
                 </div>
               </div>
@@ -75,7 +76,7 @@ export default function Home() {
             </div>
             <div className="row mb-5">
               <div className="col-sm-4">
-                <div className="div-icon-box ">
+                <div className="div-icon-box">
                   <div className="step-001-svg">
                     <div>
                       <img
@@ -96,7 +97,7 @@ export default function Home() {
                 </p>
               </div>
               <div className="col-sm-4">
-                <div className="div-icon-box ">
+                <div className="div-icon-box">
                   <div className="step-001-svg">
                     <div>
                       <img
@@ -119,7 +120,7 @@ export default function Home() {
                 </p>
               </div>
               <div className="col-sm-4">
-                <div className="div-icon-box ">
+                <div className="div-icon-box">
                   <div className="step-001-svg">
                     <div>
                       <img
@@ -159,6 +160,7 @@ export default function Home() {
                       <img
                         className="vector-80"
                         src="/landing_assets/vectors/vector20_x2.svg"
+                        alt="Vector"
                       />
                     </div>
                   </div>
@@ -176,6 +178,7 @@ export default function Home() {
                       <img
                         className="vector-80"
                         src="/landing_assets/vectors/vector2_x2.svg"
+                        alt="Vector"
                       />
                     </div>
                   </div>
@@ -192,6 +195,7 @@ export default function Home() {
                       <img
                         className="vector-80"
                         src="/landing_assets/vectors/vector35_x2.svg"
+                        alt="Vector"
                       />
                     </div>
                   </div>
@@ -213,16 +217,15 @@ export default function Home() {
         <section id="pricing">
           <div className="container-fluid">
             <div className="row price">
-              <div className="col-sm col-lg-9">
+              <div className="col-sm col-lg-6">
                 <div className="price-text">
-                  <p className="r-10-per-month-billed-monthly-after-your-free-trial-cancel-anytime">
-                    <span className="r-10-per-month-billed-monthly-after-your-free-trial-cancel-anytime-sub-0">
-                      R10 per month,
-                    </span>
-                    <span className="r-10-per-month-billed-monthly-after-your-free-trial-cancel-anytime-sub-4">
+                  <p className="pricing-info">
+                    <span className="bold-text">R10 per month,</span>
+                    <span className="light-text">
+                      {" "}
                       billed monthly after your free trial.
                     </span>
-                    <span> Cancel anytime.</span>
+                    <span className="bold-text"> Cancel anytime.</span>
                   </p>
                   <div className="list-out-benefits-such-as-unlimited-job-alerts-priority-support-and-additional-resources">
                     List out benefits such as unlimited job alerts, priority
@@ -238,17 +241,25 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="col-sm col-lg-3">
-                <div className="before"></div>
-                <div className="image-circle-png"></div>
+              <div className="col-sm-12 col-md-6 col-lg-6 position-relative">
+                <img
+                  src="/landing_assets/images/before1.png"
+                  alt="Background"
+                  className="img-fluid before-img"
+                />
+                <img
+                  src="/landing_assets/images/imageCirclePng.png"
+                  alt="Foreground"
+                  className="img-fluid image-circle-img"
+                />
               </div>
             </div>
           </div>
         </section>
         <Faqs />
-
-        <DynamicFooter />
-      </main>
+        <Newsletter/>
+              </main>
+      <DynamicFooter />
     </>
   );
 }
