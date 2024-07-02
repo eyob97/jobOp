@@ -12,8 +12,9 @@ const Newsletter = () => {
 
   return (
     <div className="row">
+      <div className="col-md-12">
         <div className="section row">
-          <div className="col-md-6 div-textbox">
+          <div className="col-md-12 div-textbox">
             <div className="heading-3-subscribe-newsletter-1">
               Subscribe Newsletter
             </div>
@@ -35,9 +36,10 @@ const Newsletter = () => {
               </div>
             </div>
           </div>
-          <div className="col-md-4 img-newsletter-png"></div>
+          <div className="col-md- img-newsletter-png"></div>
         </div>
       </div>
+    </div>
   );
 };
 

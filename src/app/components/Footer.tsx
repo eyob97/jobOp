@@ -50,7 +50,7 @@ const DynamicFooter = ({}) => {
               </div>
             </div>
             <div className="col-lg-6">
-              <div className="heading-3-subscribe-newsletter">
+            <div className="heading-3-subscribe-newsletter mt-3">
                 Contact Information
               </div>
               <div className="contact-input">
@@ -73,12 +73,15 @@ const DynamicFooter = ({}) => {
                   />
                 </div>
               </div>
+              <div className=" input-send col-lg-12 col-md-8 col-sm-8 ">
               <button
                 onClick={handleSubmit}
-                className=" input-send text-white btn "
+                className="  text-white btn "
               >
-                Subscribe
+                Send
               </button>
+                    </div>
+        
             </div>
           </div>
         </div>
