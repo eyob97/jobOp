@@ -1,1 +1,1 @@
-web: echo $PATH; which node; which npm; npm run start
+web: npm run build && npm start
