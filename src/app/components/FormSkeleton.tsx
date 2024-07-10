@@ -4,6 +4,7 @@ import React, { ReactNode } from "react";
 import { Label, TextInput, Button, Checkbox, Card } from "flowbite-react";
 import Select from "react-select";
 import Image from "next/image";
+import Layout from "../layout";
 
 export interface Field {
   id: string;
@@ -36,33 +37,31 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
   additionalElements,
 }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
-      <div className="hidden md:block relative w-full h-full">
-        <Image
-          src="/landing_assets/images/Frame 4.svg"
-          alt="Form image"
-          layout="fill"
-          objectFit="cover"
-        />
-      </div>
-      <div className="flex items-center justify-center p-4">
-        <Card className="w-full max-w-md bg-white p-6 shadow-md rounded-2xl h-full overflow-auto">
-          <div className="flex flex-col h-full">
-            <div>
-              <h2 className="text-4xl font-bold mb-2">{title}</h2>
-              <p className="text-base font-normal text-gray-500 mb-4">
-                {subtitle}
-              </p>
-              {additionalElements}
-            </div>
-            <form
-              onSubmit={onSubmit}
-              className="flex flex-col gap-4 flex-grow overflow-auto"
-            >
+    <Layout>
+      <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
+        <div className="hidden md:block relative w-full h-full">
+          <Image
+            src="/landing_assets/images/Frame 4.svg"
+            alt="Form image"
+            layout="fill"
+            objectFit="cover"
+          />
+        </div>
+        <div className="flex items-center justify-center p-4">
+          <Card className="w-full max-w-md bg-white p-6 shadow-md rounded-2xl">
+            <h2 className="text-4xl font-bold mb-2">{title}</h2>
+            <p className="text-base font-normal text-gray-500 mb-4">
+              {subtitle}
+            </p>
+            {additionalElements}
+            <form onSubmit={onSubmit} className="flex flex-col gap-4">
               {fields.map((field) => (
                 <div key={field.id}>
                   <div className="mb-2 block">
-                    <Label htmlFor={field.id} className="font-bold text-gray-700">
+                    <Label
+                      htmlFor={field.id}
+                      className="font-bold text-gray-700"
+                    >
                       {field.label}
                     </Label>
                   </div>
@@ -104,10 +103,10 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
                 {buttonText}
               </Button>
             </form>
-          </div>
-        </Card>
+          </Card>
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
