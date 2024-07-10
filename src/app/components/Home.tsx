@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
+  const router = useRouter();
+
   useEffect(() => {
     const handleScroll = () => {
       const header = document.getElementById("header");
@@ -20,6 +23,10 @@ const Header = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const handleSignUpClick = () => {
+    router.push('/sign-up');
+  };
 
   return (
     <header id="header" className="fixed-top">
@@ -60,9 +67,12 @@ const Header = () => {
               </a>
             </li>
             <div className="form-container ml-3">
-              <a href="#" className="btn btn-warning rounded-more fw-bold text-dark p-2">
+              <button 
+                className="btn btn-warning rounded-more fw-bold text-dark p-2"
+                onClick={handleSignUpClick}
+              >
                 Sign Up
-              </a>
+              </button>
             </div>
           </ul>
           <i className="bi bi-list mobile-nav-toggle"></i>

@@ -14,7 +14,6 @@ const DynamicFooter = ({}) => {
     setSubscribeNumber(e.target.value);
 
   const handleSubmit = () => {
-    // Handle form submission logic here
     console.log("Email:", email);
     console.log("Phone:", phone);
     console.log("Subscribe Number:", subscribeNumber);
