@@ -1,21 +1,14 @@
 "use client";
 
-import Footer from "./components/Footer";
+import { Footer } from "flowbite-react";
 import Faqs from "./components/Faqs";
 import Header from "./components/Home";
 import Newsletter from "./components/Newsletter";
 import Testimonials from "./components/Testimonials";
 
-export default function Home() {
-  const policyLinks = ["Privacy Policy", "Terms of Service"];
-  const careerLinks = ["Careers", "Blog"];
-  const socialMediaLinks = [
-    "/landing_assets/vectors/group7_x2.svg",
-    "/landing_assets/vectors/group2_x2.svg",
-    "/landing_assets/vectors/group1_x2.svg",
-  ];
-  const subscribeText = "We'll keep you updated with the best new jobs.";
 
+
+export default function Home() {
   return (
     <>
       <Header />
@@ -257,8 +250,8 @@ export default function Home() {
           </div>
         </section>
         <Faqs />
-        <Newsletter/>
-              </main>
+        <Newsletter />
+      </main>
       <Footer />
     </>
   );

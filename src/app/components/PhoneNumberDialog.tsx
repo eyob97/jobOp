@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from "react";
-import { Modal, Button, Label, TextInput } from "flowbite-react";
+import { Modal, Button, Label } from "flowbite-react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Link from "next/link";
@@ -22,7 +22,7 @@ const PhoneNumberDialog: React.FC<PhoneNumberDialogProps> = ({
   const [error, setError] = useState("");
 
   const handlePhoneNumberChange = (value: string) => {
-    setPhoneNumber(value);
+    setPhoneNumber(`+${value}`);
     if (value) {
       setError("");
     }
@@ -51,7 +51,7 @@ const PhoneNumberDialog: React.FC<PhoneNumberDialogProps> = ({
             <>
               <span>
                 Already have an account?{" "}
-                <Link href="/sign-in" legacyBehavior>
+                <Link href="/auth/sign-in" legacyBehavior>
                   <a className="text-[#116034] bold-text">Sign in</a>
                 </Link>
               </span>

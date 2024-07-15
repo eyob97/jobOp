@@ -25,7 +25,7 @@ const Header = () => {
   }, []);
 
   const handleSignUpClick = () => {
-    router.push('/sign-up');
+    router.push('/auth/sign-up');
   };
 
   return (

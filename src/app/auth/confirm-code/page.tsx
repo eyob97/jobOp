@@ -1,5 +1,7 @@
+"use client";
+
+import FormSkeleton, { Field } from '@/app/components/FormSkeleton';
 import React, { useState } from 'react';
-import FormSkeleton from '../components/FormSkeleton';
 
 const ConfirmCode: React.FC = () => {
   const [code, setCode] = useState('');
@@ -8,7 +10,7 @@ const ConfirmCode: React.FC = () => {
     e.preventDefault();
   };
 
-  const fields = [
+  const fields: Field[] = [
     {
       id: 'code',
       label: 'Confirmation Code',

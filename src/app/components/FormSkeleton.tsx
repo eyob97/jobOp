@@ -5,6 +5,8 @@ import { Label, TextInput, Button, Checkbox, Card } from "flowbite-react";
 import Select from "react-select";
 import Image from "next/image";
 import Layout from "../layout";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 export interface Field {
   id: string;
@@ -13,8 +15,13 @@ export interface Field {
   placeholder?: string;
   value?: string;
   required?: boolean;
+  readonly?: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement> | any) => void;
   options?: { value: string; label: string }[];
+  error?: string;
+  maxLength?: number;
+  pattern?: string;
+  inputMode?: 'search' | 'text' | 'none' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal';
 }
 
 interface FormSkeletonProps {
@@ -25,6 +32,9 @@ interface FormSkeletonProps {
   onSubmit: (e: React.FormEvent) => void;
   showCheckbox?: boolean;
   additionalElements?: React.ReactNode;
+  generalError?: string;
+  showResend?: boolean;
+  onResend?: () => void;
 }
 
 const FormSkeleton: React.FC<FormSkeletonProps> = ({
@@ -35,25 +45,47 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
   onSubmit,
   showCheckbox = false,
   additionalElements,
+  generalError,
+  showResend = false,
+  onResend,
 }) => {
   return (
     <Layout>
       <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
-        <div className="hidden md:block relative w-full h-full">
+        <div className="hidden md:block relative">
           <Image
             src="/landing_assets/images/Frame 4.svg"
             alt="Form image"
             layout="fill"
             objectFit="cover"
+            className="absolute inset-0 w-full h-full"
           />
         </div>
-        <div className="flex items-center justify-center p-4">
+        <div className="flex items-start justify-center p-4 md:p-8 overflow-auto">
           <Card className="w-full max-w-md bg-white p-6 shadow-md rounded-2xl">
             <h2 className="text-4xl font-bold mb-2">{title}</h2>
             <p className="text-base font-normal text-gray-500 mb-4">
               {subtitle}
             </p>
             {additionalElements}
+            {generalError && (
+              <div className="text-red-500 mb-4">
+                {generalError}
+                {showResend && (
+                  <div>
+                    <br />
+                    Didn’t get a code?{" "}
+                    <a
+                      href="#"
+                      className="text-[#116034] bold-text"
+                      onClick={onResend}
+                    >
+                      Send again
+                    </a>
+                  </div>
+                )}
+              </div>
+            )}
             <form onSubmit={onSubmit} className="flex flex-col gap-4">
               {fields.map((field) => (
                 <div key={field.id}>
@@ -76,16 +108,43 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
                       placeholder={field.placeholder}
                       className="w-full bg-white rounded-2xl"
                     />
+                  ) : field.type === "phone" ? (
+                    <>
+                      <PhoneInput
+                        country={"us"}
+                        value={field.value}
+                        onChange={field.onChange}
+                        inputStyle={{
+                          width: "100%",
+                          color: "black",
+                          borderRadius: "1rem",
+                          borderColor: field.error ? "red" : undefined,
+                        }}
+                        dropdownStyle={{ backgroundColor: "white", color: "black" }}
+                      />
+                      {field.error && (
+                        <p className="mt-1 text-sm text-red-500">{field.error}</p>
+                      )}
+                    </>
                   ) : (
-                    <TextInput
-                      id={field.id}
-                      type={field.type}
-                      placeholder={field.placeholder}
-                      value={field.value}
-                      onChange={field.onChange}
-                      required={field.required}
-                      className="w-full bg-white rounded-2xl border border-gray-300"
-                    />
+                    <>
+                      <TextInput
+                        id={field.id}
+                        type={field.type}
+                        placeholder={field.placeholder}
+                        value={field.value}
+                        onChange={field.onChange}
+                        required={field.required}
+                        readOnly={field.readonly}
+                        maxLength={field.maxLength}
+                        pattern={field.pattern}
+                        inputMode={field.inputMode}
+                        className={`w-full bg-white rounded-2xl border ${field.error ? 'border-red-500' : 'border-gray-300'}`}
+                      />
+                      {field.error && (
+                        <p className="mt-1 text-sm text-red-500">{field.error}</p>
+                      )}
+                    </>
                   )}
                 </div>
               ))}
