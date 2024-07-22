@@ -29,17 +29,23 @@ const PhoneNumberDialog: React.FC<PhoneNumberDialogProps> = ({
   };
 
   const handleContinue = () => {
-    if (phoneNumber) {
+    if (phoneNumber && phoneNumber.length >= 10) { 
       setConfirming(true);
+      setError(""); 
     } else {
       setError("Please enter a valid phone number.");
     }
   };
 
   const handleSubmit = () => {
-    onSubmit(phoneNumber);
-    onClose();
-    setConfirming(false);
+    if (phoneNumber && phoneNumber.length >= 10) {
+      onSubmit(phoneNumber);
+      setConfirming(false);
+      setError("");
+      onClose();
+    } else {
+      setError("Please enter a valid phone number.");
+    }
   };
 
   return (
