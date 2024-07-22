@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import { Button, Label, TextInput, Card } from "flowbite-react";
 import Select from "react-select";
 
@@ -14,9 +14,10 @@ interface Job {
 
 interface JobSeekerProfileFormProps {
   setView: (view: string) => void;
+  initialData?: any;
 }
 
-const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({ setView }) => {
+const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({ setView, initialData }) => {
   const [employmentHistory, setEmploymentHistory] = useState<Job[]>([
     {
       companyName: "",
@@ -26,6 +27,34 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({ setView }) 
       description: "",
     },
   ]);
+
+  const [profileData, setProfileData] = useState({
+    fullName: "",
+    jobTitle: "",
+    location: "",
+    preference: "full-time",
+  });
+
+  useEffect(() => {
+    if (initialData) {
+      setProfileData({
+        fullName: initialData.full_name || "",
+        jobTitle: initialData.current_work_status || "",
+        location: initialData.location || "",
+        preference: initialData.work_status || "full-time",
+      });
+
+      setEmploymentHistory(
+        initialData.employment_history.map((job: any) => ({
+          companyName: job.company_name,
+          jobTitle: job.job_title,
+          startDate: job.start_date,
+          endDate: job.end_date,
+          description: job.description || "",
+        }))
+      );
+    }
+  }, [initialData]);
 
   const handleAddJob = () => {
     setEmploymentHistory([
@@ -62,7 +91,13 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({ setView }) 
           >
             Full Name
           </Label>
-          <TextInput id="fullName" type="text" className="mt-1 w-full" />
+          <TextInput
+            id="fullName"
+            type="text"
+            className="mt-1 w-full"
+            value={profileData.fullName}
+            onChange={(e) => setProfileData({ ...profileData, fullName: e.target.value })}
+          />
         </div>
         <div className="mb-4">
           <Label
@@ -71,7 +106,13 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({ setView }) 
           >
             Job Title
           </Label>
-          <TextInput id="jobTitle" type="text" className="mt-1 w-full" />
+          <TextInput
+            id="jobTitle"
+            type="text"
+            className="mt-1 w-full"
+            value={profileData.jobTitle}
+            onChange={(e) => setProfileData({ ...profileData, jobTitle: e.target.value })}
+          />
         </div>
         <div className="mb-4">
           <Label
@@ -83,10 +124,12 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({ setView }) 
           <Select
             id="location"
             className="mt-1 w-full"
+            value={{ value: profileData.location, label: profileData.location }}
             options={[
               { value: "Poland", label: "Poland" },
               { value: "Germany", label: "Germany" },
             ]}
+            onChange={(selectedOption) => setProfileData({ ...profileData, location: selectedOption?.value || "" })}
           />
         </div>
         <div className="mb-4">
@@ -101,6 +144,8 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({ setView }) 
                 name="preference"
                 value="full-time"
                 className="mr-2"
+                checked={profileData.preference === "full-time"}
+                onChange={(e) => setProfileData({ ...profileData, preference: e.target.value })}
               />
               <Label htmlFor="full-time">Full time</Label>
             </div>
@@ -111,6 +156,8 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({ setView }) 
                 name="preference"
                 value="part-time"
                 className="mr-2"
+                checked={profileData.preference === "part-time"}
+                onChange={(e) => setProfileData({ ...profileData, preference: e.target.value })}
               />
               <Label htmlFor="part-time">Part time</Label>
             </div>
@@ -121,6 +168,8 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({ setView }) 
                 name="preference"
                 value="any"
                 className="mr-2"
+                checked={profileData.preference === "any"}
+                onChange={(e) => setProfileData({ ...profileData, preference: e.target.value })}
               />
               <Label htmlFor="any">Any</Label>
             </div>
@@ -239,13 +288,14 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({ setView }) 
           Add Job
         </Button>
         <div className="flex justify-end gap-4">
-        <Button
-          type="submit"
-          className="w-full rounded-full text-black"
-          style={{ backgroundColor: "#000", color: "#fff" }}
-        >
-          Back{" "}
-        </Button>
+          <Button
+            type="submit"
+            className="w-full rounded-full text-black"
+            style={{ backgroundColor: "#000", color: "#fff" }}
+            onClick={() => setView("initial")}
+          >
+            Back{" "}
+          </Button>
           <Button
             type="submit"
             className="w-full rounded-full text-black"
