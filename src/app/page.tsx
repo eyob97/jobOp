@@ -5,6 +5,7 @@ import Faqs from "./components/Faqs";
 import Header from "./components/Home";
 import Newsletter from "./components/Newsletter";
 import Testimonials from "./components/Testimonials";
+import DynamicFooter from "./components/Footer";
 
 
 
@@ -252,7 +253,7 @@ export default function Home() {
         <Faqs />
         <Newsletter />
       </main>
-      <Footer />
+      <DynamicFooter/>
     </>
   );
 }
