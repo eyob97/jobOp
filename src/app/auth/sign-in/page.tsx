@@ -63,7 +63,7 @@ const SignInPage = () => {
       password: formData.password,
     };
 
-    console.log("Payload:", payload); 
+    console.log("Payload:", payload);
 
     try {
       const response = await fetch(
@@ -78,13 +78,13 @@ const SignInPage = () => {
       );
 
       const data = await response.json();
-      console.log("Response status:", response.status); 
-      console.log("Response data:", data); 
+      console.log("Response status:", response.status);
+      console.log("Response data:", data);
 
       if (response.ok) {
-        router.push("/");
+        router.push("/pages/upload-cv");
       } else if (data.inactive) {
-        console.log("Inactive account detected"); 
+        console.log("Inactive account detected");
         setErrors({ general: data.inactive[0] });
         setShowResend(true);
         console.log("Set errors:", errors);
@@ -112,7 +112,7 @@ const SignInPage = () => {
       value: formData.username,
       required: true,
       onChange: handleChange,
-      error: errors.username, 
+      error: errors.username,
     },
     {
       id: "password",
@@ -135,7 +135,7 @@ const SignInPage = () => {
           <Link href="/auth/sign-up" legacyBehavior>
             <a className="text-[#116034] bold-text">Sign up</a>
           </Link>
-<br></br>
+          <br></br>
           Did you forget your password?{" "}
           <Link href="/auth/reset-password" legacyBehavior>
             <a className="text-[#116034] bold-text">Reset password</a>
