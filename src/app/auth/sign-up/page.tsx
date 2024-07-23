@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Button, TextInput, Label } from "flowbite-react";
-import Link from "next/link";
-import { useDispatch } from "react-redux";
-import { loginStart, loginSuccess, loginFailure } from "@/app/redux/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { signUpUser } from "@/app/redux/authSlice";
 import FormSkeleton, { Field } from "@/app/components/FormSkeleton";
 import PhoneNumberDialog from "@/app/components/PhoneNumberDialog";
 import "react-phone-input-2/lib/style.css";
+import { RootState, AppDispatch } from "@/app/redux/store";
+import { Button } from "flowbite-react";
+import Link from "next/link";
 
 interface FormData {
   firstName: string;
@@ -52,13 +53,20 @@ const SignUpPage = () => {
     phone: "",
     password: "",
     confirmPassword: "",
-    userType: "Employer", 
+    userType: "Employer",
   });
   const [isPhoneDialogOpen, setPhoneDialogOpen] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
 
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading, error } = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    if (error) {
+      setErrors({ general: error });
+    }
+  }, [error]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -81,8 +89,10 @@ const SignUpPage = () => {
     });
   };
 
-  const handlePhoneNumberSubmit = async (phoneNumber: string, userType: string) => {
-    console.log("Phone number submitted:", phoneNumber);
+  const handlePhoneNumberSubmit = async (
+    phoneNumber: string,
+    userType: string
+  ) => {
 
     const payload = {
       phone_number: phoneNumber,
@@ -90,25 +100,32 @@ const SignUpPage = () => {
     };
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/signup/whatsapp/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/signup/whatsapp/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       if (response.ok) {
         console.log("WhatsApp sign-up initiated");
-        router.push(`/auth/complete-signup?phone=${phoneNumber}&userType=${userType}`);
+        router.push(
+          `/auth/complete-signup?phone=${phoneNumber}&userType=${userType}`
+        );
       } else {
         const errorData = await response.json();
         console.error("Error initiating WhatsApp sign-up:", errorData);
 
         const normalizedErrors: FormErrors = {};
         Object.keys(errorData).forEach((key) => {
-          normalizedErrors[key as keyof FormErrors] = Array.isArray(errorData[key])
-            ? errorData[key][0] 
+          normalizedErrors[key as keyof FormErrors] = Array.isArray(
+            errorData[key]
+          )
+            ? errorData[key][0]
             : errorData[key];
         });
 
@@ -116,70 +133,53 @@ const SignUpPage = () => {
       }
     } catch (error) {
       console.error("Error initiating WhatsApp sign-up:", error);
-      setErrors({ general: 'Failed to initiate WhatsApp sign-up' });
+      setErrors({ general: "Failed to initiate WhatsApp sign-up" });
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
 
-    const payload = formData.userType === 'Employer'
-      ? {
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          company_name: formData.companyName,
-          location: formData.location,
-          work_email: formData.email,
-          phone_number: formData.phone,
-          user_type: formData.userType,
-          password: formData.password,
-          confirm_password: formData.confirmPassword,
-        }
-      : {
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          phone_number: formData.phone,
-          user_type: formData.userType === 'Job Seeker' ? 'Job Seeker' : formData.userType,
-          password: formData.password,
-          confirm_password: formData.confirmPassword,
-        };
+    const payload =
+      formData.userType === "Employer"
+        ? {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            company_name: formData.companyName,
+            location: formData.location,
+            work_email: formData.email,
+            phone_number: formData.phone,
+            user_type: formData.userType,
+            password: formData.password,
+            confirm_password: formData.confirmPassword,
+          }
+        : {
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            email: formData.email,
+            phone_number: formData.phone,
+            user_type:
+              formData.userType === "Job Seeker"
+                ? "Job Seeker"
+                : formData.userType,
+            password: formData.password,
+            confirm_password: formData.confirmPassword,
+            location: "", 
+          };
 
-    try {
-      dispatch(loginStart());
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
+    const resultAction = await dispatch(signUpUser(payload));
+    if (signUpUser.fulfilled.match(resultAction)) {
+      router.push(`/auth/enter-code?email=${formData.email}`);
+    } else {
+      const payload = resultAction.payload as any;
+      const normalizedErrors: FormErrors = {};
+      Object.keys(payload).forEach((key) => {
+        normalizedErrors[key as keyof FormErrors] = Array.isArray(payload[key])
+          ? payload[key][0]
+          : payload[key];
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('User created:', data);
-        dispatch(loginSuccess({ firstName: formData.firstName, lastName: formData.lastName, email: formData.email }));
-        router.push(`/auth/enter-code?email=${formData.email}`);
-      } else {
-        const errorData = await response.json();
-        console.error('Error creating user:', errorData);
-
-        const normalizedErrors: FormErrors = {};
-        Object.keys(errorData).forEach((key) => {
-          normalizedErrors[key as keyof FormErrors] = Array.isArray(errorData[key])
-            ? errorData[key][0] 
-            : errorData[key];
-        });
-
-        setErrors(normalizedErrors);
-        dispatch(loginFailure(errorData.message || 'Failed to create user'));
-      }
-    } catch (error) {
-      console.error('Error creating user:', error);
-      const errorMessage = (error as Error).message || 'Failed to create user';
-      setErrors({ general: errorMessage });
-      dispatch(loginFailure(errorMessage));
+      setErrors(normalizedErrors);
     }
   };
 
@@ -210,7 +210,7 @@ const SignUpPage = () => {
       type: "text",
       placeholder: "Company name",
       value: formData.companyName,
-      required: formData.userType === 'Employer',
+      required: formData.userType === "Employer",
       onChange: handleChange,
       error: errors.company_name,
     },
@@ -220,7 +220,7 @@ const SignUpPage = () => {
       type: "select",
       placeholder: "Select your country",
       value: formData.location,
-      required: formData.userType === 'Employer',
+      required: formData.userType === "Employer",
       onChange: handleLocationChange,
       options: countryOptions,
       error: errors.location,
@@ -328,14 +328,14 @@ const SignUpPage = () => {
         additionalElements={additionalElements}
       />
       {errors.general && (
-        <div className="text-red-500 mt-4">
-          {errors.general}
-        </div>
+        <div className="text-red-500 mt-4">{errors.general}</div>
       )}
       <PhoneNumberDialog
         isOpen={isPhoneDialogOpen}
         onClose={() => setPhoneDialogOpen(false)}
-        onSubmit={(phoneNumber) => handlePhoneNumberSubmit(phoneNumber, formData.userType)}
+        onSubmit={(phoneNumber) =>
+          handlePhoneNumberSubmit(phoneNumber, formData.userType)
+        }
       />
     </>
   );

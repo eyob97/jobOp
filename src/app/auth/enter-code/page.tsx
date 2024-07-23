@@ -2,7 +2,10 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { verifyOTP, sendOTP } from "@/app/redux/authSlice";
 import FormSkeleton, { Field } from "@/app/components/FormSkeleton";
+import { RootState, AppDispatch } from "@/app/redux/store";
 
 interface FormErrors {
   code?: string;
@@ -18,6 +21,14 @@ const EnterCodePage = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const router = useRouter();
   const searchParams = useSearchParams();
+  const dispatch = useDispatch<AppDispatch>();
+  const { error } = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    if (error) {
+      setErrors({ general: error });
+    }
+  }, [error]);
 
   useEffect(() => {
     const emailFromQuery = searchParams.get("email");
@@ -41,37 +52,20 @@ const EnterCodePage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
 
     const payload = {
       email: email,
       otp: formData.code,
     };
 
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/verify/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-      
-      if (response.ok) {
-        console.log('Verification successful:', data);
-        setMessage("Verification successful. Redirecting...");
-        setTimeout(() => {
-          router.push('/auth/sign-in');
-        }, 2000); 
-      } else {
-        console.error('Error verifying code:', data);
-        setErrors({ code: data.message || 'Failed to verify code' });
-      }
-    } catch (error) {
-      console.error('Error verifying code:', error);
-      setErrors({ code: 'Failed to verify code' });
+    const resultAction = await dispatch(verifyOTP(payload));
+    if (verifyOTP.fulfilled.match(resultAction)) {
+      setMessage("Verification successful. Redirecting...");
+      setTimeout(() => {
+        router.push('/auth/sign-in');
+      }, 2000); 
+    } else {
+      setErrors({ code: resultAction.payload as string });
     }
   };
 
@@ -81,27 +75,11 @@ const EnterCodePage = () => {
       operation_type: "VERIFICATION",
     };
 
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/otp/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log('OTP sent again');
-        setMessage('OTP sent successfully.');
-      } else {
-        console.error('Error sending OTP:', data);
-        setMessage(data.message || 'Failed to send OTP');
-      }
-    } catch (error) {
-      console.error('Error sending OTP:', error);
-      setMessage('Failed to send OTP');
+    const resultAction = await dispatch(sendOTP(payload));
+    if (sendOTP.fulfilled.match(resultAction)) {
+      setMessage('OTP sent successfully.');
+    } else {
+      setMessage(resultAction.payload as string);
     }
   };
 

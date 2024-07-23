@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser, sendOTP } from "@/app/redux/authSlice";
 import FormSkeleton from "@/app/components/FormSkeleton";
+import { RootState, AppDispatch } from "@/app/redux/store";
 
 interface FormErrors {
   general?: string;
@@ -20,6 +23,14 @@ const SignInPage = () => {
   const [showResend, setShowResend] = useState(false);
 
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading, error, token } = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    if (error) {
+      setErrors({ general: error });
+    }
+  }, [error]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -28,80 +39,33 @@ const SignInPage = () => {
     });
   };
 
-  const handleResend = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/otp/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: formData.username,
-            operation_type: "VERIFICATION",
-          }),
-        }
-      );
-
-      if (response.ok) {
-        console.log("OTP sent successfully");
-        router.push(`/auth/enter-code?email=${formData.username}`);
-      } else {
-        console.error("Failed to resend OTP");
-      }
-    } catch (error) {
-      console.error("Error resending OTP:", error);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const payload = {
-      username: formData.username,
-      password: formData.password,
-    };
-
-    console.log("Payload:", payload);
-
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/login/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      const data = await response.json();
-      console.log("Response status:", response.status);
-      console.log("Response data:", data);
-
-      if (response.ok) {
-        router.push("/pages/upload-cv");
-      } else if (data.inactive) {
-        console.log("Inactive account detected");
-        setErrors({ general: data.inactive[0] });
+    const resultAction = await dispatch(loginUser(formData));
+    if (loginUser.fulfilled.match(resultAction)) {
+      router.push("/pages/upload-cv");
+    } else {
+      const payload = resultAction.payload as any;
+      if (payload?.inactive) {
+        setErrors({ general: payload.inactive[0] });
         setShowResend(true);
-        console.log("Set errors:", errors);
-        console.log("Show resend:", showResend);
       } else {
-        setErrors(data);
+        setErrors(payload || { general: "An error occurred. Please try again later." });
       }
-    } catch (error) {
-      setErrors({ general: "An error occurred. Please try again later." });
-      console.error("Error logging in:", error);
     }
   };
 
-  useEffect(() => {
-    console.log("Errors state updated:", errors);
-    console.log("ShowResend state updated:", showResend);
-  }, [errors, showResend]);
+  const handleResend = async () => {
+    const resultAction = await dispatch(sendOTP({
+      email: formData.username,
+      operation_type: "VERIFICATION",
+    }));
+    if (sendOTP.fulfilled.match(resultAction)) {
+      router.push(`/auth/enter-code?email=${formData.username}`);
+    } else {
+      setErrors({ general: resultAction.payload as string });
+    }
+  };
 
   const fields = [
     {

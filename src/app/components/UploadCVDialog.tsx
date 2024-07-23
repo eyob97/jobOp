@@ -1,37 +1,67 @@
 "use client";
 
-import React, { ChangeEvent, useState, useRef, useCallback, useEffect } from "react";
-import { Button, Card, Label } from "flowbite-react";
+import React, { ChangeEvent, useEffect, useRef, useState, useCallback } from "react";
+import { Button, Card } from "flowbite-react";
 import { HiDocumentText, HiPencil } from "react-icons/hi";
 import JobSeekerProfileForm from "./JobSeekerProfileForm";
-import { useRouter } from "next/navigation";
-import axios from "axios";
-import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch, useSelector } from "react-redux";
+import { setFile, uploadResume, fetchJobSeekerData, clearError } from "@/app/redux/resumeSlice";
+import { RootState, AppDispatch } from "@/app/redux/store";
+
+interface FormErrors {
+  general?: string;
+  file?: string;
+}
 
 export function UploadCVCard() {
   const [view, setView] = useState("initial");
-  const [file, setFile] = useState<File | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [jobSeekerData, setJobSeekerData] = useState<any>(null);
-  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const dispatch = useDispatch<AppDispatch>();
+  const { pdf_file, jobSeekerData, isLoading, error } = useSelector((state: RootState) => state.resume);
+  const { token } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    // Fetch initial data when the component mounts
-    fetchJobSeekerData();
-  }, []);
+    if (token) {
+      dispatch(fetchJobSeekerData());
+    }
+  }, [dispatch, token]);
+
+  useEffect(() => {
+    if (error) {
+      setErrors({ general: error.details || "An error occurred. Please try again later." });
+      dispatch(clearError());
+    }
+  }, [error, dispatch]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFile(e.target.files ? e.target.files[0] : null);
+    const file = e.target.files ? e.target.files[0] : null;
+    if (file) {
+      if (file.type !== "application/pdf") {
+        setErrors({ file: "Only PDF files are allowed." });
+        return;
+      }
+      setErrors({});
+      setSelectedFile(file);
+      dispatch(setFile({ name: file.name, size: file.size, type: file.type, lastModified: file.lastModified }));
+    }
   };
 
   const handleDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
     const file = event.dataTransfer.files[0];
-    setFile(file);
-  }, []);
+    if (file) {
+      if (file.type !== "application/pdf") {
+        setErrors({ file: "Only PDF files are allowed." });
+        return;
+      }
+      setErrors({});
+      setSelectedFile(file);
+      dispatch(setFile({ name: file.name, size: file.size, type: file.type, lastModified: file.lastModified }));
+    }
+  }, [dispatch]);
 
   const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -39,60 +69,22 @@ export function UploadCVCard() {
   }, []);
 
   const handleUpload = async () => {
-    if (!file) {
-      setError("Please select a file to upload.");
-      toast.error("Please select a file to upload.");
+    if (!selectedFile) {
+      setErrors({ file: "Please select a file to upload." });
       return;
     }
 
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      console.log("Uploading file...");
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/cv-extraction/upload-pdf/`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        console.log("File uploaded successfully:", response.data);
-        fetchJobSeekerData();
-        toast.success("Your CV was successfully uploaded.");
+    const resultAction = await dispatch(uploadResume(selectedFile));
+    if (uploadResume.fulfilled.match(resultAction)) {
+      dispatch(fetchJobSeekerData());
+      setView("create");
+    } else {
+      const payload = resultAction.payload as any;
+      if (payload && payload.details) {
+        setErrors({ general: payload.details });
       } else {
-        setError("Failed to upload file.");
-        toast.error("Failed to upload file.");
-        console.error("Failed to upload file:", response.status, response.statusText);
+        setErrors({ general: "Failed to upload the resume." });
       }
-    } catch (error) {
-      setError("An error occurred while uploading the file.");
-      toast.error("An error occurred while uploading the file.");
-      console.error("Error uploading file:", error);
-    }
-  };
-
-  const fetchJobSeekerData = async () => {
-    try {
-      console.log("Fetching job seeker data...");
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/job-seeker/`);
-
-      if (response.status === 200) {
-        setJobSeekerData(response.data);
-        toast.success("Job seeker data fetched successfully.");
-      } else {
-        setError("Failed to fetch job seeker data.");
-        toast.error("Failed to fetch job seeker data.");
-        console.error("Failed to fetch job seeker data:", response.status, response.statusText);
-      }
-    } catch (error) {
-      setError("An error occurred while fetching job seeker data.");
-      toast.error("An error occurred while fetching job seeker data.");
-      console.error("Error fetching job seeker data:", error);
     }
   };
 
@@ -103,6 +95,7 @@ export function UploadCVCard() {
         You can upload an existing CV and edit it later or create a new one from scratch
       </h2>
       <div className="flex justify-center gap-4">
+        
         <Button
           color="text"
           className="flex flex-col items-center p-4 border border-gray-300 dark:border-gray-600 rounded-lg"
@@ -114,7 +107,10 @@ export function UploadCVCard() {
         <Button
           color="text"
           className="flex flex-col items-center p-4 border border-gray-300 dark:border-gray-600 rounded-lg"
-          onClick={() => setView("create")}
+          onClick={() => {
+            dispatch(fetchJobSeekerData());
+            setView("create");
+          }}
         >
           <HiPencil className="mb-2 h-6 w-6 text-gray-500 dark:text-gray-400" />
           <span>Create CV</span>
@@ -131,19 +127,20 @@ export function UploadCVCard() {
         onDrop={handleDrop}
         onDragOver={handleDragOver}
       >
-        <input type="file" onChange={handleFileChange} className="mb-2" />
-        <p className="text-sm text-gray-500">Supported types: .PDF, .DOCX</p>
+        <input type="file" onChange={handleFileChange} className="mb-2" ref={fileInputRef} />
+        <p className="text-sm text-gray-500">Supported types: .PDF</p>
         <p className="text-sm text-gray-500">Max. Size: 300MB</p>
       </div>
-      {error && <p className="text-red-500 mt-2">{error}</p>}
+      {errors.file && <p className="text-red-500 mt-2">{errors.file}</p>}
       <div className="flex justify-end mt-4">
         <Button
           color="text"
           className="w-full rounded-full text-black"
-          style={{ backgroundColor: "#000", color: "#fff" }}
+          style={{ backgroundColor: "#FFC424", color: "#000" }}
           onClick={handleUpload}
+          disabled={isLoading}
         >
-          Upload
+          {isLoading ? "Uploading..." : "Upload"}
         </Button>
         <Button
           color="text"
@@ -154,18 +151,19 @@ export function UploadCVCard() {
           Back
         </Button>
       </div>
+      {errors.general && <p className="text-red-500 mt-2">{errors.general}</p>}
     </div>
   );
 
   const renderCreateView = () => (
     <div>
-      <JobSeekerProfileForm setView={setView} initialData={jobSeekerData} />
+      <JobSeekerProfileForm setView={setView}/>
     </div>
   );
 
   const renderProfileView = () => (
     <div>
-      <JobSeekerProfileForm setView={setView} initialData={jobSeekerData} />
+      <JobSeekerProfileForm setView={setView} />
     </div>
   );
 

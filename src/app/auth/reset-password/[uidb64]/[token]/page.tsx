@@ -50,8 +50,6 @@ const ResetPasswordForm = () => {
       );
 
       const responseText = await response.text();
-      console.log("Response status:", response.status); 
-      console.log("Response text:", responseText); 
 
       try {
         const data = JSON.parse(responseText);

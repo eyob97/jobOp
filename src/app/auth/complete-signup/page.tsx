@@ -2,7 +2,10 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { completeSignUp, sendOTP } from "@/app/redux/authSlice";
 import FormSkeleton, { Field } from "@/app/components/FormSkeleton";
+import { RootState, AppDispatch } from "@/app/redux/store";
 
 interface FormErrors {
   code?: string;
@@ -27,6 +30,14 @@ const CompleteSignUp = () => {
   const [message, setMessage] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
+  const dispatch = useDispatch<AppDispatch>();
+  const { error } = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    if (error) {
+      setErrors({ general: error });
+    }
+  }, [error]);
 
   useEffect(() => {
     const phone = searchParams.get("phone");
@@ -49,7 +60,7 @@ const CompleteSignUp = () => {
     e.preventDefault();
     console.log(formData);
 
-    const payload: any = {
+    const payload = {
       otp: formData.code,
       phone_number: formData.phone_number,
       first_name: formData.firstName,
@@ -58,32 +69,14 @@ const CompleteSignUp = () => {
       confirm_password: formData.confirmPassword,
     };
 
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/verify/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (response.ok) {
-        console.log("Verification successful");
-        router.push("/");
-      } else {
-        const responseText = await response.text();
-        try {
-          const errorData = JSON.parse(responseText);
-          console.error("Error verifying user:", errorData);
-          setErrors({ general: errorData.message || 'Failed to verify user' });
-        } catch (parseError) {
-          console.error("Error parsing response:", responseText);
-          setErrors({ general: 'Failed to verify user' });
-        }
-      }
-    } catch (error) {
-      console.error("Error verifying user:", error);
-      setErrors({ general: 'Failed to verify user' });
+    const resultAction = await dispatch(completeSignUp(payload));
+    if (completeSignUp.fulfilled.match(resultAction)) {
+      setMessage("Verification successful. Redirecting...");
+      setTimeout(() => {
+        router.push('/auth/sign-in');
+      }, 2000); 
+    } else {
+      setErrors({ general: resultAction.payload as string });
     }
   };
 
@@ -93,32 +86,11 @@ const CompleteSignUp = () => {
       operation_type: "WHATSAPP VERIFICATION",
     };
 
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/otp/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const responseText = await response.text();
-      try {
-        const data = JSON.parse(responseText);
-        if (response.ok) {
-          console.log('OTP sent again');
-          setMessage('OTP sent successfully.');
-        } else {
-          console.error('Error sending OTP:', data);
-          setMessage(data.message || 'Failed to send OTP');
-        }
-      } catch (parseError) {
-        console.error("Error parsing response:", responseText);
-        setMessage('Failed to send OTP');
-      }
-    } catch (error) {
-      console.error('Error sending OTP:', error);
-      setMessage('Failed to send OTP');
+    const resultAction = await dispatch(sendOTP(payload));
+    if (sendOTP.fulfilled.match(resultAction)) {
+      setMessage('OTP sent successfully.');
+    } else {
+      setMessage(resultAction.payload as string);
     }
   };
 
@@ -177,7 +149,7 @@ const CompleteSignUp = () => {
       error: errors.confirm_password,
     },
     {
-      id: "phone",
+      id: "phone_number",
       label: "Phone Number",
       type: "text",
       placeholder: "Phone number",
@@ -212,6 +184,11 @@ const CompleteSignUp = () => {
         showCheckbox={false}
         generalError={errors.general}
       />
+      {message && (
+        <div className="text-green-500 mt-4">
+          {message}
+        </div>
+      )}
     </Suspense>
   );
 };
