@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import resumeReducer from './resumeSlice';
 import authReducer from './authSlice';
+import jobsReducer from './jobSlice';
 
 export const store = configureStore({
   reducer: {
     resume: resumeReducer,
     auth: authReducer,
+    jobs: jobsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

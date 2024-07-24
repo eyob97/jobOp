@@ -77,14 +77,15 @@ export const loginUser = createAsyncThunk(
       const data = response.data;
       setAuthToken(data.token.access); 
       localStorage.setItem('token', data.token.access);
-      localStorage.setItem('userId', data.user.id.toString()); 
+      localStorage.setItem('userId', data.user.id.toString());
+      localStorage.setItem('user', JSON.stringify(data.user));
+
       return data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
-
 
 export const signUpUser = createAsyncThunk(
   'auth/signUpUser',
@@ -158,6 +159,19 @@ export const completeSignUp = createAsyncThunk(
   }
 );
 
+export const loadUserFromLocalStorage = createAsyncThunk(
+  "auth/loadUserFromLocalStorage",
+  async (_, { dispatch }) => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+
+    if (token && user) {
+      setAuthToken(token);
+      dispatch(authSlice.actions.setUser({ user: JSON.parse(user), token }));
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -171,6 +185,11 @@ const authSlice = createSlice({
       setAuthToken(null); 
       localStorage.removeItem('token'); 
       localStorage.removeItem('userId'); 
+    },
+    setUser(state, action: PayloadAction<{ user: AuthState['user'], token: string }>) {
+      state.isAuthenticated = true;
+      state.user = action.payload.user;
+      state.token = action.payload.token;
     },
   },
   extraReducers: (builder) => {
@@ -240,5 +259,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, setUser } = authSlice.actions;
 export default authSlice.reducer;

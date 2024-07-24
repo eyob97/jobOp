@@ -1,17 +1,28 @@
-"use client";
+'use client';
 
-import { TextInput, Button } from "flowbite-react";
+import { useState } from "react";
+import JobCard from "./JobCard";
+import SearchBar from "./SearchForm";
+
+interface SearchCriteria {
+  jobTitle: string;
+  location: string;
+  filter: string;
+}
 
 const FilterDashboard = () => {
+  const [searchCriteria, setSearchCriteria] = useState<SearchCriteria>({ jobTitle: "", location: "", filter: "" });
+
+  const handleSearch = (criteria: SearchCriteria) => {
+    setSearchCriteria(criteria);
+  };
+
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md">
-      <h2 className="text-lg font-bold mb-4">Find Job</h2>
-      <TextInput placeholder="Search by: Job title, Position, Keyword..." className="mb-4" />
-      <TextInput placeholder="City, state or zip code" className="mb-4" />
-      <div className="flex justify-between">
-        <Button gradientDuoTone="greenToBlue">Filters</Button>
-        <Button gradientDuoTone="yellowToGreen">Find Job</Button>
-      </div>
+    <div className="w-full h-full p-4">
+      <SearchBar onSearch={handleSearch} />
+      <div className="max-w-7xl mx-auto p-4">
+      <h2 className="text-2xl font-bold mb-4">Jobs for you</h2>
+      <JobCard searchCriteria={searchCriteria} /></div>
     </div>
   );
 };

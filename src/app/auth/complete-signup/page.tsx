@@ -58,7 +58,6 @@ const CompleteSignUp = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
 
     const payload = {
       otp: formData.code,

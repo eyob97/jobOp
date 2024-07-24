@@ -14,11 +14,9 @@ export function initializeApiClient() {
     if (token) {
       apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       localStorage.setItem('token', token);
-      console.log('setAuthToken: Token set in localStorage and apiClient:', token);
     } else {
       delete apiClient.defaults.headers.common['Authorization'];
       localStorage.removeItem('token');
-      console.log('setAuthToken: Token removed from localStorage and apiClient');
     }
   }
 }

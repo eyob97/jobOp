@@ -7,6 +7,7 @@ import JobSeekerProfileForm from "./JobSeekerProfileForm";
 import { useDispatch, useSelector } from "react-redux";
 import { setFile, uploadResume, fetchJobSeekerData, clearError } from "@/app/redux/resumeSlice";
 import { RootState, AppDispatch } from "@/app/redux/store";
+import FilterDashboard from "@/app/components/FilterDashboard";
 
 interface FormErrors {
   general?: string;
@@ -30,7 +31,11 @@ export function UploadCVCard() {
 
   useEffect(() => {
     if (error) {
-      setErrors({ general: error.details || "An error occurred. Please try again later." });
+      if (error.details === "A Job Seeker profile already exists for this user.") {
+        setView("profileExists");
+      } else {
+        setErrors({ general: error.details || "An error occurred. Please try again later." });
+      }
       dispatch(clearError());
     }
   }, [error, dispatch]);
@@ -95,7 +100,6 @@ export function UploadCVCard() {
         You can upload an existing CV and edit it later or create a new one from scratch
       </h2>
       <div className="flex justify-center gap-4">
-        
         <Button
           color="text"
           className="flex flex-col items-center p-4 border border-gray-300 dark:border-gray-600 rounded-lg"
@@ -157,7 +161,7 @@ export function UploadCVCard() {
 
   const renderCreateView = () => (
     <div>
-      <JobSeekerProfileForm setView={setView}/>
+      <JobSeekerProfileForm setView={setView} />
     </div>
   );
 
@@ -174,6 +178,7 @@ export function UploadCVCard() {
         {view === "upload" && renderUploadView()}
         {view === "create" && renderCreateView()}
         {view === "profile" && renderProfileView()}
+        {view === "profileExists" && <FilterDashboard />}
       </Card>
     </div>
   );

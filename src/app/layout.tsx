@@ -8,15 +8,14 @@ import { flowbiteTheme } from "./theme";
 import { Provider } from "react-redux";
 import { store } from "@/app/redux/store";
 import { initializeApiClient } from "@/app/apiClient";
+import InitializeUser from "@/app/redux/initialUser"; 
 
 interface LayoutProps {
   children: ReactNode;
 }
 
 const RootLayout = ({ children }: LayoutProps) => {
-  useEffect(() => {
-    initializeApiClient();
-  }, []);
+  
 
   const metaData = {
     title: "Jobop.co.za | Connecting South Africa's Workforce",
@@ -73,9 +72,12 @@ const RootLayout = ({ children }: LayoutProps) => {
         <ThemeModeScript />
       </head>
       <body>
-        <Provider store={store}>
+      <Provider store={store}>
           <Flowbite theme={{ theme: flowbiteTheme }}>
-            <Suspense fallback={<>Loading...</>}>{children}</Suspense>
+            <Suspense fallback={<>Loading...</>}>
+              <InitializeUser /> 
+              {children}
+            </Suspense>
           </Flowbite>
         </Provider>
         <Script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></Script>
