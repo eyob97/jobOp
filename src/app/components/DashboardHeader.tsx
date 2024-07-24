@@ -2,6 +2,7 @@
 
 import {
   Avatar,
+  Button,
   Dropdown,
   DropdownDivider,
   DropdownHeader,
@@ -22,7 +23,7 @@ const DashboardHeader = () => {
   const router = useRouter();
   const user = useSelector((state: RootState) => state.auth?.user);
 
-  console.log("User:", user); // Console log the user information
+  console.log("User:", user);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -36,7 +37,7 @@ const DashboardHeader = () => {
           <img
             src="/landing_assets/vectors/group3_x2.svg"
             alt="JobOp Logo"
-            className="h-24"
+            className="h-20 ml-10"
           />
         </NavbarBrand>
         <nav id="navbar" className="navbar">
@@ -57,27 +58,24 @@ const DashboardHeader = () => {
               </a>
             </li>
           </ul>
-          <i className="bi bi-list mobile-nav-toggle"></i>
         </nav>
-        <div className="flex items-center relative"> 
+        <div className="flex items-center relative">
           {user ? (
             <Dropdown
+              label={
+                <Avatar
+                  alt="Profile"
+                  img="/landing_assets/images/xmlid85.png"
+                  size="sm"
+                  rounded
+                />
+              }
               arrowIcon={false}
               inline
-              label={
-                <div className="flex items-center">
-                  <Avatar
-                    img="https://example.com/path/to/avatar.jpg" 
-                    rounded
-                  />
-                  <span className="text-white ml-2">
-                    {user.firstName} {user.lastName}
-                  </span>
-                </div>
-              }
             >
-              <DropdownHeader>
+              <DropdownHeader className="overflow-visible">
                 <span className="block text-sm">
+                  {" "}
                   {user.firstName} {user.lastName}
                 </span>
                 <span className="block truncate text-sm font-medium">
@@ -85,22 +83,27 @@ const DashboardHeader = () => {
                 </span>
               </DropdownHeader>
               <DropdownItem>Upload photo</DropdownItem>
+
               <DropdownDivider />
               <DropdownItem onClick={handleLogout}>Sign out</DropdownItem>
             </Dropdown>
           ) : (
-            <button
-              className="bg-yellow-400 text-black rounded-full px-4 py-2"
-              onClick={() => router.push("/auth/sign-up")}
+            <Button
+              className="text-black"
+              onClick={() => router.push("/auth/sign-in")}
+              gradientDuoTone="greenToBlue"
             >
-              Sign Up
-            </button>
+              Sign in
+            </Button>
           )}
           <NavbarToggle />
         </div>
       </div>
       <NavbarCollapse className="lg:hidden">
-        <NavbarLink href="#find-job" className="text-white hover:underline active">
+        <NavbarLink
+          href="#find-job"
+          className="text-white hover:underline active"
+        >
           Find Job
         </NavbarLink>
         <NavbarLink href="#documents" className="text-white hover:underline">
