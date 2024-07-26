@@ -64,7 +64,7 @@ interface VerifyOTPPayload {
 }
 
 export const loginUser = createAsyncThunk(
-  'auth/loginUser',
+  "auth/loginUser",
   async (payload: LoginPayload, { rejectWithValue }) => {
     try {
       const response = await apiClient.post(`${API_URL}/api/login/`, payload);
@@ -75,10 +75,10 @@ export const loginUser = createAsyncThunk(
       }
 
       const data = response.data;
-      setAuthToken(data.token.access); 
-      localStorage.setItem('token', data.token.access);
-      localStorage.setItem('userId', data.user.id.toString());
-      localStorage.setItem('user', JSON.stringify(data.user));
+      setAuthToken(data.token.access);
+      localStorage.setItem("token", data.token.access);
+      localStorage.setItem("userId", data.user.id.toString());
+      localStorage.setItem("user", JSON.stringify(data.user));
 
       return data;
     } catch (error: any) {
@@ -88,12 +88,12 @@ export const loginUser = createAsyncThunk(
 );
 
 export const signUpUser = createAsyncThunk(
-  'auth/signUpUser',
+  "auth/signUpUser",
   async (payload: SignUpPayload, { rejectWithValue }) => {
     try {
       const response = await apiClient.post(`${API_URL}/api/users/`, payload);
 
-      if (response.status !== 200) {
+      if (response.status !== 201) {
         const errorData = response.data;
         return rejectWithValue(errorData);
       }
@@ -106,7 +106,7 @@ export const signUpUser = createAsyncThunk(
 );
 
 export const sendOTP = createAsyncThunk(
-  'auth/sendOTP',
+  "auth/sendOTP",
   async (payload: OTPLPayload, { rejectWithValue }) => {
     try {
       const response = await apiClient.post(`${API_URL}/api/otp/`, payload);
@@ -124,10 +124,13 @@ export const sendOTP = createAsyncThunk(
 );
 
 export const verifyOTP = createAsyncThunk(
-  'auth/verifyOTP',
+  "auth/verifyOTP",
   async (payload: VerifyOTPPayload, { rejectWithValue }) => {
     try {
-      const response = await apiClient.post(`${API_URL}/api/user/verify/`, payload);
+      const response = await apiClient.post(`${API_URL}/api/user/verify/`, {
+        email: payload.email,
+        otp: payload.otp,
+      });
 
       if (response.status !== 200) {
         const errorData = response.data;
@@ -142,10 +145,13 @@ export const verifyOTP = createAsyncThunk(
 );
 
 export const completeSignUp = createAsyncThunk(
-  'auth/completeSignUp',
+  "auth/completeSignUp",
   async (payload: CompleteSignUpPayload, { rejectWithValue }) => {
     try {
-      const response = await apiClient.post(`${API_URL}/api/user/verify/`, payload);
+      const response = await apiClient.post(
+        `${API_URL}/api/user/complete/`,
+        payload
+      );
 
       if (response.status !== 200) {
         const errorData = response.data;
@@ -173,7 +179,7 @@ export const loadUserFromLocalStorage = createAsyncThunk(
 );
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     logout(state) {
@@ -182,11 +188,14 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.error = null;
       state.token = null;
-      setAuthToken(null); 
-      localStorage.removeItem('token'); 
-      localStorage.removeItem('userId'); 
+      setAuthToken(null);
+      localStorage.removeItem("token");
+      localStorage.removeItem("userId");
     },
-    setUser(state, action: PayloadAction<{ user: AuthState['user'], token: string }>) {
+    setUser(
+      state,
+      action: PayloadAction<{ user: AuthState["user"]; token: string }>
+    ) {
       state.isAuthenticated = true;
       state.user = action.payload.user;
       state.token = action.payload.token;
@@ -202,7 +211,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.isLoading = false;
         state.user = action.payload.user;
-        state.token = action.payload.token.access; 
+        state.token = action.payload.token.access;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
@@ -212,10 +221,10 @@ const authSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(signUpUser.fulfilled, (state, action) => {
-        state.isAuthenticated = true;
+      .addCase(signUpUser.fulfilled, (state) => {
+        state.isAuthenticated = false;
         state.isLoading = false;
-        state.user = action.payload.user;
+        state.error = null;
       })
       .addCase(signUpUser.rejected, (state, action) => {
         state.isLoading = false;

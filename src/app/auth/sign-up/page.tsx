@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { signUpUser } from "@/app/redux/authSlice";
+import { signUpUser, sendOTP } from "@/app/redux/authSlice";
 import FormSkeleton, { Field } from "@/app/components/FormSkeleton";
 import PhoneNumberDialog from "@/app/components/PhoneNumberDialog";
 import "react-phone-input-2/lib/style.css";
@@ -57,6 +57,7 @@ const SignUpPage = () => {
   });
   const [isPhoneDialogOpen, setPhoneDialogOpen] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
@@ -93,83 +94,51 @@ const SignUpPage = () => {
     phoneNumber: string,
     userType: string
   ) => {
-
     const payload = {
       phone_number: phoneNumber,
-      user_type: userType,
+      operation_type: "VERIFICATION",
     };
 
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/signup/whatsapp/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
+    const resultAction = await dispatch(sendOTP(payload));
+    if (sendOTP.fulfilled.match(resultAction)) {
+      router.push(
+        `/auth/complete-signup?phone=${phoneNumber}&userType=${userType}`
       );
+    } else {
+      const errorPayload = resultAction.payload as any;
+      const normalizedErrors: FormErrors = {};
+      Object.keys(errorPayload).forEach((key) => {
+        normalizedErrors[key as keyof FormErrors] = Array.isArray(
+          errorPayload[key]
+        )
+          ? errorPayload[key][0]
+          : errorPayload[key];
+      });
 
-      if (response.ok) {
-        console.log("WhatsApp sign-up initiated");
-        router.push(
-          `/auth/complete-signup?phone=${phoneNumber}&userType=${userType}`
-        );
-      } else {
-        const errorData = await response.json();
-        console.error("Error initiating WhatsApp sign-up:", errorData);
-
-        const normalizedErrors: FormErrors = {};
-        Object.keys(errorData).forEach((key) => {
-          normalizedErrors[key as keyof FormErrors] = Array.isArray(
-            errorData[key]
-          )
-            ? errorData[key][0]
-            : errorData[key];
-        });
-
-        setErrors(normalizedErrors);
-      }
-    } catch (error) {
-      console.error("Error initiating WhatsApp sign-up:", error);
-      setErrors({ general: "Failed to initiate WhatsApp sign-up" });
+      setErrors(normalizedErrors);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const payload =
-      formData.userType === "Employer"
-        ? {
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            company_name: formData.companyName,
-            location: formData.location,
-            work_email: formData.email,
-            phone_number: formData.phone,
-            user_type: formData.userType,
-            password: formData.password,
-            confirm_password: formData.confirmPassword,
-          }
-        : {
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            email: formData.email,
-            phone_number: formData.phone,
-            user_type:
-              formData.userType === "Job Seeker"
-                ? "Job Seeker"
-                : formData.userType,
-            password: formData.password,
-            confirm_password: formData.confirmPassword,
-            location: "", 
-          };
+    const payload = {
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      company_name: formData.userType === "Employer" ? formData.companyName : undefined,
+      location: formData.location,
+      work_email: formData.userType === "Employer" ? formData.email : undefined,
+      email: formData.userType !== "Employer" ? formData.email : undefined,
+      phone_number: formData.phone,
+      user_type: formData.userType,
+      password: formData.password,
+      confirm_password: formData.confirmPassword,
+    };
 
     const resultAction = await dispatch(signUpUser(payload));
     if (signUpUser.fulfilled.match(resultAction)) {
-      router.push(`/auth/enter-code?email=${formData.email}`);
+      setSuccessMessage("Account created successfully. Check your email for verification code.");
+      router.push(`/auth/confirm-code?email=${formData.email}`);
     } else {
       const payload = resultAction.payload as any;
       const normalizedErrors: FormErrors = {};
@@ -203,16 +172,6 @@ const SignUpPage = () => {
       required: true,
       onChange: handleChange,
       error: errors.last_name,
-    },
-    {
-      id: "companyName",
-      label: "Company Name",
-      type: "text",
-      placeholder: "Company name",
-      value: formData.companyName,
-      required: formData.userType === "Employer",
-      onChange: handleChange,
-      error: errors.company_name,
     },
     {
       id: "location",
@@ -266,6 +225,19 @@ const SignUpPage = () => {
       error: errors.confirm_password,
     },
   ];
+
+  if (formData.userType === "Employer") {
+    fields.splice(2, 0, {
+      id: "companyName",
+      label: "Company Name",
+      type: "text",
+      placeholder: "Company name",
+      value: formData.companyName,
+      required: true,
+      onChange: handleChange,
+      error: errors.company_name,
+    });
+  }
 
   const additionalElements = (
     <div className="flex flex-col gap-4">
@@ -329,6 +301,9 @@ const SignUpPage = () => {
       />
       {errors.general && (
         <div className="text-red-500 mt-4">{errors.general}</div>
+      )}
+      {successMessage && (
+        <div className="text-green-500 mt-4">{successMessage}</div>
       )}
       <PhoneNumberDialog
         isOpen={isPhoneDialogOpen}
