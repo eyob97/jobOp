@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { signUpUser, sendOTP } from "@/app/redux/authSlice";
+import { signUpUser } from "@/app/redux/authSlice";
 import FormSkeleton, { Field } from "@/app/components/FormSkeleton";
 import PhoneNumberDialog from "@/app/components/PhoneNumberDialog";
 import "react-phone-input-2/lib/style.css";
@@ -82,40 +82,40 @@ const SignUpPage = () => {
       location: selectedOption?.value || "",
     });
   };
-
   const handlePhoneNumberChange = (value: string) => {
     setFormData({
       ...formData,
       phone: `+${value}`,
     });
   };
-
   const handlePhoneNumberSubmit = async (
     phoneNumber: string,
     userType: string
   ) => {
-    const payload = {
-      phone_number: phoneNumber,
-      operation_type: "VERIFICATION",
-    };
+    try {
+      const payload = {
+        phone_number: phoneNumber,
+        user_type: userType,
+      };
 
-    const resultAction = await dispatch(sendOTP(payload));
-    if (sendOTP.fulfilled.match(resultAction)) {
-      router.push(
-        `/auth/complete-signup?phone=${phoneNumber}&userType=${userType}`
-      );
-    } else {
-      const errorPayload = resultAction.payload as any;
-      const normalizedErrors: FormErrors = {};
-      Object.keys(errorPayload).forEach((key) => {
-        normalizedErrors[key as keyof FormErrors] = Array.isArray(
-          errorPayload[key]
-        )
-          ? errorPayload[key][0]
-          : errorPayload[key];
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/signup/whatsapp/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
 
-      setErrors(normalizedErrors);
+      if (response.ok) {
+        console.log("WhatsApp sign-up initiated");
+        router.push(`/auth/complete-signup?phone=${phoneNumber}&userType=${userType}`);
+      } else {
+        const errorData = await response.json();
+        console.error("Error initiating WhatsApp sign-up:", errorData);
+        throw new Error("Failed to initiate WhatsApp sign-up.");
+      }
+    } catch (err) {
+      throw new Error("Failed to initiate WhatsApp sign-up.");
     }
   };
 
@@ -138,7 +138,7 @@ const SignUpPage = () => {
     const resultAction = await dispatch(signUpUser(payload));
     if (signUpUser.fulfilled.match(resultAction)) {
       setSuccessMessage("Account created successfully. Check your email for verification code.");
-      router.push(`/auth/confirm-code?email=${formData.email}`);
+      router.push(`/auth/confirm-code?email=${formData.email}`); 
     } else {
       const payload = resultAction.payload as any;
       const normalizedErrors: FormErrors = {};
@@ -308,9 +308,7 @@ const SignUpPage = () => {
       <PhoneNumberDialog
         isOpen={isPhoneDialogOpen}
         onClose={() => setPhoneDialogOpen(false)}
-        onSubmit={(phoneNumber) =>
-          handlePhoneNumberSubmit(phoneNumber, formData.userType)
-        }
+        onSubmit={handlePhoneNumberSubmit}
       />
     </>
   );

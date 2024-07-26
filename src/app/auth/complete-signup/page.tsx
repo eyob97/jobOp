@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { completeSignUp, sendOTP } from "@/app/redux/authSlice";
+import { verifyCompleteSignUp, sendOTP } from "@/app/redux/authSlice";
 import FormSkeleton, { Field } from "@/app/components/FormSkeleton";
 import { RootState, AppDispatch } from "@/app/redux/store";
 
@@ -15,6 +15,8 @@ interface FormErrors {
   phone_number?: string;
   password?: string;
   confirm_password?: string;
+  company_name?: string;
+  location?: string;
 }
 
 const CompleteSignUp = () => {
@@ -25,6 +27,8 @@ const CompleteSignUp = () => {
     password: "",
     confirmPassword: "",
     phone_number: "",
+    companyName: "",
+    location: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [message, setMessage] = useState("");
@@ -32,6 +36,8 @@ const CompleteSignUp = () => {
   const searchParams = useSearchParams();
   const dispatch = useDispatch<AppDispatch>();
   const { error } = useSelector((state: RootState) => state.auth);
+
+  const userType = searchParams.get("userType");
 
   useEffect(() => {
     if (error) {
@@ -59,23 +65,41 @@ const CompleteSignUp = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const payload = {
-      otp: formData.code,
-      phone_number: formData.phone_number,
-      first_name: formData.firstName,
-      last_name: formData.lastName,
-      password: formData.password,
-      confirm_password: formData.confirmPassword,
-    };
+    const payload = userType === "Employer" 
+      ? {
+          otp: formData.code,
+          phone_number: formData.phone_number,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          company_name: formData.companyName,
+          location: formData.location,
+          password: formData.password,
+          confirm_password: formData.confirmPassword,
+        } 
+      : {
+          otp: formData.code,
+          phone_number: formData.phone_number,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          password: formData.password,
+          confirm_password: formData.confirmPassword,
+        };
 
-    const resultAction = await dispatch(completeSignUp(payload));
-    if (completeSignUp.fulfilled.match(resultAction)) {
+    const resultAction = await dispatch(verifyCompleteSignUp(payload));
+    if (verifyCompleteSignUp.fulfilled.match(resultAction)) {
       setMessage("Verification successful. Redirecting...");
       setTimeout(() => {
         router.push('/auth/sign-in');
       }, 2000); 
     } else {
-      setErrors({ general: resultAction.payload as string });
+      const errorPayload = resultAction.payload as any;
+      const normalizedErrors: FormErrors = {};
+      Object.keys(errorPayload).forEach((key) => {
+        normalizedErrors[key as keyof FormErrors] = Array.isArray(errorPayload[key])
+          ? errorPayload[key][0]
+          : errorPayload[key];
+      });
+      setErrors(normalizedErrors);
     }
   };
 
@@ -158,6 +182,31 @@ const CompleteSignUp = () => {
       onChange: () => {},
     },
   ];
+
+  if (userType === "Employer") {
+    fields.push(
+      {
+        id: "companyName",
+        label: "Company Name",
+        type: "text",
+        placeholder: "Company name",
+        value: formData.companyName,
+        required: true,
+        onChange: handleChange,
+        error: errors.company_name,
+      },
+      {
+        id: "location",
+        label: "Location",
+        type: "text",
+        placeholder: "Location",
+        value: formData.location,
+        required: true,
+        onChange: handleChange,
+        error: errors.location,
+      }
+    );
+  }
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

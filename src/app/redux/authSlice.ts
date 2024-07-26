@@ -63,6 +63,34 @@ interface VerifyOTPPayload {
   phone_number?: string;
 }
 
+interface VerifyCompleteSignUpPayload {
+  otp: string;
+  phone_number: string;
+  first_name: string;
+  last_name: string;
+  password: string;
+  confirm_password: string;
+  company_name?: string;
+  location?: string;
+}
+
+export const verifyCompleteSignUp = createAsyncThunk(
+  "auth/verifyCompleteSignUp",
+  async (payload: VerifyCompleteSignUpPayload, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.post(`${API_URL}/api/user/verify/`, payload);
+
+      if (response.status !== 200) {
+        const errorData = response.data;
+        return rejectWithValue(errorData);
+      }
+
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (payload: LoginPayload, { rejectWithValue }) => {
@@ -130,6 +158,26 @@ export const verifyOTP = createAsyncThunk(
       const response = await apiClient.post(`${API_URL}/api/user/verify/`, {
         email: payload.email,
         otp: payload.otp,
+      });
+
+      if (response.status !== 200) {
+        const errorData = response.data;
+        return rejectWithValue(errorData);
+      }
+
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+export const createWhatsapp = createAsyncThunk(
+  "auth/createWhatsapp",
+  async (payload: SignUpPayload, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.post(`${API_URL}/api/signup/whatsapp/`, {
+        phone_number: payload.phone_number,
+        user_type: payload.user_type,
       });
 
       if (response.status !== 200) {
@@ -262,6 +310,17 @@ const authSlice = createSlice({
         state.user = action.payload.user;
       })
       .addCase(completeSignUp.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(createWhatsapp.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(createWhatsapp.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(createWhatsapp.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });
