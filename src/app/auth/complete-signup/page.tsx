@@ -64,7 +64,9 @@ const CompleteSignUp = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setErrors({});
+    setMessage("");
+  
     const payload = userType === "Employer" 
       ? {
           otp: formData.code,
@@ -84,7 +86,7 @@ const CompleteSignUp = () => {
           password: formData.password,
           confirm_password: formData.confirmPassword,
         };
-
+  
     const resultAction = await dispatch(verifyCompleteSignUp(payload));
     if (verifyCompleteSignUp.fulfilled.match(resultAction)) {
       setMessage("Verification successful. Redirecting...");
@@ -93,15 +95,27 @@ const CompleteSignUp = () => {
       }, 2000); 
     } else {
       const errorPayload = resultAction.payload as any;
+      console.error("Error payload:", errorPayload); 
+  
       const normalizedErrors: FormErrors = {};
-      Object.keys(errorPayload).forEach((key) => {
-        normalizedErrors[key as keyof FormErrors] = Array.isArray(errorPayload[key])
-          ? errorPayload[key][0]
-          : errorPayload[key];
-      });
+      if (errorPayload.otp) {
+        normalizedErrors.code = "Invalid OTP. Please check and try again.";
+      } else {
+        Object.keys(errorPayload).forEach((key) => {
+          if (Array.isArray(errorPayload[key])) {
+            normalizedErrors[key as keyof FormErrors] = errorPayload[key][0];
+          } else {
+            normalizedErrors[key as keyof FormErrors] = errorPayload[key];
+          }
+        });
+      }
+      
+      console.log("Normalized Errors:", normalizedErrors); 
       setErrors(normalizedErrors);
     }
   };
+  
+  
 
   const handleResend = async () => {
     const payload = {

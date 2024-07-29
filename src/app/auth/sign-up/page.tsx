@@ -98,17 +98,22 @@ const SignUpPage = () => {
         user_type: userType,
       };
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/signup/whatsapp/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/signup/whatsapp/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       if (response.ok) {
         console.log("WhatsApp sign-up initiated");
-        router.push(`/auth/complete-signup?phone=${phoneNumber}&userType=${userType}`);
+        router.push(
+          `/auth/complete-signup?phone=${phoneNumber}&userType=${userType}`
+        );
       } else {
         const errorData = await response.json();
         console.error("Error initiating WhatsApp sign-up:", errorData);
@@ -125,7 +130,8 @@ const SignUpPage = () => {
     const payload = {
       first_name: formData.firstName,
       last_name: formData.lastName,
-      company_name: formData.userType === "Employer" ? formData.companyName : undefined,
+      company_name:
+        formData.userType === "Employer" ? formData.companyName : undefined,
       location: formData.location,
       work_email: formData.userType === "Employer" ? formData.email : undefined,
       email: formData.userType !== "Employer" ? formData.email : undefined,
@@ -137,8 +143,10 @@ const SignUpPage = () => {
 
     const resultAction = await dispatch(signUpUser(payload));
     if (signUpUser.fulfilled.match(resultAction)) {
-      setSuccessMessage("Account created successfully. Check your email for verification code.");
-      router.push(`/auth/confirm-code?email=${formData.email}`); 
+      setSuccessMessage(
+        "Account created successfully. Check your email for verification code."
+      );
+      router.push(`/auth/confirm-code?email=${formData.email}`);
     } else {
       const payload = resultAction.payload as any;
       const normalizedErrors: FormErrors = {};

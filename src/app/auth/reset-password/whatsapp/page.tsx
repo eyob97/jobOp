@@ -12,7 +12,7 @@ interface FormErrors {
   otp?: string;
 }
 
-const ResetPasswordForm = () => {
+const EnterOTPComponent = () => {
   const [formData, setFormData] = useState({
     phone_number: "",
     otp: "",
@@ -22,20 +22,17 @@ const ResetPasswordForm = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const router = useRouter();
   const pathname = usePathname();
-  const [uidb64, token, resetType] = pathname.split("/").slice(-3);
 
   useEffect(() => {
-    if (resetType === "whatsapp") {
-      const urlParams = new URLSearchParams(window.location.search);
-      const phoneNumber = urlParams.get("phone_number");
-      if (phoneNumber) {
-        setFormData((prevData) => ({
-          ...prevData,
-          phone_number: phoneNumber,
-        }));
-      }
+    const urlParams = new URLSearchParams(window.location.search);
+    const phoneNumber = urlParams.get("phone_number");
+    if (phoneNumber) {
+      setFormData((prevData) => ({
+        ...prevData,
+        phone_number: phoneNumber,
+      }));
     }
-  }, [resetType]);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -47,23 +44,16 @@ const ResetPasswordForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const payload = resetType === "whatsapp"
-      ? {
-          phone_number: formData.phone_number,
-          otp: formData.otp,
-          new_password: formData.new_password,
-          confirm_password: formData.confirm_password,
-        }
-      : {
-          uidb64,
-          token,
-          new_password: formData.new_password,
-          confirm_password: formData.confirm_password,
-        };
+    const payload = {
+      phone_number: formData.phone_number,
+      otp: formData.otp,
+      new_password: formData.new_password,
+      confirm_password: formData.confirm_password,
+    };
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/${resetType}-reset-password/`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/whatsapp-reset-password/`,
         {
           method: "POST",
           headers: {
@@ -99,28 +89,27 @@ const ResetPasswordForm = () => {
   };
 
   const fields = [
-    ...(resetType === "whatsapp" ? [
-      {
-        id: "phone_number",
-        label: "Phone Number",
-        type: "text",
-        placeholder: "Phone number",
-        value: formData.phone_number,
-        required: true,
-        onChange: handleChange,
-        error: errors.phone_number,
-      },
-      {
-        id: "otp",
-        label: "OTP",
-        type: "text",
-        placeholder: "Enter OTP",
-        value: formData.otp,
-        required: true,
-        onChange: handleChange,
-        error: errors.otp,
-      },
-    ] : []),
+    {
+      id: "phone_number",
+      label: "Phone Number",
+      type: "text",
+      placeholder: "Phone number",
+      value: formData.phone_number,
+      required: true,
+      onChange: handleChange,
+      error: errors.phone_number,
+      readonly:true
+    },
+    {
+      id: "otp",
+      label: "OTP",
+      type: "text",
+      placeholder: "Enter OTP",
+      value: formData.otp,
+      required: true,
+      onChange: handleChange,
+      error: errors.otp,
+    },
     {
       id: "new_password",
       label: "New Password",
@@ -156,4 +145,4 @@ const ResetPasswordForm = () => {
   );
 };
 
-export default ResetPasswordForm;
+export default EnterOTPComponent;

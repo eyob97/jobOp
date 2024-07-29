@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode } from "react";
+import React, { useState, useEffect } from "react";
 import { Label, TextInput, Button, Checkbox, Card } from "flowbite-react";
 import Select from "react-select";
 import Image from "next/image";
@@ -26,7 +26,7 @@ export interface Field {
 
 interface FormSkeletonProps {
   title: string;
-  subtitle: ReactNode;
+  subtitle: React.ReactNode;
   fields: Field[];
   buttonText: string;
   onSubmit: (e: React.FormEvent) => void;
@@ -35,6 +35,8 @@ interface FormSkeletonProps {
   generalError?: string;
   showResend?: boolean;
   onResend?: () => void;
+  showTabs?: boolean; 
+  initialTab?: string; 
 }
 
 const FormSkeleton: React.FC<FormSkeletonProps> = ({
@@ -48,7 +50,22 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
   generalError,
   showResend = false,
   onResend,
+  showTabs = false, 
+  initialTab = "email", 
 }) => {
+  const [tab, setTab] = useState(initialTab);
+
+  useEffect(() => {
+    setTab(initialTab);
+  }, [initialTab]);
+
+  const updatedFields = fields.filter(field => {
+    if (tab === "email") {
+      return field.id !== "phone";
+    }
+    return field.id !== "email";
+  });
+
   return (
     <Layout>
       <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
@@ -59,6 +76,8 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
             layout="fill"
             objectFit="cover"
             className="absolute inset-0 w-full h-full"
+              loading="lazy"
+              priority
           />
         </div>
         <div className="flex items-start justify-center p-4 md:p-8 overflow-auto">
@@ -67,6 +86,22 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
             <p className="text-base font-normal text-gray-500 mb-4">
               {subtitle}
             </p>
+            {showTabs && (
+              <div className="flex mb-4">
+                <button
+                  className={`px-4 py-2 text-sm ${tab === "email" ? "text-white bg-green-500" : "text-green-500"} rounded-l`}
+                  onClick={() => setTab("email")}
+                >
+                  Email
+                </button>
+                <button
+                  className={`px-4 py-2 text-sm ${tab === "phone" ? "text-white bg-green-500" : "text-green-500"} rounded-r`}
+                  onClick={() => setTab("phone")}
+                >
+                  Phone
+                </button>
+              </div>
+            )}
             {additionalElements}
             {generalError && (
               <div className="text-red-500 mb-4">
@@ -87,7 +122,7 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
               </div>
             )}
             <form onSubmit={onSubmit} className="flex flex-col gap-4">
-              {fields.map((field) => (
+              {updatedFields.map((field) => (
                 <div key={field.id}>
                   <div className="mb-2 block">
                     <Label

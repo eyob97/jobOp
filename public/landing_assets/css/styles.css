@@ -9,6 +9,28 @@ html {
     min-height: 100vh;
     overflow: auto;
 }
+/* Add this CSS in your global styles file or in a CSS module */
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    margin-right: 5px;
+    border-radius: 5px;
+  }
+  
+  .tab.active {
+    background-color: #116034;
+    color: white;
+    border-color: #116034;
+  }
+  
 
 /*--------------------------------------------------------------
 # Header

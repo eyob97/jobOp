@@ -80,7 +80,7 @@ export const verifyCompleteSignUp = createAsyncThunk(
     try {
       const response = await apiClient.post(`${API_URL}/api/user/verify/`, payload);
 
-      if (response.status !== 200) {
+      if (response.status !== 200 && response.status !== 201) {
         const errorData = response.data;
         return rejectWithValue(errorData);
       }
@@ -91,6 +91,7 @@ export const verifyCompleteSignUp = createAsyncThunk(
     }
   }
 );
+
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (payload: LoginPayload, { rejectWithValue }) => {
@@ -139,7 +140,7 @@ export const sendOTP = createAsyncThunk(
     try {
       const response = await apiClient.post(`${API_URL}/api/otp/`, payload);
 
-      if (response.status !== 200) {
+      if (response.status !== 200 && response.status !== 201) {
         const errorData = response.data;
         return rejectWithValue(errorData);
       }
@@ -150,6 +151,7 @@ export const sendOTP = createAsyncThunk(
     }
   }
 );
+
 
 export const verifyOTP = createAsyncThunk(
   "auth/verifyOTP",
