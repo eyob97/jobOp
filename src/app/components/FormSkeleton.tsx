@@ -77,7 +77,6 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
             objectFit="cover"
             className="absolute inset-0 w-full h-full"
               loading="lazy"
-              priority
           />
         </div>
         <div className="flex items-start justify-center p-4 md:p-8 overflow-auto">
