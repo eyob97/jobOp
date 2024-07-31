@@ -1,12 +1,10 @@
-"use client";
-
+"use client"
 import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { Footer } from "flowbite-react";
 
 import Dashboard from "./Dashboard";
-import withAuth from "./withAuth";
 import Header from "./Home";
 import Faqs from "./Faqs";
 import DynamicFooter from "./Footer";
@@ -19,6 +17,7 @@ const ClientHome: React.FC = () => {
   if (isAuthenticated) {
     return <Dashboard />;
   }
+
 
   return (
     <>
@@ -236,13 +235,13 @@ const ClientHome: React.FC = () => {
                     support, and additional resources.
                   </div>
                   <div className="col-lg-4 col-md-6 col-sm-12 mb-2">
-                      <a
-                        href="#"
-                        className="btn btn-warning rounded-more fw-bold text-black w-100"
-                      >
-                        Subscribe
-                      </a>
-                    </div>
+                    <a
+                      href="#"
+                      className="btn btn-warning rounded-more fw-bold text-black w-100"
+                    >
+                      Subscribe
+                    </a>
+                  </div>
                 </div>
               </div>
               <div className="col-sm-12 col-md-6 col-lg-6 position-relative">
@@ -268,4 +267,4 @@ const ClientHome: React.FC = () => {
   );
 };
 
-export default withAuth(ClientHome, { allowUnauthenticatedAccess: true });
+export default ClientHome;

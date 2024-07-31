@@ -1,7 +1,6 @@
-"use client";
-
+"use client"
 import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
@@ -27,7 +26,7 @@ const withAuth = (
       }
     }, [isAuthenticated, isLoading, router]);
 
-    if (isLoading || (!isAuthenticated && !options?.allowUnauthenticatedAccess)) {
+    if (isLoading) {
       return <div>Loading...</div>;
     }
 
