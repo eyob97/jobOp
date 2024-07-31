@@ -3,7 +3,6 @@
 import React, { useState, Suspense } from "react";
 import dynamic from "next/dynamic";
 
-// Dynamically import the components
 const CoverLetterView = dynamic(() => import("../components/CoverLetterView"), {
   ssr: false,
   loading: () => <p>Loading...</p>,
