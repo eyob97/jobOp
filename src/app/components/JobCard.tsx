@@ -30,7 +30,6 @@ const JobCard: React.FC<JobCardProps> = ({ searchCriteria }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("Fetched jobs:", jobs);
   }, [jobs]);
 
   const filteredJobs = jobs.filter((job) => {

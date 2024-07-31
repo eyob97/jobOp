@@ -110,7 +110,6 @@ const SignUpPage = () => {
       );
 
       if (response.ok) {
-        console.log("WhatsApp sign-up initiated");
         router.push(
           `/auth/complete-signup?phone=${phoneNumber}&userType=${userType}`
         );

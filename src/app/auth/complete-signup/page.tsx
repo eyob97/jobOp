@@ -110,7 +110,6 @@ const CompleteSignUp = () => {
         });
       }
       
-      console.log("Normalized Errors:", normalizedErrors); 
       setErrors(normalizedErrors);
     }
   };
