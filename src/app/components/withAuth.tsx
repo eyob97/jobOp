@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
@@ -16,7 +16,7 @@ const withAuth = (
     const router = useRouter();
     const { user, isLoading } = useSelector((state: RootState) => {
       console.log('Redux State:', state); 
-      return state.auth;
+      return state.auth || { user: null, isLoading: false };
     });
 
     useEffect(() => {
