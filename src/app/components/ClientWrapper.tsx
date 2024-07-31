@@ -12,9 +12,7 @@ const ClientWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     <Provider store={store}>
       <Flowbite theme={{ theme: flowbiteTheme }}>
         <InitializeUser />
-        <Suspense fallback={<div>Loading...</div>}>
           {children}
-        </Suspense>
       </Flowbite>
     </Provider>
   );

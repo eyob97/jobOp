@@ -7,6 +7,7 @@ import Image from "next/image";
 import Layout from "../layout";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import Link from "next/link";
 
 export interface Field {
   id: string;
@@ -21,7 +22,15 @@ export interface Field {
   error?: string;
   maxLength?: number;
   pattern?: string;
-  inputMode?: 'search' | 'text' | 'none' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal';
+  inputMode?:
+    | "search"
+    | "text"
+    | "none"
+    | "tel"
+    | "url"
+    | "email"
+    | "numeric"
+    | "decimal";
 }
 
 interface FormSkeletonProps {
@@ -35,8 +44,8 @@ interface FormSkeletonProps {
   generalError?: string;
   showResend?: boolean;
   onResend?: () => void;
-  showTabs?: boolean; 
-  initialTab?: string; 
+  showTabs?: boolean;
+  initialTab?: string;
 }
 
 const FormSkeleton: React.FC<FormSkeletonProps> = ({
@@ -50,8 +59,8 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
   generalError,
   showResend = false,
   onResend,
-  showTabs = false, 
-  initialTab = "email", 
+  showTabs = false,
+  initialTab = "email",
 }) => {
   const [tab, setTab] = useState(initialTab);
 
@@ -59,7 +68,7 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
     setTab(initialTab);
   }, [initialTab]);
 
-  const updatedFields = fields.filter(field => {
+  const updatedFields = fields.filter((field) => {
     if (tab === "email") {
       return field.id !== "phone";
     }
@@ -76,7 +85,7 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
             layout="fill"
             objectFit="cover"
             className="absolute inset-0 w-full h-full"
-              loading="lazy"
+            loading="lazy"
           />
         </div>
         <div className="flex items-start justify-center p-4 md:p-8 overflow-auto">
@@ -88,13 +97,21 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
             {showTabs && (
               <div className="flex mb-4">
                 <button
-                  className={`px-4 py-2 text-sm ${tab === "email" ? "text-white bg-green-500" : "text-green-500"} rounded-l`}
+                  className={`px-4 py-2 text-sm ${
+                    tab === "email"
+                      ? "text-white bg-green-500"
+                      : "text-green-500"
+                  } rounded-l`}
                   onClick={() => setTab("email")}
                 >
                   Email
                 </button>
                 <button
-                  className={`px-4 py-2 text-sm ${tab === "phone" ? "text-white bg-green-500" : "text-green-500"} rounded-r`}
+                  className={`px-4 py-2 text-sm ${
+                    tab === "phone"
+                      ? "text-white bg-green-500"
+                      : "text-green-500"
+                  } rounded-r`}
                   onClick={() => setTab("phone")}
                 >
                   Phone
@@ -154,10 +171,15 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
                           borderRadius: "1rem",
                           borderColor: field.error ? "red" : undefined,
                         }}
-                        dropdownStyle={{ backgroundColor: "white", color: "black" }}
+                        dropdownStyle={{
+                          backgroundColor: "white",
+                          color: "black",
+                        }}
                       />
                       {field.error && (
-                        <p className="mt-1 text-sm text-red-500">{field.error}</p>
+                        <p className="mt-1 text-sm text-red-500">
+                          {field.error}
+                        </p>
                       )}
                     </>
                   ) : (
@@ -173,10 +195,14 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
                         maxLength={field.maxLength}
                         pattern={field.pattern}
                         inputMode={field.inputMode}
-                        className={`w-full bg-white rounded-2xl border ${field.error ? 'border-red-500' : 'border-gray-300'}`}
+                        className={`w-full bg-white rounded-2xl border ${
+                          field.error ? "border-red-500" : "border-gray-300"
+                        }`}
                       />
                       {field.error && (
-                        <p className="mt-1 text-sm text-red-500">{field.error}</p>
+                        <p className="mt-1 text-sm text-red-500">
+                          {field.error}
+                        </p>
                       )}
                     </>
                   )}
@@ -196,6 +222,11 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
                 {buttonText}
               </Button>
             </form>
+            <Link href="/" legacyBehavior>
+              <a className="mt-4 px-6 py-2 text-green-600 bg-gray-50 rounded-full hover:bg-white-700">
+                Check out our landing page!
+              </a>
+            </Link>
           </Card>
         </div>
       </div>
