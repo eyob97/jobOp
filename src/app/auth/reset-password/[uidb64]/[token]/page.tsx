@@ -19,7 +19,6 @@ const ResetPasswordForm = () => {
   const router = useRouter();
   const pathname = usePathname();
   
-  // Assuming your URL pattern is something like /reset-password/[uidb64]/[token]
   const pathParts = pathname.split("/");
   const uidb64 = pathParts[pathParts.length - 2];
   const token = pathParts[pathParts.length - 1];

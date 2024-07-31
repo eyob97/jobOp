@@ -15,11 +15,13 @@ const withAuth = (
 ) => {
   const Wrapper = (props: any) => {
     const router = useRouter();
-    const { isAuthenticated, isLoading } = useSelector(
-      (state: RootState) => state.auth
-    );
+    const { isAuthenticated, isLoading } = useSelector((state: RootState) => {
+      console.log('Redux State:', state); 
+      return state.auth;
+    });
 
     useEffect(() => {
+      console.log('Auth Status:', { isAuthenticated, isLoading }); 
       if (!isLoading && !isAuthenticated && !options?.allowUnauthenticatedAccess) {
         router.replace("/auth/sign-in");
       }

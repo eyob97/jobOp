@@ -78,7 +78,10 @@ export const verifyCompleteSignUp = createAsyncThunk(
   "auth/verifyCompleteSignUp",
   async (payload: VerifyCompleteSignUpPayload, { rejectWithValue }) => {
     try {
-      const response = await apiClient.post(`${API_URL}/api/user/verify/`, payload);
+      const response = await apiClient.post(
+        `${API_URL}/api/user/verify/`,
+        payload
+      );
 
       if (response.status !== 200 && response.status !== 201) {
         const errorData = response.data;
@@ -151,7 +154,6 @@ export const sendOTP = createAsyncThunk(
     }
   }
 );
-
 
 export const verifyOTP = createAsyncThunk(
   "auth/verifyOTP",
@@ -242,6 +244,7 @@ const authSlice = createSlice({
       localStorage.removeItem("token");
       localStorage.removeItem("userId");
     },
+
     setUser(
       state,
       action: PayloadAction<{ user: AuthState["user"]; token: string }>
@@ -329,5 +332,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, setUser } = authSlice.actions;
+export const { setUser, logout } = authSlice.actions;
 export default authSlice.reducer;

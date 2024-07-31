@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { initializeApiClient } from "@/app/apiClient";
+import { initializeApiClient } from "../apiClient";
 import { setUser } from "./authSlice";
 
 const InitializeUser = () => {

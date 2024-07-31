@@ -224,7 +224,7 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
             </form>
             <Link href="/" legacyBehavior>
               <a className="mt-4 px-6 py-2 text-green-600 bg-gray-50 rounded-full hover:bg-white-700">
-                Check out our landing page!
+                Check details!
               </a>
             </Link>
           </Card>

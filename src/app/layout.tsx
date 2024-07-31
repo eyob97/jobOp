@@ -1,4 +1,3 @@
-"use client";
 
 import React, { ReactNode } from "react";
 import { Flowbite, ThemeModeScript } from "flowbite-react";

@@ -7,7 +7,6 @@ import { fetchFiles } from "../redux/letterSlice";
 import { Button, Card, Dropdown } from "flowbite-react";
 import { HiDotsVertical, HiMail } from "react-icons/hi";
 import { Document, Page, pdfjs } from "react-pdf";
-import { useRouter } from "next/navigation"; // Import useRouter
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -43,7 +42,7 @@ const Documents: React.FC<{ onGenerate: () => void }> = ({ onGenerate }) => {
           type="submit"
           className="rounded-full text-black"
           style={{ backgroundColor: "#FFC424", color: "#000" }}
-          onClick={onGenerate} // Call onGenerate when button is clicked
+          onClick={onGenerate} 
         >
           Generate
         </Button>
