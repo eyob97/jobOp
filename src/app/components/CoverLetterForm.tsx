@@ -320,18 +320,7 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewCoverLetter }) 
           </div>
         )}
       </div>
-      <div className="mt-8 w-full">
-        <h2 className="text-3xl font-bold mb-4">My Files</h2>
-        <ul>
-          {files.map((file) => (
-            <li key={file.id} className="mb-2">
-              <a href={file.file} target="_blank" rel="noopener noreferrer" className="text-blue-500">
-                {file.file_name}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
+
     </div>
   );
 };
