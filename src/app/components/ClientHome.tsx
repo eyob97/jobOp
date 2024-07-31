@@ -12,11 +12,11 @@ import Newsletter from "./Newsletter";
 import Testimonials from "./Testimonials";
 
 const ClientHome: React.FC = () => {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user } = useSelector((state: RootState) => state.auth || { user: null });
 
   if (user) {
     return <Dashboard />;
-  } else if(!user) {
+  } else {
     return (
       <>
         <Header />
