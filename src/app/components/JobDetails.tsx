@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
 import {
   FaMapMarkerAlt,
   FaCalendarAlt,
@@ -17,6 +16,7 @@ import { MapTrifold, CalendarBlank, Timer } from "phosphor-react";
 import CustomButton from "./CustomButton";
 import JobCard from "./JobCard";
 import ApplyModal from "./ApplyJobModal";
+import { RootState } from "../redux/store";
 
 const JobDetails: React.FC = () => {
   const job = useSelector((state: RootState) => state.jobs.selectedJob);

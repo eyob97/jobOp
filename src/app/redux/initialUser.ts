@@ -1,7 +1,9 @@
+"use client";
+
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setUser } from "@/app/redux/authSlice";
 import { initializeApiClient } from "@/app/apiClient";
+import { setUser } from "./authSlice";
 
 const InitializeUser = () => {
   const dispatch = useDispatch();

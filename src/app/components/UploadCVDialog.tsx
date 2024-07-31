@@ -178,7 +178,6 @@ export function UploadCVCard() {
         {view === "upload" && renderUploadView()}
         {view === "create" && renderCreateView()}
         {view === "profile" && renderProfileView()}
-        {view === "profileExists" && <FilterDashboard />}
       </Card>
     </div>
   );

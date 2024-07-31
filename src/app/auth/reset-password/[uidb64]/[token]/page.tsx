@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import FormSkeleton from "@/app/components/FormSkeleton";
 
@@ -8,34 +8,21 @@ interface FormErrors {
   general?: string;
   new_password?: string;
   confirm_password?: string;
-  phone_number?: string;
-  otp?: string;
 }
 
 const ResetPasswordForm = () => {
   const [formData, setFormData] = useState({
-    phone_number: "",
-    otp: "",
     new_password: "",
     confirm_password: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const router = useRouter();
   const pathname = usePathname();
-  const [uidb64, token, resetType] = pathname.split("/").slice(-3);
-
-  useEffect(() => {
-    if (resetType === "whatsapp") {
-      const urlParams = new URLSearchParams(window.location.search);
-      const phoneNumber = urlParams.get("phone_number");
-      if (phoneNumber) {
-        setFormData((prevData) => ({
-          ...prevData,
-          phone_number: phoneNumber,
-        }));
-      }
-    }
-  }, [resetType]);
+  
+  // Assuming your URL pattern is something like /reset-password/[uidb64]/[token]
+  const pathParts = pathname.split("/");
+  const uidb64 = pathParts[pathParts.length - 2];
+  const token = pathParts[pathParts.length - 1];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -47,23 +34,16 @@ const ResetPasswordForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const payload = resetType === "whatsapp"
-      ? {
-          phone_number: formData.phone_number,
-          otp: formData.otp,
-          new_password: formData.new_password,
-          confirm_password: formData.confirm_password,
-        }
-      : {
-          uidb64,
-          token,
-          new_password: formData.new_password,
-          confirm_password: formData.confirm_password,
-        };
+    const payload = {
+      uidb64,
+      token,
+      new_password: formData.new_password,
+      confirm_password: formData.confirm_password,
+    };
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/${resetType}-reset-password/`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/reset-password/`,
         {
           method: "POST",
           headers: {
@@ -74,6 +54,7 @@ const ResetPasswordForm = () => {
       );
 
       const responseText = await response.text();
+
       try {
         const data = JSON.parse(responseText);
         if (response.ok) {
@@ -84,8 +65,6 @@ const ResetPasswordForm = () => {
             general: data.message || "Failed to reset password",
             new_password: data.new_password,
             confirm_password: data.confirm_password,
-            phone_number: data.phone_number,
-            otp: data.otp,
           });
         }
       } catch (parseError) {
@@ -99,28 +78,6 @@ const ResetPasswordForm = () => {
   };
 
   const fields = [
-    ...(resetType === "whatsapp" ? [
-      {
-        id: "phone_number",
-        label: "Phone Number",
-        type: "text",
-        placeholder: "Phone number",
-        value: formData.phone_number,
-        required: true,
-        onChange: handleChange,
-        error: errors.phone_number,
-      },
-      {
-        id: "otp",
-        label: "OTP",
-        type: "text",
-        placeholder: "Enter OTP",
-        value: formData.otp,
-        required: true,
-        onChange: handleChange,
-        error: errors.otp,
-      },
-    ] : []),
     {
       id: "new_password",
       label: "New Password",

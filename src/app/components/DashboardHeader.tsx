@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from "react";
 import {
   Avatar,
   Button,
@@ -18,7 +19,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/authSlice";
 import { AppDispatch, RootState } from "../redux/store";
 
-const DashboardHeader = () => {
+interface DashboardHeaderProps {
+  onTabChange: (tab: string) => void;
+  activeTab: string;
+}
+
+const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onTabChange, activeTab }) => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const user = useSelector((state: RootState) => state.auth?.user);
@@ -43,17 +49,38 @@ const DashboardHeader = () => {
         <nav id="navbar" className="navbar">
           <ul>
             <li>
-              <a className="nav-link scrollto active" href="#find-job">
-                Find Job
+              <a
+                className={`nav-link scrollto ${activeTab === 'filter' ? 'active' : ''}`}
+                href="#find-job"
+                onClick={() => onTabChange('filter')}
+              >
+                Filter Dashboard
               </a>
             </li>
             <li>
-              <a className="nav-link scrollto" href="#documents">
+              <a
+                className={`nav-link scrollto ${activeTab === 'upload' ? 'active' : ''}`}
+                href="#upload-cv"
+                onClick={() => onTabChange('upload')}
+              >
+                Upload CV
+              </a>
+            </li>
+            <li>
+              <a
+                className={`nav-link scrollto ${activeTab === 'documents' ? 'active' : ''}`}
+                href="#documents"
+                onClick={() => onTabChange('documents')}
+              >
                 Documents
               </a>
             </li>
             <li>
-              <a className="nav-link scrollto" href="#applications">
+              <a
+                className={`nav-link scrollto ${activeTab === 'applications' ? 'active' : ''}`}
+                href="#applications"
+                onClick={() => onTabChange('applications')}
+              >
                 Applications
               </a>
             </li>
@@ -75,7 +102,6 @@ const DashboardHeader = () => {
             >
               <DropdownHeader className="overflow-visible">
                 <span className="block text-sm">
-                  {" "}
                   {user.firstName} {user.lastName}
                 </span>
                 <span className="block truncate text-sm font-medium">
@@ -83,7 +109,6 @@ const DashboardHeader = () => {
                 </span>
               </DropdownHeader>
               <DropdownItem>Upload photo</DropdownItem>
-
               <DropdownDivider />
               <DropdownItem onClick={handleLogout}>Sign out</DropdownItem>
             </Dropdown>
@@ -102,14 +127,30 @@ const DashboardHeader = () => {
       <NavbarCollapse className="lg:hidden">
         <NavbarLink
           href="#find-job"
-          className="text-white hover:underline active"
+          className={`text-white hover:underline ${activeTab === 'filter' ? 'active' : ''}`}
+          onClick={() => onTabChange('filter')}
         >
-          Find Job
+          Filter Dashboard
         </NavbarLink>
-        <NavbarLink href="#documents" className="text-white hover:underline">
+        <NavbarLink
+          href="#upload-cv"
+          className={`text-white hover:underline ${activeTab === 'upload' ? 'active' : ''}`}
+          onClick={() => onTabChange('upload')}
+        >
+          Upload CV
+        </NavbarLink>
+        <NavbarLink
+          href="#documents"
+          className={`text-white hover:underline ${activeTab === 'documents' ? 'active' : ''}`}
+          onClick={() => onTabChange('documents')}
+        >
           Documents
         </NavbarLink>
-        <NavbarLink href="#applications" className="text-white hover:underline">
+        <NavbarLink
+          href="#applications"
+          className={`text-white hover:underline ${activeTab === 'applications' ? 'active' : ''}`}
+          onClick={() => onTabChange('applications')}
+        >
           Applications
         </NavbarLink>
       </NavbarCollapse>

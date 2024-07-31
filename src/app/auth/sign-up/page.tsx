@@ -3,13 +3,13 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { signUpUser } from "@/app/redux/authSlice";
 import FormSkeleton, { Field } from "@/app/components/FormSkeleton";
 import PhoneNumberDialog from "@/app/components/PhoneNumberDialog";
 import "react-phone-input-2/lib/style.css";
-import { RootState, AppDispatch } from "@/app/redux/store";
 import { Button } from "flowbite-react";
 import Link from "next/link";
+import { signUpUser } from "@/app/redux/authSlice";
+import { AppDispatch, RootState } from "@/app/redux/store";
 
 interface FormData {
   firstName: string;

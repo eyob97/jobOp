@@ -4,9 +4,9 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser, sendOTP } from "@/app/redux/authSlice";
 import FormSkeleton from "@/app/components/FormSkeleton";
-import { RootState, AppDispatch } from "@/app/redux/store";
+import { AppDispatch, RootState } from "@/app/redux/store";
+import { loginUser, sendOTP } from "@/app/redux/authSlice";
 
 interface FormErrors {
   general?: string;
@@ -24,7 +24,9 @@ const SignInPage = () => {
 
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { isLoading, error, token } = useSelector((state: RootState) => state.auth);
+  const { isLoading, error, token } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   useEffect(() => {
     if (error) {
@@ -43,23 +45,27 @@ const SignInPage = () => {
     e.preventDefault();
     const resultAction = await dispatch(loginUser(formData));
     if (loginUser.fulfilled.match(resultAction)) {
-      router.push("/pages/upload-cv");
+      router.push("/dashboard");
     } else {
       const payload = resultAction.payload as any;
       if (payload?.inactive) {
         setErrors({ general: payload.inactive[0] });
         setShowResend(true);
       } else {
-        setErrors(payload || { general: "An error occurred. Please try again later." });
+        setErrors(
+          payload || { general: "An error occurred. Please try again later." }
+        );
       }
     }
   };
 
   const handleResend = async () => {
-    const resultAction = await dispatch(sendOTP({
-      email: formData.username,
-      operation_type: "VERIFICATION",
-    }));
+    const resultAction = await dispatch(
+      sendOTP({
+        email: formData.username,
+        operation_type: "VERIFICATION",
+      })
+    );
     if (sendOTP.fulfilled.match(resultAction)) {
       router.push(`/auth/enter-code?email=${formData.username}`);
     } else {

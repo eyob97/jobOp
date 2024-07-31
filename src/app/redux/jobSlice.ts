@@ -1,4 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import apiClient from "../apiClient";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 interface Job {
   id: number;
@@ -16,91 +19,39 @@ interface Job {
 interface JobState {
   jobs: Job[];
   selectedJob: Job | null;
+  isLoading: boolean;
+  error: string | null;
 }
 
 const initialState: JobState = {
-  jobs: [
-    {
-      id: 1,
-      title: "Call-center support specialist",
-      type: "Full-time",
-      salary: "NGN 75,000 - 150,000",
-      description: "Lorem ipsum dolor sit amet consectetur.",
-      company: "Google Inc.",
-      location: "Abuja, Nigeria",
-      companyLogo:
-        "https://lh3.googleusercontent.com/MssYWuI7KeRbQGF6o0f-Bncx5bX6HtzHHE8Kn2reQNGodTU_lQRJsJnCNIflaso0NrsOhzZAEWDuOa9TKSWGgHCxy6gSvQFaQtYo4OY3Uyr_F0TlQpA",
-      postedDate: "2021-06-14",
-      expiryDate: "2021-08-14",
-    },
-    {
-      id: 2,
-      title: "Part-time Call-center support specialist",
-      type: "Part-time",
-      salary: "NGN 75,000 - 150,000",
-      description: "Lorem ipsum dolor sit amet consectetur.",
-      company: "Google Inc.",
-      location: "Abuja, Nigeria",
-      companyLogo:
-        "https://lh3.googleusercontent.com/MssYWuI7KeRbQGF6o0f-Bncx5bX6HtzHHE8Kn2reQNGodTU_lQRJsJnCNIflaso0NrsOhzZAEWDuOa9TKSWGgHCxy6gSvQFaQtYo4OY3Uyr_F0TlQpA",
-      postedDate: "2021-06-14",
-      expiryDate: "2021-08-14",
-    },
-    {
-      id: 3,
-      title: "Call-center support specialist",
-      type: "Part-time",
-      salary: "NGN 75,000 - 150,000",
-      description: "Lorem ipsum dolor sit amet consectetur.",
-      company: "Google Inc.",
-      location: "Abuja, Nigeria",
-      companyLogo:
-        "https://lh3.googleusercontent.com/MssYWuI7KeRbQGF6o0f-Bncx5bX6HtzHHE8Kn2reQNGodTU_lQRJsJnCNIflaso0NrsOhzZAEWDuOa9TKSWGgHCxy6gSvQFaQtYo4OY3Uyr_F0TlQpA",
-      postedDate: "2021-06-14",
-      expiryDate: "2021-08-14",
-    },
-    {
-      id: 4,
-      title: "Call-center support specialist",
-      type: "Part-time",
-      salary: "NGN 75,000 - 150,000",
-      description: "Lorem ipsum dolor sit amet consectetur.",
-      company: "Google Inc.",
-      location: "Abuja, Nigeria",
-      companyLogo:
-        "https://lh3.googleusercontent.com/MssYWuI7KeRbQGF6o0f-Bncx5bX6HtzHHE8Kn2reQNGodTU_lQRJsJnCNIflaso0NrsOhzZAEWDuOa9TKSWGgHCxy6gSvQFaQtYo4OY3Uyr_F0TlQpA",
-      postedDate: "2021-06-14",
-      expiryDate: "2021-08-14",
-    },
-    {
-      id: 5,
-      title: "Call-center support specialist",
-      type: "Full-time",
-      salary: "NGN 75,000 - 150,000",
-      description: "Lorem ipsum dolor sit amet consectetur.",
-      company: "Google Inc.",
-      location: "Abuja, Nigeria",
-      companyLogo:
-        "https://lh3.googleusercontent.com/MssYWuI7KeRbQGF6o0f-Bncx5bX6HtzHHE8Kn2reQNGodTU_lQRJsJnCNIflaso0NrsOhzZAEWDuOa9TKSWGgHCxy6gSvQFaQtYo4OY3Uyr_F0TlQpA",
-      postedDate: "2021-06-14",
-      expiryDate: "2021-08-14",
-    },
-    {
-      id: 6,
-      title: "Test Call-center support specialist",
-      type: "Full-time",
-      salary: "NGN 75,000 - 150,000",
-      description: "Lorem ipsum dolor sit amet consectetur.",
-      company: "Google Inc.",
-      location: "Abuja, Nigeria",
-      companyLogo:
-        "https://lh3.googleusercontent.com/MssYWuI7KeRbQGF6o0f-Bncx5bX6HtzHHE8Kn2reQNGodTU_lQRJsJnCNIflaso0NrsOhzZAEWDuOa9TKSWGgHCxy6gSvQFaQtYo4OY3Uyr_F0TlQpA",
-      postedDate: "2021-06-14",
-      expiryDate: "2021-08-14",
-    },
-  ],
+  jobs: [],
   selectedJob: null,
+  isLoading: false,
+  error: null,
 };
+
+export const fetchJobs = createAsyncThunk(
+  "jobs/fetchJobs",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.get(`${API_URL}/api/jobs/`);
+      return response.data.map((job: any) => ({
+        id: job.id,
+        title: job.job_title,
+        type: job.employment_type,
+        salary: job.min_salary && job.max_salary ? `${job.min_salary} - ${job.max_salary}` : "N/A",
+        description: job.description,
+        company: job.company, 
+        location: job.location,
+        companyLogo: "https://lh3.googleusercontent.com/MssYWuI7KeRbQGF6o0f-Bncx5bX6HtzHHE8Kn2reQNGodTU_lQRJsJnCNIflaso0NrsOhzZAEWDuOa9TKSWGgHCxy6gSvQFaQtYo4OY3Uyr_F0TlQpA",
+        postedDate: job.created_date,
+        expiryDate: job.expiry_date,
+      }));
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
 const jobSlice = createSlice({
   name: "jobs",
@@ -113,6 +64,21 @@ const jobSlice = createSlice({
     clearSelectedJob(state) {
       state.selectedJob = null;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchJobs.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchJobs.fulfilled, (state, action: PayloadAction<Job[]>) => {
+        state.isLoading = false;
+        state.jobs = action.payload;
+      })
+      .addCase(fetchJobs.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 

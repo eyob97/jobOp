@@ -4,13 +4,9 @@ import { useState, ChangeEvent, useEffect } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createJobSeekerProfile,
-  updateProfile,
-  clearError,
-  fetchJobSeekerData,
-} from "@/app/redux/resumeSlice";
-import { RootState, AppDispatch } from "@/app/redux/store";
+import { AppDispatch, RootState } from "../redux/store";
+import { clearError, createJobSeekerProfile, fetchJobSeekerData, updateProfile } from "../redux/resumeSlice";
+
 
 interface EmploymentHistory {
   company_name: string;
@@ -365,22 +361,6 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
         </div>
         <div className="mb-4">
           <Label
-            htmlFor="address"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Address
-          </Label>
-          <TextInput
-            id="address"
-            type="text"
-            className="mt-1 w-full"
-            value={profileData.address || ""}
-            onChange={handleProfileChange}
-          />
-          {errors.address && <p className="text-red-500">{errors.address}</p>}
-        </div>
-        <div className="mb-4">
-          <Label
             htmlFor="profile_description"
             className="block text-sm font-medium text-gray-700"
           >
@@ -561,7 +541,7 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
             {profileData.employment_history.length > 1 && (
               <Button
                 type="button"
-                color="failure"
+                color="text-black"
                 className="mb-4"
                 onClick={() => handleRemoveJob(index)}
               >

@@ -98,7 +98,7 @@ const EnterOTPComponent = () => {
       required: true,
       onChange: handleChange,
       error: errors.phone_number,
-      readonly:true
+      readOnly: true
     },
     {
       id: "otp",
