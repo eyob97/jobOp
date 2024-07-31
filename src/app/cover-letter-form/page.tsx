@@ -1,18 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
-import CoverLetterView from "../components/CoverLetterView";
-import CoverLetterForm from "../components/CoverLetterForm";
+import React, { useState, Suspense } from "react";
+import dynamic from "next/dynamic";
 
-const GenerateCoverLetterPage = () => {
+// Dynamically import the components
+const CoverLetterView = dynamic(() => import("../components/CoverLetterView"), {
+  ssr: false,
+  loading: () => <p>Loading...</p>,
+});
+
+const CoverLetterForm = dynamic(() => import("../components/CoverLetterForm"), {
+  ssr: false,
+  loading: () => <p>Loading...</p>,
+});
+
+const GenerateCoverLetterPage: React.FC = () => {
   const [viewCoverLetter, setViewCoverLetter] = useState(false);
 
   return (
     <div>
       {viewCoverLetter ? (
-        <CoverLetterView onBack={() => setViewCoverLetter(false)} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <CoverLetterView onBack={() => setViewCoverLetter(false)} />
+        </Suspense>
       ) : (
-        <CoverLetterForm onViewCoverLetter={() => setViewCoverLetter(true)} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <CoverLetterForm onViewCoverLetter={() => setViewCoverLetter(true)} />
+        </Suspense>
       )}
     </div>
   );

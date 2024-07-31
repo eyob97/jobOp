@@ -1,9 +1,9 @@
+"use client";
 
-import Script from "next/script";
-import { ReactNode, Suspense, useEffect } from "react";
+import React, { ReactNode } from "react";
 import { Flowbite, ThemeModeScript } from "flowbite-react";
+import Script from "next/script";
 import "./globals.css";
-
 import ClientWrapper from "./components/ClientWrapper";
 
 interface LayoutProps {
