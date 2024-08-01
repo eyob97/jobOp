@@ -31,6 +31,7 @@ export interface Field {
     | "email"
     | "numeric"
     | "decimal";
+  customComponent?: React.ReactNode;
 }
 
 interface FormSkeletonProps {
@@ -148,7 +149,9 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
                       {field.label}
                     </Label>
                   </div>
-                  {field.type === "select" ? (
+                  {field.customComponent ? (
+                    field.customComponent
+                  ) : field.type === "select" ? (
                     <Select
                       id={field.id}
                       options={field.options}
