@@ -10,6 +10,7 @@ import { Button } from "flowbite-react";
 import Link from "next/link";
 import { signUpUser } from "@/app/redux/authSlice";
 import { AppDispatch, RootState } from "@/app/redux/store";
+import { CountryDropdown } from "react-country-region-selector";
 
 interface FormData {
   firstName: string;
@@ -29,19 +30,13 @@ interface FormErrors {
   last_name?: string;
   company_name?: string;
   work_email?: string;
-  email?: string;
   location?: string;
-  phone_number?: string;
+  email?: string;
+  phone?: string;
   password?: string;
   confirm_password?: string;
   user_type?: string;
 }
-
-const countryOptions = [
-  { value: "poland", label: "Poland" },
-  { value: "usa", label: "USA" },
-  { value: "germany", label: "Germany" },
-];
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState<FormData>({
@@ -76,18 +71,20 @@ const SignUpPage = () => {
     });
   };
 
-  const handleLocationChange = (selectedOption: any) => {
+  const handleLocationChange = (val: string) => {
     setFormData({
       ...formData,
-      location: selectedOption?.value || "",
+      location: val,
     });
   };
+
   const handlePhoneNumberChange = (value: string) => {
     setFormData({
       ...formData,
       phone: `+${value}`,
     });
   };
+
   const handlePhoneNumberSubmit = async (
     phoneNumber: string,
     userType: string
@@ -183,13 +180,19 @@ const SignUpPage = () => {
     {
       id: "location",
       label: "Location",
-      type: "select",
+      type: "custom",
       placeholder: "Select your country",
       value: formData.location,
-      required: formData.userType === "Employer",
+      required: true,
       onChange: handleLocationChange,
-      options: countryOptions,
       error: errors.location,
+      customComponent: (
+        <CountryDropdown
+          value={formData.location}
+          onChange={(val) => handleLocationChange(val)}
+          classes="form-control"
+        />
+      ),
     },
     {
       id: "email",
@@ -209,7 +212,7 @@ const SignUpPage = () => {
       value: formData.phone,
       required: true,
       onChange: handlePhoneNumberChange,
-      error: errors.phone_number,
+      error: errors.phone,
     },
     {
       id: "password",

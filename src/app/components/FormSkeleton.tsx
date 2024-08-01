@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { Label, TextInput, Button, Checkbox, Card } from "flowbite-react";
 import Select from "react-select";
 import Image from "next/image";
@@ -31,7 +31,7 @@ export interface Field {
     | "email"
     | "numeric"
     | "decimal";
-  customComponent?: React.ReactNode;
+    customComponent?: React.ReactNode;
 }
 
 interface FormSkeletonProps {
@@ -44,10 +44,8 @@ interface FormSkeletonProps {
   additionalElements?: React.ReactNode;
   generalError?: string;
   showResend?: boolean;
-  onResend?: () => void;
-  showTabs?: boolean;
-  initialTab?: string;
-}
+  onResend?: () => void;  showTabs?: boolean;
+  initialTab?: string;}
 
 const FormSkeleton: React.FC<FormSkeletonProps> = ({
   title,
@@ -59,11 +57,9 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
   additionalElements,
   generalError,
   showResend = false,
-  onResend,
-  showTabs = false,
+  onResend,  showTabs = false,
   initialTab = "email",
-}) => {
-  const [tab, setTab] = useState(initialTab);
+}) => {  const [tab, setTab] = useState(initialTab);
 
   useEffect(() => {
     setTab(initialTab);
@@ -75,7 +71,6 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
     }
     return field.id !== "email";
   });
-
   return (
     <Layout>
       <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
@@ -86,7 +81,7 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
             layout="fill"
             objectFit="cover"
             className="absolute inset-0 w-full h-full"
-            loading="lazy"
+                  loading="lazy"
           />
         </div>
         <div className="flex items-start justify-center p-4 md:p-8 overflow-auto">
@@ -139,7 +134,7 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
               </div>
             )}
             <form onSubmit={onSubmit} className="flex flex-col gap-4">
-              {updatedFields.map((field) => (
+              {fields.map((field) => (
                 <div key={field.id}>
                   <div className="mb-2 block">
                     <Label

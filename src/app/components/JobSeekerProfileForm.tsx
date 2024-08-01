@@ -2,11 +2,11 @@
 
 import { useState, ChangeEvent, useEffect } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
+import { CountryDropdown } from "react-country-region-selector";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
 import { clearError, createJobSeekerProfile, fetchJobSeekerData, updateProfile } from "../redux/resumeSlice";
-
 
 interface EmploymentHistory {
   company_name: string;
@@ -183,6 +183,10 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
     setProfileData({ ...profileData, [id]: value });
   };
 
+  const handleLocationChange = (val: string) => {
+    setProfileData({ ...profileData, location: val });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
@@ -287,19 +291,10 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
           >
             Location
           </Label>
-          <Select
-            id="location"
-            className="mt-1 w-full"
-            value={{ value: profileData.location, label: profileData.location }}
-            options={[
-              { value: "Poland", label: "Poland" },
-              { value: "Germany", label: "Germany" },
-            ]}
-            onChange={(selectedOption) =>
-              handleProfileChange({
-                target: { id: "location", value: selectedOption?.value || "" },
-              })
-            }
+          <CountryDropdown
+            value={profileData.location}
+            onChange={(val) => handleLocationChange(val)}
+            classes="form-control mt-1 w-full"
           />
           {errors.location && <p className="text-red-500">{errors.location}</p>}
         </div>

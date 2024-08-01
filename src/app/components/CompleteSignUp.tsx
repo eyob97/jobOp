@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 import { verifyCompleteSignUp, sendOTP } from "@/app/redux/authSlice";
 import { RootState, AppDispatch } from "@/app/redux/store";
 import { Field } from "@/app/components/FormSkeleton";
+import { CountryDropdown } from "react-country-region-selector";
 
 const FormSkeleton = dynamic(() => import('@/app/components/FormSkeleton'), {
   ssr: false,
@@ -66,6 +67,13 @@ const CompleteSignUp = () => {
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,
+    });
+  };
+
+  const handleLocationChange = (val: string) => {
+    setFormData({
+      ...formData,
+      location: val,
     });
   };
 
@@ -234,12 +242,19 @@ const CompleteSignUp = () => {
       {
         id: "location",
         label: "Location",
-        type: "text",
-        placeholder: "Location",
+        type: "custom",
+        placeholder: "Select your country",
         value: formData.location,
         required: true,
-        onChange: handleChange,
+        onChange: handleLocationChange,
         error: errors.location,
+        customComponent: (
+          <CountryDropdown
+            value={formData.location}
+            onChange={(val) => handleLocationChange(val)}
+            classes="form-control"
+          />
+        ),
       }
     );
   }
