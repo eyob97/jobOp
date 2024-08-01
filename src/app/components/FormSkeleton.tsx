@@ -220,11 +220,11 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
                 {buttonText}
               </Button>
             </form>
-            <Link href="/" legacyBehavior>
+            {/* <Link href="/" legacyBehavior>
               <a className="mt-4 px-6 py-2 text-green-600 bg-gray-50 rounded-full hover:bg-white-700">
                 Go to home
               </a>
-            </Link>
+            </Link> */}
           </Card>
         </div>
       </div>
