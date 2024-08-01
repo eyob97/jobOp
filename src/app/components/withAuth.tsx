@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import { RootState } from "@/app/redux/store";
 
 interface WithAuthOptions {
   allowUnauthenticatedAccess?: boolean;
@@ -14,13 +14,10 @@ const withAuth = (
 ) => {
   const Wrapper = (props: any) => {
     const router = useRouter();
-    const { user, isLoading } = useSelector((state: RootState) => {
-      console.log('Redux State:', state); 
-      return state.auth || { user: null, isLoading: false };
-    });
+    const authState = useSelector((state: RootState) => state.auth);
+    const { user, isLoading } = authState || { user: null, isLoading: false };
 
     useEffect(() => {
-      console.log('Auth Status:', { user, isLoading }); 
       if (!isLoading && !user && !options?.allowUnauthenticatedAccess) {
         router.replace("/auth/sign-in");
       }

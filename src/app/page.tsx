@@ -1,9 +1,5 @@
-import dynamic from "next/dynamic";
-
-const ClientHome = dynamic(() => import("./components/ClientHome"), {
-  ssr: false,
-  loading: () => <p>Loading...</p>,
-});
+import React from "react";
+import ClientHome from "./components/ClientHome";
 
 const Home: React.FC = () => {
   return <ClientHome />;

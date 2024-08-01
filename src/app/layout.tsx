@@ -1,9 +1,8 @@
-
 import React, { ReactNode } from "react";
 import { Flowbite, ThemeModeScript } from "flowbite-react";
 import Script from "next/script";
-import "./globals.css";
 import ClientWrapper from "./components/ClientWrapper";
+import "./globals.css";
 
 interface LayoutProps {
   children: ReactNode;
