@@ -2,9 +2,12 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/redux/store";
 
 const Header = () => {
   const router = useRouter();
+  const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,7 +28,11 @@ const Header = () => {
   }, []);
 
   const handleSignUpClick = () => {
-    router.push('/auth/sign-up');
+    if (user) {
+      router.push('/dashboard');
+    } else {
+      router.push('/auth/sign-up');
+    }
   };
 
   return (
