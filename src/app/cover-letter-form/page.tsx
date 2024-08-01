@@ -19,9 +19,9 @@ const GenerateCoverLetterPage: React.FC = () => {
   return (
     <div>
       {viewCoverLetter ? (
-          <CoverLetterView onBack={() => setViewCoverLetter(false)} />
+        <CoverLetterView onBack={() => setViewCoverLetter(false)} />
       ) : (
-          <CoverLetterForm onViewCoverLetter={() => setViewCoverLetter(true)} />
+        <CoverLetterForm onViewCoverLetter={() => setViewCoverLetter(true)} />
       )}
     </div>
   );

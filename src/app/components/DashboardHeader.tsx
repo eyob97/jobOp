@@ -134,7 +134,6 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onTabChange, activeTa
               Sign in
             </Button>
           )}
-          <NavbarToggle />
         </div>
       </div>
       <NavbarCollapse className="lg:hidden">
