@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import React, { useState } from "react";
 import dynamic from "next/dynamic";
 
 const CoverLetterView = dynamic(() => import("../components/CoverLetterView"), {
@@ -19,13 +19,9 @@ const GenerateCoverLetterPage: React.FC = () => {
   return (
     <div>
       {viewCoverLetter ? (
-        <Suspense fallback={<div>Loading...</div>}>
           <CoverLetterView onBack={() => setViewCoverLetter(false)} />
-        </Suspense>
       ) : (
-        <Suspense fallback={<div>Loading...</div>}>
           <CoverLetterForm onViewCoverLetter={() => setViewCoverLetter(true)} />
-        </Suspense>
       )}
     </div>
   );

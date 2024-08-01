@@ -100,7 +100,6 @@ const EnterCodePage: React.FC = () => {
   ];
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
       <FormSkeleton
         title="Enter Code"
         subtitle={
@@ -118,12 +117,7 @@ const EnterCodePage: React.FC = () => {
         showCheckbox={false}
         generalError={errors.general} 
       />
-      {message && (
-        <div className="text-green-500 mt-4">
-          {message}
-        </div>
-      )}
-    </Suspense>
+
   );
 };
 

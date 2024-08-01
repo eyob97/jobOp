@@ -14,11 +14,7 @@ import { SignIn } from "phosphor-react";
 
 const ClientHome: React.FC = () => {
 
-  const { user, isAuthenticated } = useSelector((state: RootState) => state.auth || { user: null, isAuthenticated: false });
 
-  if (user) {
-    return isAuthenticated ? <Dashboard /> : <SignIn />;
-  } else {
     return (
       <>
         <Header />
@@ -267,7 +263,6 @@ const ClientHome: React.FC = () => {
         <DynamicFooter />
       </>
     );
-  }
-};
+  };
 
 export default ClientHome;
