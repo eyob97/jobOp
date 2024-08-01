@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
   Avatar,
   Button,
@@ -22,14 +22,13 @@ import { AppDispatch, RootState } from "../redux/store";
 interface DashboardHeaderProps {
   onTabChange: (tab: string) => void;
   activeTab: string;
+  userType: string; 
 }
 
-const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onTabChange, activeTab }) => {
+const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onTabChange, activeTab, userType }) => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const user = useSelector((state: RootState) => state.auth?.user);
-
-  console.log("User:", user);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -48,42 +47,56 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onTabChange, activeTa
         </NavbarBrand>
         <nav id="navbar" className="navbar">
           <ul>
-            <li>
-              <a
-                className={`nav-link scrollto ${activeTab === 'filter' ? 'active' : ''}`}
-                href="#find-job"
-                onClick={() => onTabChange('filter')}
-              >
-                Filter Dashboard
-              </a>
-            </li>
-            <li>
-              <a
-                className={`nav-link scrollto ${activeTab === 'upload' ? 'active' : ''}`}
-                href="#upload-cv"
-                onClick={() => onTabChange('upload')}
-              >
-                Upload CV
-              </a>
-            </li>
-            <li>
-              <a
-                className={`nav-link scrollto ${activeTab === 'documents' ? 'active' : ''}`}
-                href="#documents"
-                onClick={() => onTabChange('documents')}
-              >
-                Documents
-              </a>
-            </li>
-            <li>
-              <a
-                className={`nav-link scrollto ${activeTab === 'applications' ? 'active' : ''}`}
-                href="#applications"
-                onClick={() => onTabChange('applications')}
-              >
-                Applications
-              </a>
-            </li>
+            {userType === 'Job Seeker' ? (
+              <>
+                <li>
+                  <a
+                    className={`nav-link scrollto ${activeTab === 'filter' ? 'active' : ''}`}
+                    href="#find-job"
+                    onClick={() => onTabChange('filter')}
+                  >
+                    Filter Dashboard
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className={`nav-link scrollto ${activeTab === 'upload' ? 'active' : ''}`}
+                    href="#upload-cv"
+                    onClick={() => onTabChange('upload')}
+                  >
+                    Upload CV
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className={`nav-link scrollto ${activeTab === 'documents' ? 'active' : ''}`}
+                    href="#documents"
+                    onClick={() => onTabChange('documents')}
+                  >
+                    Documents
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className={`nav-link scrollto ${activeTab === 'applications' ? 'active' : ''}`}
+                    href="#applications"
+                    onClick={() => onTabChange('applications')}
+                  >
+                    Applications
+                  </a>
+                </li>
+              </>
+            ) : (
+              <li>
+                <a
+                  className={`nav-link scrollto ${activeTab === 'post' ? 'active' : ''}`}
+                  href="#post"
+                  onClick={() => onTabChange('post')}
+                >
+                  Job Post
+                </a>
+              </li>
+            )}
           </ul>
         </nav>
         <div className="flex items-center relative">
@@ -125,34 +138,46 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onTabChange, activeTa
         </div>
       </div>
       <NavbarCollapse className="lg:hidden">
-        <NavbarLink
-          href="#find-job"
-          className={`text-white hover:underline ${activeTab === 'filter' ? 'active' : ''}`}
-          onClick={() => onTabChange('filter')}
-        >
-          Filter Dashboard
-        </NavbarLink>
-        <NavbarLink
-          href="#upload-cv"
-          className={`text-white hover:underline ${activeTab === 'upload' ? 'active' : ''}`}
-          onClick={() => onTabChange('upload')}
-        >
-          Upload CV
-        </NavbarLink>
-        <NavbarLink
-          href="#documents"
-          className={`text-white hover:underline ${activeTab === 'documents' ? 'active' : ''}`}
-          onClick={() => onTabChange('documents')}
-        >
-          Documents
-        </NavbarLink>
-        <NavbarLink
-          href="#applications"
-          className={`text-white hover:underline ${activeTab === 'applications' ? 'active' : ''}`}
-          onClick={() => onTabChange('applications')}
-        >
-          Applications
-        </NavbarLink>
+        {userType === 'Job Seeker' ? (
+          <>
+            <NavbarLink
+              href="#find-job"
+              className={`text-white hover:underline ${activeTab === 'filter' ? 'active' : ''}`}
+              onClick={() => onTabChange('filter')}
+            >
+              Filter Dashboard
+            </NavbarLink>
+            <NavbarLink
+              href="#upload-cv"
+              className={`text-white hover:underline ${activeTab === 'upload' ? 'active' : ''}`}
+              onClick={() => onTabChange('upload')}
+            >
+              Upload CV
+            </NavbarLink>
+            <NavbarLink
+              href="#documents"
+              className={`text-white hover:underline ${activeTab === 'documents' ? 'active' : ''}`}
+              onClick={() => onTabChange('documents')}
+            >
+              Documents
+            </NavbarLink>
+            <NavbarLink
+              href="#applications"
+              className={`text-white hover:underline ${activeTab === 'applications' ? 'active' : ''}`}
+              onClick={() => onTabChange('applications')}
+            >
+              Applications
+            </NavbarLink>
+          </>
+        ) : (
+          <NavbarLink
+            href="#documents"
+            className={`text-white hover:underline ${activeTab === 'documents' ? 'active' : ''}`}
+            onClick={() => onTabChange('documents')}
+          >
+            Documents
+          </NavbarLink>
+        )}
       </NavbarCollapse>
     </Navbar>
   );

@@ -12,6 +12,7 @@ interface AuthState {
     firstName: string;
     lastName: string;
     email: string;
+    user_type: string;
   } | null;
   token: string | null;
 }

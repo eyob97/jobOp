@@ -10,15 +10,21 @@ import CoverLetterView from "@/app/components/CoverLetterView";
 import Documents from "@/app/components/Documents";
 import { UploadCVCard } from "./UploadCVDialog";
 import withAuth from "./withAuth";
+import EmployerDashboard from "@/app/components/Employer/EmployerDashboard"; 
 
 const Dashboard: React.FC = () => {
   const { jobSeekerData } = useSelector((state: RootState) => state.resume);
   const { generatedCoverLetter } = useSelector((state: RootState) => state.coverLetter);
+  const user = useSelector((state: RootState) => state.auth?.user);
   const [activeTab, setActiveTab] = useState("filter");
   const [viewCoverLetter, setViewCoverLetter] = useState(false);
   const [showCoverLetterForm, setShowCoverLetterForm] = useState(false);
 
   const renderContent = () => {
+    if (user?.user_type === 'Employer') {
+      return <EmployerDashboard />;
+    }
+
     if (viewCoverLetter) {
       return <CoverLetterView onBack={() => setViewCoverLetter(false)} />;
     }
@@ -41,7 +47,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <>
-      <DashboardHeader onTabChange={setActiveTab} activeTab={activeTab} />
+      <DashboardHeader onTabChange={setActiveTab} activeTab={activeTab} userType={user?.user_type || 'defaultUserType'} />
       <main className={`min-h-screen w-full flex flex-col items-center ${activeTab === "filter" ? "bg-gray-100" : ""}`}>
         <div className="w-full h-full">
           {renderContent()}
@@ -51,4 +57,4 @@ const Dashboard: React.FC = () => {
   );
 };
 
-export default  withAuth(Dashboard);
+export default withAuth(Dashboard);
