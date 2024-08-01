@@ -48,6 +48,7 @@ const CompleteSignUp = () => {
   useEffect(() => {
     if (error) {
       setErrors({ general: error });
+      console.error("Auth error:", error);
     }
   }, [error]);
 
@@ -72,8 +73,8 @@ const CompleteSignUp = () => {
     e.preventDefault();
     setErrors({});
     setMessage("");
-  
-    const payload = userType === "Employer" 
+
+    const payload = userType === "Employer"
       ? {
           otp: formData.code,
           phone_number: formData.phone_number,
@@ -83,7 +84,7 @@ const CompleteSignUp = () => {
           location: formData.location,
           password: formData.password,
           confirm_password: formData.confirmPassword,
-        } 
+        }
       : {
           otp: formData.code,
           phone_number: formData.phone_number,
@@ -92,45 +93,63 @@ const CompleteSignUp = () => {
           password: formData.password,
           confirm_password: formData.confirmPassword,
         };
-  
-    const resultAction = await dispatch(verifyCompleteSignUp(payload));
-    if (verifyCompleteSignUp.fulfilled.match(resultAction)) {
-      setMessage("Verification successful. Redirecting...");
-      setTimeout(() => {
-        router.push('/auth/sign-in');
-      }, 2000); 
-    } else {
-      const errorPayload = resultAction.payload as any;
-      console.error("Error payload:", errorPayload); 
-  
-      const normalizedErrors: FormErrors = {};
-      if (errorPayload.otp) {
-        normalizedErrors.code = "Invalid OTP. Please check and try again.";
+
+    try {
+      const resultAction = await dispatch(verifyCompleteSignUp(payload));
+      if (verifyCompleteSignUp.fulfilled.match(resultAction)) {
+        setMessage("Verification successful. Redirecting...");
+        console.log("Verification successful:", resultAction.payload);
+        setTimeout(() => {
+          router.push('/auth/sign-in');
+        }, 2000);
       } else {
-        Object.keys(errorPayload).forEach((key) => {
-          if (Array.isArray(errorPayload[key])) {
-            normalizedErrors[key as keyof FormErrors] = errorPayload[key][0];
-          } else {
-            normalizedErrors[key as keyof FormErrors] = errorPayload[key];
-          }
-        });
+        const errorPayload = resultAction.payload as any;
+        console.error("Error payload:", errorPayload);
+
+        const normalizedErrors: FormErrors = {};
+        if (errorPayload.otp) {
+          normalizedErrors.code = "Invalid OTP. Please check and try again.";
+        } else {
+          Object.keys(errorPayload).forEach((key) => {
+            if (Array.isArray(errorPayload[key])) {
+              normalizedErrors[key as keyof FormErrors] = errorPayload[key][0];
+            } else {
+              normalizedErrors[key as keyof FormErrors] = errorPayload[key];
+            }
+          });
+        }
+
+        setErrors(normalizedErrors);
       }
-      
-      setErrors(normalizedErrors);
+    } catch (error) {
+      console.error("Submit error:", error);
+      setErrors({ general: "An unexpected error occurred. Please try again later." });
     }
   };
-  
+
   const handleResend = async () => {
     const payload = {
       phone_number: formData.phone_number,
       operation_type: "WHATSAPP VERIFICATION",
     };
 
-    const resultAction = await dispatch(sendOTP(payload));
-    if (sendOTP.fulfilled.match(resultAction)) {
-      setMessage('OTP sent successfully.');
-    } else {
-      setMessage(resultAction.payload as string);
+    try {
+      const resultAction = await dispatch(sendOTP(payload));
+      if (sendOTP.fulfilled.match(resultAction)) {
+        setMessage('OTP sent successfully.');
+        console.log('OTP sent successfully:', resultAction.payload);
+      } else {
+        const resendError = resultAction.payload as any;
+        if (resendError?.user) {
+          setErrors({ general: "User already exists. Please sign in." });
+        } else {
+          setMessage(resendError as string);
+        }
+        console.error("Resend error:", resendError);
+      }
+    } catch (error) {
+      console.error("Resend OTP error:", error);
+      setMessage("Failed to send OTP. Please try again later.");
     }
   };
 
@@ -144,9 +163,9 @@ const CompleteSignUp = () => {
       required: true,
       onChange: handleChange,
       error: errors.code,
-      maxLength: 6, 
-      pattern: "\\d{6}", 
-      inputMode: "numeric", 
+      maxLength: 6,
+      pattern: "\\d{6}",
+      inputMode: "numeric",
     },
     {
       id: "firstName",
@@ -195,7 +214,7 @@ const CompleteSignUp = () => {
       placeholder: "Phone number",
       value: formData.phone_number,
       required: true,
-      readonly: true, 
+      readonly: true,
       onChange: () => {},
     },
   ];
@@ -236,7 +255,7 @@ const CompleteSignUp = () => {
             <a href="#" className="text-[#116034] bold-text" onClick={handleResend}>
               Send again
             </a>
-            <br></br>
+            <br />
             Already have an account?{" "}
             <a href="/auth/sign-in" className="text-[#116034] bold-text">
               Sign in

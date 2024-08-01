@@ -41,14 +41,18 @@ const ConfirmCode: React.FC = () => {
       otp: code,
     };
 
-    const resultAction = await dispatch(verifyOTP(payload));
-    if (verifyOTP.fulfilled.match(resultAction)) {
-      setMessage("Verification successful. Redirecting...");
-      setTimeout(() => {
-        router.push('/auth/sign-in');
-      }, 2000); 
-    } else {
-      setErrors({ general: resultAction.payload as string });
+    try {
+      const resultAction = await dispatch(verifyOTP(payload));
+      if (verifyOTP.fulfilled.match(resultAction)) {
+        setMessage("Verification successful. Redirecting...");
+        setTimeout(() => {
+          router.push('/auth/sign-in');
+        }, 2000); 
+      } else {
+        setErrors({ general: resultAction.payload as string });
+      }
+    } catch (err: any) {
+      setErrors({ general: err.message || "An unexpected error occurred." });
     }
   };
 

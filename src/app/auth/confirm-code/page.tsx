@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
 const ConfirmCode = dynamic(() => import('@/app/components/ConfirmCode'), {
   ssr: false,
@@ -7,9 +8,9 @@ const ConfirmCode = dynamic(() => import('@/app/components/ConfirmCode'), {
 
 const ConfirmCodePage = () => {
   return (
-    <div>
+    <Suspense fallback={<div>Loading...</div>}>
       <ConfirmCode />
-    </div>
+    </Suspense>
   );
 };
 

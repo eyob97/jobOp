@@ -100,6 +100,7 @@ const EnterCodePage: React.FC = () => {
   ];
 
   return (
+    <>
       <FormSkeleton
         title="Enter Code"
         subtitle={
@@ -116,7 +117,8 @@ const EnterCodePage: React.FC = () => {
         onSubmit={handleSubmit}
         showCheckbox={false}
         generalError={errors.general} 
-      />
+      /></>
+    
 
   );
 };

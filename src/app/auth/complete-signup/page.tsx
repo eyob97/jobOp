@@ -1,16 +1,12 @@
-import dynamic from "next/dynamic";
+import React, { Suspense } from "react";
+import CompleteSignUpContent from "@/app/components/CompleteSignUp";
 
-const CompleteSignUp = dynamic(() => import('@/app/components/CompleteSignUp'), {
-  ssr: false,
-  loading: () => <div>Loading...</div>,
-});
-
-const CompleteSignUpPage = () => {
+const CompleteSignUp: React.FC = () => {
   return (
-    <div>
-      <CompleteSignUp />
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <CompleteSignUpContent />
+    </Suspense>
   );
 };
 
-export default CompleteSignUpPage;
+export default CompleteSignUp;
