@@ -1,12 +1,17 @@
 "use client";
 
 import { useState, ChangeEvent, useEffect } from "react";
-import { Button, Label, TextInput } from "flowbite-react";
+import { Button, Label, TextInput, Modal } from "flowbite-react";
 import { CountryDropdown } from "react-country-region-selector";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
-import { clearError, createJobSeekerProfile, fetchJobSeekerData, updateProfile } from "../redux/resumeSlice";
+import {
+  clearError,
+  createJobSeekerProfile,
+  fetchJobSeekerData,
+  updateProfile,
+} from "../redux/resumeSlice";
 
 interface EmploymentHistory {
   company_name: string;
@@ -16,7 +21,7 @@ interface EmploymentHistory {
 }
 
 interface JobSeekerProfile {
-  address: string | null;
+  address: string;
   profile_description: string | null;
   current_work_status: string;
   work_status: string;
@@ -51,6 +56,8 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
   );
   const { user } = useSelector((state: RootState) => state.auth);
   const [errors, setErrors] = useState<Record<string, string[] | string>>({});
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [profileData, setProfileData] = useState<JobSeekerProfile>({
     address: "",
@@ -88,7 +95,6 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
 
   useEffect(() => {
     if (jobSeekerData) {
-
       if (Array.isArray(jobSeekerData) && jobSeekerData.length > 0) {
         const data = jobSeekerData[0];
         setProfileData({
@@ -171,6 +177,26 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
   ) => {
     const updatedHistory = [...profileData.employment_history];
     updatedHistory[index][field] = value;
+
+    if (field === "start_date" || field === "end_date") {
+      const startDate =
+        field === "start_date" ? value : updatedHistory[index].start_date;
+      const endDate =
+        field === "end_date" ? value : updatedHistory[index].end_date;
+
+      if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [`employment_history[${index}].date`]:
+            "Start date cannot be after end date.",
+        }));
+      } else {
+        const { [`employment_history[${index}].date`]: removed, ...rest } =
+          errors;
+        setErrors(rest);
+      }
+    }
+
     setProfileData({ ...profileData, employment_history: updatedHistory });
   };
 
@@ -190,63 +216,77 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
-  
+    setSuccessMessage(null);
+
     try {
       if (jobSeekerData && jobSeekerData.length > 0) {
-        const jobSeekerId = jobSeekerData[0].id; 
-  
-        const resultAction = await dispatch(
-          updateProfile({
-            id: jobSeekerId,
-            profileData,
-            employmentHistory: profileData.employment_history,
-          })
-        );
-  
-        if (updateProfile.fulfilled.match(resultAction)) {
-          // router.push("/pages/upload-cv"); 
-        } else {
-          const payload = resultAction.payload as any;
-          setErrors(payload || { general: "Failed to update profile." });
-        }
+        await updateJobSeekerProfile();
       } else {
-        const createProfileResult = await dispatch(
-          createJobSeekerProfile(profileData)
-        );
-  
-        if (createJobSeekerProfile.fulfilled.match(createProfileResult)) {
-
-          const jobSeekerId = createProfileResult.payload.id;
-  
-          const resultAction = await dispatch(
-            updateProfile({
-              id: jobSeekerId,
-              profileData,
-              employmentHistory: profileData.employment_history,
-            })
-          );
-  
-          if (updateProfile.fulfilled.match(resultAction)) {
-            return null;
-            // router.push("/pages/upload-cv"); 
-          } else {
-            const payload = resultAction.payload as any;
-            setErrors(payload || { general: "Failed to update profile." });
-          }
-        } else {
-          const payload = createProfileResult.payload as any;
-          setErrors(payload || { general: "Failed to create profile." });
-        }
+        await createNewJobSeekerProfile();
       }
     } catch (error: any) {
       setErrors({ general: error.message || "Failed to save profile." });
     }
   };
-  
+
+  const updateJobSeekerProfile = async () => {
+    const jobSeekerId = jobSeekerData[0].id;
+
+    const updatedData: Partial<JobSeekerProfile> = { ...profileData };
+    delete updatedData.employment_history; 
+
+    const resultAction = await dispatch(
+      updateProfile({
+        id: jobSeekerId,
+        profileData: updatedData,
+        employmentHistory: profileData.employment_history,
+      })
+    );
+
+    if (updateProfile.fulfilled.match(resultAction)) {
+      setSuccessMessage("Profile updated successfully.");
+      setIsModalOpen(true); 
+    } else {
+      const payload = resultAction.payload as any;
+      setErrors(payload || { general: "Failed to update profile." });
+    }
+  };
+
+  const createNewJobSeekerProfile = async () => {
+    const createProfileResult = await dispatch(
+      createJobSeekerProfile(profileData)
+    );
+
+    if (createJobSeekerProfile.fulfilled.match(createProfileResult)) {
+      const jobSeekerId = createProfileResult.payload.id;
+
+      const resultAction = await dispatch(
+        updateProfile({
+          id: jobSeekerId,
+          profileData,
+          employmentHistory: profileData.employment_history,
+        })
+      );
+
+      if (updateProfile.fulfilled.match(resultAction)) {
+        setSuccessMessage("Profile created and updated successfully.");
+        setIsModalOpen(true); 
+      } else {
+        const payload = resultAction.payload as any;
+        setErrors(payload || { general: "Failed to update profile." });
+      }
+    } else {
+      const payload = createProfileResult.payload as any;
+      setErrors(payload || { general: "Failed to create profile." });
+    }
+  };
 
   return (
     <div>
       <h2 className="mb-5 text-lg font-bold text-black">Job Seeker Profile</h2>
+      {successMessage && (
+        <div className="mb-4 text-green-500">{successMessage}</div>
+      )}
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <Label
@@ -268,22 +308,23 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
         </div>
         <div className="mb-4">
           <Label
-            htmlFor="current_work_status"
+            htmlFor="profile_description"
             className="block text-sm font-medium text-gray-700"
           >
-            Job Title
+            Profile Description
           </Label>
           <TextInput
-            id="current_work_status"
+            id="profile_description"
             type="text"
             className="mt-1 w-full"
-            value={profileData.current_work_status}
+            value={profileData.profile_description || ""}
             onChange={handleProfileChange}
           />
-          {errors.current_work_status && (
-            <p className="text-red-500">{errors.current_work_status}</p>
+          {errors.profile_description && (
+            <p className="text-red-500">{errors.profile_description}</p>
           )}
         </div>
+
         <div className="mb-4">
           <Label
             htmlFor="location"
@@ -354,24 +395,7 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
           />
           {errors.gender && <p className="text-red-500">{errors.gender}</p>}
         </div>
-        <div className="mb-4">
-          <Label
-            htmlFor="profile_description"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Profile Description
-          </Label>
-          <TextInput
-            id="profile_description"
-            type="text"
-            className="mt-1 w-full"
-            value={profileData.profile_description || ""}
-            onChange={handleProfileChange}
-          />
-          {errors.profile_description && (
-            <p className="text-red-500">{errors.profile_description}</p>
-          )}
-        </div>
+
         <div className="mb-4">
           <Label className="block text-sm font-medium text-gray-700">
             Preferences
@@ -447,26 +471,33 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
             </div>
             <div className="mb-4">
               <Label
-                htmlFor={`job_title-${index}`}
+                htmlFor="current_work_status"
                 className="block text-sm font-medium text-gray-700"
               >
-                Job Title
+                Work Status
               </Label>
-              <TextInput
-                id={`job_title-${index}`}
-                type="text"
+              <Select
+                id="current_work_status"
                 className="mt-1 w-full"
-                value={job.job_title}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  handleChange(index, "job_title", e.target.value)
+                value={{
+                  value: profileData.current_work_status,
+                  label: profileData.current_work_status,
+                }}
+                options={[{ value: "Employed", label: "Employed" }]}
+                onChange={(selectedOption) =>
+                  handleProfileChange({
+                    target: {
+                      id: "current_work_status",
+                      value: selectedOption?.value || "",
+                    },
+                  })
                 }
               />
-              {errors[`employment_history[${index}].job_title`] && (
-                <p className="text-red-500">
-                  {errors[`employment_history[${index}].job_title`]}
-                </p>
+              {errors.current_work_status && (
+                <p className="text-red-500">{errors.current_work_status}</p>
               )}
             </div>
+
             <div className="mb-4">
               <Label
                 htmlFor={`start_date-${index}`}
@@ -483,9 +514,9 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
                   handleChange(index, "start_date", e.target.value)
                 }
               />
-              {errors[`employment_history[${index}].start_date`] && (
+              {errors[`employment_history[${index}].date`] && (
                 <p className="text-red-500">
-                  {errors[`employment_history[${index}].start_date`]}
+                  {errors[`employment_history[${index}].date`]}
                 </p>
               )}
             </div>
@@ -505,34 +536,13 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
                   handleChange(index, "end_date", e.target.value)
                 }
               />
-              {errors[`employment_history[${index}].end_date`] && (
+              {errors[`employment_history[${index}].date`] && (
                 <p className="text-red-500">
-                  {errors[`employment_history[${index}].end_date`]}
+                  {errors[`employment_history[${index}].date`]}
                 </p>
               )}
             </div>
-            <div className="mb-4">
-              <Label
-                htmlFor={`description-${index}`}
-                className="block text-sm font-medium text-gray-700"
-              >
-                Description
-              </Label>
-              <TextInput
-                id={`description-${index}`}
-                type="text"
-                className="mt-1 w-full"
-                value={job.job_title || ""}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  handleChange(index, "job_title", e.target.value)
-                }
-              />
-              {errors[`employment_history[${index}].description`] && (
-                <p className="text-red-500">
-                  {errors[`employment_history[${index}].description`]}
-                </p>
-              )}
-            </div>
+
             {profileData.employment_history.length > 1 && (
               <Button
                 type="button"
@@ -574,6 +584,21 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
           <p className="text-red-500 mt-2">{errors.general}</p>
         )}
       </form>
+      <Modal
+        show={isModalOpen}
+        size="md"
+        popup={true}
+        onClose={() => setIsModalOpen(false)}
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <h3 className="mb-5 text-lg font-normal text-green-500 dark:text-green-400">
+              {successMessage}
+            </h3>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
