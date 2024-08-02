@@ -15,6 +15,9 @@ interface LetterViewProps {
   onBack: () => void;
   jobId: number; 
 }
+import { pdfjs } from "react-pdf";
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const LetterView: React.FC<LetterViewProps> = ({ letterType, onBack, jobId }) => {
   const dispatch = useDispatch<AppDispatch>();
