@@ -24,13 +24,8 @@ const SignIn: React.FC = () => {
 
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { isLoading, error, token } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const { isLoading, error } = useSelector((state: RootState) => state.auth);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
   useEffect(() => {
     if (error) {
       setErrors({ general: error });
@@ -102,29 +97,33 @@ const SignIn: React.FC = () => {
 
   return (
     <>
-      <FormSkeleton
-        title="Sign In"
-        subtitle={
-          <span>
-            Don't have an account?{" "}
-            <Link href="/auth/sign-up" legacyBehavior>
-              <a className="text-[#116034] bold-text">Sign up</a>
-            </Link>
-            <br />
-            Did you forget your password?{" "}
-            <Link href="/auth/reset-password" legacyBehavior>
-              <a className="text-[#116034] bold-text">Reset password</a>
-            </Link>
-          </span>
-        }
-        fields={fields}
-        buttonText="Sign In"
-        onSubmit={handleSubmit}
-        showCheckbox={false}
-        generalError={errors.general}
-        showResend={showResend}
-        onResend={handleResend}
-      />
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <FormSkeleton
+          title="Sign In"
+          subtitle={
+            <span>
+              Don't have an account?{" "}
+              <Link href="/auth/sign-up" legacyBehavior>
+                <a className="text-[#116034] bold-text">Sign up</a>
+              </Link>
+              <br />
+              Did you forget your password?{" "}
+              <Link href="/auth/reset-password" legacyBehavior>
+                <a className="text-[#116034] bold-text">Reset password</a>
+              </Link>
+            </span>
+          }
+          fields={fields}
+          buttonText="Sign In"
+          onSubmit={handleSubmit}
+          showCheckbox={false}
+          generalError={errors.general}
+          showResend={showResend}
+          onResend={handleResend}
+        />
+      )}
       {errors.general && (
         <div className="text-red-500 mt-4">{errors.general}</div>
       )}
