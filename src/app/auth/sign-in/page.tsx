@@ -24,10 +24,14 @@ const SignIn: React.FC = () => {
 
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { isLoading, error, token } = useSelector(
-    (state: RootState) => state.auth
+  const authState = useSelector((state: RootState) => state.auth);
+  console.log("Auth state:", authState);
+  const { isLoading = false, error = null, token = null } = useSelector(
+    (state: RootState) => state.auth || {}
   );
 
+
+  
   if (isLoading) {
     return <div>Loading...</div>;
   }
