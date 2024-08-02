@@ -37,8 +37,7 @@ const JobDetails: React.FC = () => {
   };
 
   const handleGenerate = (letterType: 'coverLetter' | 'motivationLetter') => {
-    // Navigate to the appropriate letter generation page
-    // For example:
+
     // router.push(`/generate/${letterType}`);
   };
 

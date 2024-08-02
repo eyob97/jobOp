@@ -1,6 +1,6 @@
-"use client";
+"use client";  
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
@@ -98,35 +98,33 @@ const SignIn: React.FC = () => {
   ];
 
   return (
-    <>    
-      <Suspense fallback={<div>Loading...</div>}>
-        <FormSkeleton
-          title="Sign In"
-          subtitle={
-            <span>
-              Don't have an account?{" "}
-              <Link href="/auth/sign-up" legacyBehavior>
-                <a className="text-[#116034] bold-text">Sign up</a>
-              </Link>
-              <br />
-              Did you forget your password?{" "}
-              <Link href="/auth/reset-password" legacyBehavior>
-                <a className="text-[#116034] bold-text">Reset password</a>
-              </Link>
-            </span>
-          }
-          fields={fields}
-          buttonText="Sign In"
-          onSubmit={handleSubmit}
-          showCheckbox={false}
-          generalError={errors.general}
-          showResend={showResend}
-          onResend={handleResend}
-        />
-        {errors.general && (
-          <div className="text-red-500 mt-4">{errors.general}</div>
-        )}
-      </Suspense>
+    <>
+      <FormSkeleton
+        title="Sign In"
+        subtitle={
+          <span>
+            Don't have an account?{" "}
+            <Link href="/auth/sign-up" legacyBehavior>
+              <a className="text-[#116034] bold-text">Sign up</a>
+            </Link>
+            <br />
+            Did you forget your password?{" "}
+            <Link href="/auth/reset-password" legacyBehavior>
+              <a className="text-[#116034] bold-text">Reset password</a>
+            </Link>
+          </span>
+        }
+        fields={fields}
+        buttonText="Sign In"
+        onSubmit={handleSubmit}
+        showCheckbox={false}
+        generalError={errors.general}
+        showResend={showResend}
+        onResend={handleResend}
+      />
+      {errors.general && (
+        <div className="text-red-500 mt-4">{errors.general}</div>
+      )}
     </>
   );
 };
