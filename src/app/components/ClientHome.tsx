@@ -4,11 +4,11 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
-import Header from "./Home";
-import Faqs from "./Faqs";
-import DynamicFooter from "./Footer";
-import Newsletter from "./Newsletter";
-import Testimonials from "./Testimonials";
+import Header from "./LandingPage/Header";
+import Faqs from "./LandingPage/Faqs";
+import DynamicFooter from "./LandingPage/Footer";
+import Newsletter from "./LandingPage/Newsletter";
+import Testimonials from "./LandingPage/Testimonials";
 import SignIn from "./SignIn";
 
 const ClientHome: React.FC = () => {

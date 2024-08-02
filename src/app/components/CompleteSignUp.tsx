@@ -6,10 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import dynamic from "next/dynamic";
 import { verifyCompleteSignUp, sendOTP } from "@/app/redux/authSlice";
 import { RootState, AppDispatch } from "@/app/redux/store";
-import { Field } from "@/app/components/FormSkeleton";
+import { Field } from "@/app/components/LandingPage/FormSkeleton";
 import { CountryDropdown } from "react-country-region-selector";
 
-const FormSkeleton = dynamic(() => import('@/app/components/FormSkeleton'), {
+const FormSkeleton = dynamic(() => import('@/app/components/LandingPage/FormSkeleton'), {
   ssr: false,
   loading: () => <div>Loading...</div>,
 });
@@ -106,7 +106,6 @@ const CompleteSignUp = () => {
       const resultAction = await dispatch(verifyCompleteSignUp(payload));
       if (verifyCompleteSignUp.fulfilled.match(resultAction)) {
         setMessage("Verification successful. Redirecting...");
-        console.log("Verification successful:", resultAction.payload);
         setTimeout(() => {
           router.push('/auth/sign-in');
         }, 2000);
@@ -145,7 +144,6 @@ const CompleteSignUp = () => {
       const resultAction = await dispatch(sendOTP(payload));
       if (sendOTP.fulfilled.match(resultAction)) {
         setMessage('OTP sent successfully.');
-        console.log('OTP sent successfully:', resultAction.payload);
       } else {
         const resendError = resultAction.payload as any;
         if (resendError?.user) {

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   FaMapMarkerAlt,
   FaCalendarAlt,
@@ -13,28 +13,37 @@ import {
 } from "react-icons/fa";
 import { Button } from "flowbite-react";
 import { MapTrifold, CalendarBlank, Timer } from "phosphor-react";
-import CustomButton from "./CustomButton";
-import JobCard from "./JobCard";
+import CustomButton from "../CustomButton";
 import ApplyModal from "./ApplyJobModal";
-import { RootState } from "../redux/store";
+import { RootState } from "../../redux/store";
+import { setSelectedJob } from "../../redux/jobSlice";
 
 const JobDetails: React.FC = () => {
+  const dispatch = useDispatch();
   const job = useSelector((state: RootState) => state.jobs.selectedJob);
   const [showModal, setShowModal] = useState(false);
 
   if (!job) {
     return <div className="mt-4 flex flex-col items-center">No job selected</div>;
   }
+
   const handleOpenModal = () => {
     setShowModal(true);
+    dispatch(setSelectedJob(job.id)); 
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
   };
 
+  const handleGenerate = (letterType: 'coverLetter' | 'motivationLetter') => {
+    // Navigate to the appropriate letter generation page
+    // For example:
+    // router.push(`/generate/${letterType}`);
+  };
+
   return (
-    <div className=" bg-white shadow-md rounded-lg p-12 mt-4">
+    <div className="bg-white shadow-md rounded-lg p-12 mt-4">
       <h2 className="text-3xl font-bold mb-4">Job Details</h2>
       <div className="grid grid-cols-1 md:grid-cols-7 gap-8">
         {/* Main Job Description */}
@@ -137,8 +146,12 @@ const JobDetails: React.FC = () => {
           </div>
         </div>
       </div>
-      <ApplyModal show={showModal} onClose={handleCloseModal} />
-    
+      <ApplyModal
+        show={showModal}
+        onClose={handleCloseModal}
+        jobId={job.id}
+        onGenerate={handleGenerate}
+      />
     </div>
   );
 };

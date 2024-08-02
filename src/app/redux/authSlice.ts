@@ -75,6 +75,13 @@ interface VerifyCompleteSignUpPayload {
   location?: string;
 }
 
+interface UpdateCoverLetterPayload {
+  id: number;
+  file_name: string;
+  file_type: string;
+  details: string;
+} 
+
 export const verifyCompleteSignUp = createAsyncThunk(
   "auth/verifyCompleteSignUp",
   async (payload: VerifyCompleteSignUpPayload, { rejectWithValue }) => {
@@ -209,6 +216,37 @@ export const completeSignUp = createAsyncThunk(
       if (response.status !== 200) {
         const errorData = response.data;
         return rejectWithValue(errorData);
+      }
+
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+
+export const updateCoverLetter = createAsyncThunk(
+  "letters/updateCoverLetter",
+  async (payload: UpdateCoverLetterPayload, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append("file_name", payload.file_name);
+      formData.append("file_type", payload.file_type);
+      formData.append("details", payload.details);
+
+      const response = await apiClient.patch(
+        `${API_URL}/api/myfiles/${payload.id}/`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status !== 200 && response.status !== 201) {
+        return rejectWithValue(response.data);
       }
 
       return response.data;

@@ -5,13 +5,13 @@ import { Button, Label, TextInput, Modal } from "flowbite-react";
 import { CountryDropdown } from "react-country-region-selector";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import {
   clearError,
   createJobSeekerProfile,
   fetchJobSeekerData,
   updateProfile,
-} from "../redux/resumeSlice";
+} from "../../redux/resumeSlice";
 
 interface EmploymentHistory {
   company_name: string;

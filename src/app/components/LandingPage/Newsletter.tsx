@@ -7,7 +7,6 @@ const Newsletter = () => {
   const handleSubscribeChange = (e:any) => setSubscribeNumber(e.target.value);
 
   const handleSubmit = () => {
-    console.log("Subscribe Number:", subscribeNumber);
   };
 
   return (

@@ -4,7 +4,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { verifyOTP, sendOTP } from "@/app/redux/authSlice";
-import FormSkeleton, { Field } from "@/app/components/FormSkeleton";
+import FormSkeleton, { Field } from "@/app/components/LandingPage/FormSkeleton";
 import { RootState, AppDispatch } from "@/app/redux/store";
 
 interface FormErrors {

@@ -2,14 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import resumeReducer from './resumeSlice';
 import authReducer from './authSlice';
 import jobsReducer from './jobSlice';
-import letterSlice from './letterSlice';
+import letterReducer from './letterSlice';
 
 export const store = configureStore({
   reducer: {
     resume: resumeReducer,
     auth: authReducer,
     jobs: jobsReducer,
-    coverLetter: letterSlice,
+    letters: letterReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

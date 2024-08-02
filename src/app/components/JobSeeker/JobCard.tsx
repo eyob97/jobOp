@@ -5,8 +5,8 @@ import { Card } from 'flowbite-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaRegBookmark, FaBookmark, FaMapMarkerAlt } from 'react-icons/fa'; 
 import { useRouter } from 'next/navigation';
-import { RootState, AppDispatch } from '../redux/store';
-import { fetchJobs, setSelectedJob } from '../redux/jobSlice';
+import { RootState, AppDispatch } from '../../redux/store';
+import { fetchJobs, setSelectedJob } from '../../redux/jobSlice';
 import { format } from 'date-fns';
 
 interface JobCardProps {

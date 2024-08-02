@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import FormSkeleton from "@/app/components/FormSkeleton";
-import { Field } from "@/app/components/FormSkeleton";
+import FormSkeleton from "@/app/components/LandingPage/FormSkeleton";
+import { Field } from "@/app/components/LandingPage/FormSkeleton";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { useDispatch } from "react-redux";
@@ -55,7 +55,6 @@ const ResetPasswordPage = () => {
         };
 
         const resultAction = await dispatch(sendOTP(payload));
-        console.log("Result Action:", resultAction); 
 
         if (sendOTP.fulfilled.match(resultAction)) {
           setMessage('OTP sent successfully.');
@@ -76,7 +75,6 @@ const ResetPasswordPage = () => {
           }
         );
 
-        console.log("Email Response:", response); 
 
         if (response.ok) {
           setMessage('Password reset link has been sent to your email.');

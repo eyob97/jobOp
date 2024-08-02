@@ -35,6 +35,11 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onTabChange, activeTa
     router.push("/auth/sign-in");
   };
 
+  const handleNavigation = (tab: string, path: string) => {
+    onTabChange(tab);
+    router.push(path);
+  };
+
   return (
     <Navbar fluid className="bg-green-800">
       <div className="flex items-center justify-between w-full">
@@ -46,14 +51,13 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onTabChange, activeTa
           />
         </NavbarBrand>
         <nav id="navbar" className="navbar">
-          <ul>
+          <ul className="flex space-x-4">
             {userType === 'Job Seeker' ? (
               <>
                 <li>
                   <a
                     className={`nav-link scrollto ${activeTab === 'filter' ? 'active' : ''}`}
-                    href="#find-job"
-                    onClick={() => onTabChange('filter')}
+                    onClick={() => handleNavigation('filter', '/dashboard#find-job')}
                   >
                     Filter Dashboard
                   </a>
@@ -61,8 +65,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onTabChange, activeTa
                 <li>
                   <a
                     className={`nav-link scrollto ${activeTab === 'upload' ? 'active' : ''}`}
-                    href="#upload-cv"
-                    onClick={() => onTabChange('upload')}
+                    onClick={() => handleNavigation('upload', '/dashboard#upload-cv')}
                   >
                     Upload CV
                   </a>
@@ -70,8 +73,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onTabChange, activeTa
                 <li>
                   <a
                     className={`nav-link scrollto ${activeTab === 'documents' ? 'active' : ''}`}
-                    href="#documents"
-                    onClick={() => onTabChange('documents')}
+                    onClick={() => handleNavigation('documents', '/dashboard#documents')}
                   >
                     Documents
                   </a>
@@ -79,8 +81,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onTabChange, activeTa
                 <li>
                   <a
                     className={`nav-link scrollto ${activeTab === 'applications' ? 'active' : ''}`}
-                    href="#applications"
-                    onClick={() => onTabChange('applications')}
+                    onClick={() => handleNavigation('applications', '/dashboard#applications')}
                   >
                     Applications
                   </a>
@@ -90,8 +91,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onTabChange, activeTa
               <li>
                 <a
                   className={`nav-link scrollto ${activeTab === 'post' ? 'active' : ''}`}
-                  href="#post"
-                  onClick={() => onTabChange('post')}
+                  onClick={() => handleNavigation('post', '/dashboard#post')}
                 >
                   Job Post
                 </a>
@@ -142,28 +142,28 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onTabChange, activeTa
             <NavbarLink
               href="#find-job"
               className={`text-white hover:underline ${activeTab === 'filter' ? 'active' : ''}`}
-              onClick={() => onTabChange('filter')}
+              onClick={() => handleNavigation('filter', '/find-job')}
             >
               Filter Dashboard
             </NavbarLink>
             <NavbarLink
               href="#upload-cv"
               className={`text-white hover:underline ${activeTab === 'upload' ? 'active' : ''}`}
-              onClick={() => onTabChange('upload')}
+              onClick={() => handleNavigation('upload', '/upload-cv')}
             >
               Upload CV
             </NavbarLink>
             <NavbarLink
               href="#documents"
               className={`text-white hover:underline ${activeTab === 'documents' ? 'active' : ''}`}
-              onClick={() => onTabChange('documents')}
+              onClick={() => handleNavigation('documents', '/documents')}
             >
               Documents
             </NavbarLink>
             <NavbarLink
               href="#applications"
               className={`text-white hover:underline ${activeTab === 'applications' ? 'active' : ''}`}
-              onClick={() => onTabChange('applications')}
+              onClick={() => handleNavigation('applications', '/applications')}
             >
               Applications
             </NavbarLink>
@@ -172,7 +172,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onTabChange, activeTa
           <NavbarLink
             href="#documents"
             className={`text-white hover:underline ${activeTab === 'documents' ? 'active' : ''}`}
-            onClick={() => onTabChange('documents')}
+            onClick={() => handleNavigation('documents', '/documents')}
           >
             Documents
           </NavbarLink>

@@ -3,23 +3,55 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/app/redux/store";
-import { fetchFiles } from "../redux/letterSlice";
+import { fetchFiles, deleteFile } from "../redux/letterSlice";
 import { Button, Card, Dropdown } from "flowbite-react";
 import { HiDotsVertical, HiMail } from "react-icons/hi";
 import { Document, Page, pdfjs } from "react-pdf";
+import { useRouter } from "next/navigation"; 
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-const Documents: React.FC<{ onGenerate: () => void }> = ({ onGenerate }) => {
+interface DocumentsProps {
+  letterType: 'coverLetter' | 'motivationLetter';
+  onGenerate: (letterType: 'coverLetter' | 'motivationLetter') => void;
+}
+
+const Documents: React.FC<DocumentsProps> = ({ letterType, onGenerate }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { files, isLoading, error } = useSelector(
-    (state: RootState) => state.coverLetter
-  );
+  const router = useRouter(); 
+  const [files, setFiles] = useState<any[]>([]);
   const [numPages, setNumPages] = useState<number | null>(null);
+  const isLoading = useSelector((state: RootState) => state.letters.coverLetter.isLoading);
+  const error = useSelector((state: RootState) => state.letters.coverLetter.error);
 
   useEffect(() => {
-    dispatch(fetchFiles());
+    dispatch(fetchFiles())
+      .unwrap()
+      .then((data) => setFiles(data))
+      .catch((err) => console.error(err));
   }, [dispatch]);
+
+  const handleDelete = async (fileId: number) => {
+    try {
+      await dispatch(deleteFile(fileId)).unwrap();
+      setFiles(files.filter(file => file.id !== fileId));
+    } catch (err) {
+      console.error('Failed to delete file:', err);
+    }
+  };
+
+  const handleDownload = (fileUrl: string) => {
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = 'file.pdf'; 
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleViewDocument = (fileId: number, fileType: string) => {
+    router.push(`/document-view?id=${fileId}&type=${fileType}`);
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -34,21 +66,30 @@ const Documents: React.FC<{ onGenerate: () => void }> = ({ onGenerate }) => {
   };
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-start justify-start bg-[rgba(35,149,85,0.19)]">
-      <div className="sticky top-0 w-full flex justify-between items-center bg-white p-4 shadow-md z-10">
-        <h2 className="text-4xl font-bold mb-2">Your documents</h2>
-
-        <Button
-          type="submit"
-          className="rounded-full text-black"
-          style={{ backgroundColor: "#FFC424", color: "#000" }}
-          onClick={onGenerate}
-        >
-          Generate
-        </Button>
+    <div className="min-h-screen w-full flex flex-col items-start justify-start bg-[rgba(35,149,85,0.19)] p-4">
+      <div className="w-full flex justify-between items-center bg-white p-4 shadow-md mb-4">
+        <h2 className="text-2xl font-bold mb-2">Your documents</h2>
+        <div className="flex gap-4">
+          <Button
+            type="submit"
+            className="rounded-full text-black"
+            style={{ backgroundColor: "#FFC424", color: "#000" }}
+            onClick={() => onGenerate('coverLetter')}
+          >
+            Generate Cover Letter
+          </Button>
+          <Button
+            type="submit"
+            className="rounded-full text-black"
+            style={{ backgroundColor: "#FFC424", color: "#000" }}
+            onClick={() => onGenerate('motivationLetter')}
+          >
+            Generate Motivation Letter
+          </Button>
+        </div>
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {files.map((file) => (
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 w-full">
+        {files.map((file: any) => (
           <Card
             key={file.id}
             className="p-4 relative rounded border"
@@ -70,8 +111,12 @@ const Documents: React.FC<{ onGenerate: () => void }> = ({ onGenerate }) => {
                   />
                 }
               >
-                <Dropdown.Item>Edit</Dropdown.Item>
-                <Dropdown.Item onClick={() => []}>Delete</Dropdown.Item>
+                {file.file_type === 'Resume' ? (
+                  <Dropdown.Item onClick={() => handleDownload(file.file)}>Download</Dropdown.Item>
+                ) : (
+                  <Dropdown.Item onClick={() => handleViewDocument(file.id, file.file_type)}>View</Dropdown.Item>
+                )}
+                <Dropdown.Item onClick={() => handleDelete(file.id)}>Delete</Dropdown.Item>
               </Dropdown>
             </div>
             <h3 className="text-xl font-semibold truncate mt-6">

@@ -2,31 +2,37 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { Label, TextInput, Button, Card, Spinner, Alert } from "flowbite-react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { useDispatch, useSelector } from "react-redux";
-import { generateCoverLetterAPI, fetchFiles } from "../redux/letterSlice";
 import { RootState, AppDispatch } from "@/app/redux/store";
+import {
+  fetchFiles,
+  generateMotivationLetterAPI,
+  saveAndApplyAPI,
+} from "@/app/redux/letterSlice";
 
-interface CoverLetterFormProps {
-  onViewCoverLetter: () => void;
+interface MotivationLetterFormProps {
+  onViewLetter: () => void;
 }
 
-const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewCoverLetter }) => {
+const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLetter }) => {
   const [formData, setFormData] = useState({
-    full_name: "",
-    contact_info: "",
-    recipient_name: "",
-    company_name: "",
-    interest_reason: "",
-    relevant_experience: "",
-    top_skills: [] as string[],
-    major_accomplishment: "",
-    relevant_project: "",
-    unique_qualities: "",
+    name: "",
+    current_job_title: "",
+    position_applied_for: "",
+    job_attract_aspects: "",
+    specific_skills: "",
+    unique_skills: "",
+    company_mission_and_values: "",
+    long_term_career_aspirations: "",
+    availability_start_date: new Date(),
   });
 
+
   const dispatch = useDispatch<AppDispatch>();
-  const { generatedCoverLetter, files } = useSelector(
-    (state: RootState) => state.coverLetter
+  const { generatedMotivationLetter, files } = useSelector(
+    (state: RootState) => state.letters.motivationLetter
   );
   const [editableContent, setEditableContent] = useState("");
   const editableRef = useRef<HTMLDivElement>(null);
@@ -34,12 +40,13 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewCoverLetter }) 
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setEditableContent(generatedCoverLetter);
-  }, [generatedCoverLetter]);
+    setEditableContent(generatedMotivationLetter?.motivation_letter || "");
+  }, [generatedMotivationLetter]);
 
   useEffect(() => {
     dispatch(fetchFiles());
   }, [dispatch]);
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -49,25 +56,13 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewCoverLetter }) 
     }));
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const newSkill = (e.target as HTMLInputElement).value.trim();
-      if (newSkill && newSkill.length <= 10 && formData.top_skills.length < 3 && !formData.top_skills.includes(newSkill)) {
-        setFormData((prevData) => ({
-          ...prevData,
-          top_skills: [...prevData.top_skills, newSkill],
-        }));
-        (e.target as HTMLInputElement).value = ""; 
-      }
+  const handleDateChange = (date: Date | null) => {
+    if (date) {
+      setFormData((prevData) => ({
+        ...prevData,
+        availability_start_date: date,
+      }));
     }
-  };
-
-  const handleSkillRemove = (skill: string) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      top_skills: prevData.top_skills.filter((s) => s !== skill),
-    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -75,9 +70,15 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewCoverLetter }) 
     setIsLoading(true);
     setError(null);
     try {
-      await dispatch(generateCoverLetterAPI(formData)).unwrap();
-    } catch (err) {
-      setError("Failed to generate cover letter. Please try again.");
+      const formattedData = {
+        ...formData,
+        availability_start_date: formData.availability_start_date
+          .toISOString()
+          .split("T")[0],
+      };
+      await dispatch(generateMotivationLetterAPI(formattedData)).unwrap();
+    } catch (err: any) {
+      setError("Failed to generate motivation letter. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -87,32 +88,43 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewCoverLetter }) 
     setEditableContent(e.currentTarget.innerHTML);
   };
 
-  const handleSaveAndApply = () => {
-    dispatch(generateCoverLetterAPI({ ...formData, generatedCoverLetter: editableContent }));
-    onViewCoverLetter();
+
+  const handleSaveAndApply = async (fileId: number) => {
+    try {
+      const form = new FormData();
+      form.append("file_name", `${formData.current_job_title} Cover Letter`);
+      form.append("file_type", "Cover Letter");
+      form.append("details", editableContent);
+
+      await dispatch(saveAndApplyAPI({ id: fileId, formData: form })).unwrap();
+      onViewLetter();
+    } catch (err) {
+      setError("Failed to update cover letter. Please try again.");
+    }
   };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
       <div className="flex flex-col justify-start p-6 md:p-8 overflow-auto bg-white">
-        <h2 className="text-4xl font-bold mb-2">Create cover letter</h2>
+        <h2 className="text-4xl font-bold mb-2">
+          {`Title of Motivation Letter for ${formData.position_applied_for}`}
+        </h2>
         <p className="text-base font-normal text-gray-500 mb-4">
           Please, provide us with some answers to generate a perfect prompt for
-          your cover letter
+          your motivation letter
         </p>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {/* Form inputs */}
           <div>
             <Label
-              htmlFor="full_name"
+              htmlFor="name"
               className="font-bold text-gray-700 mb-2 block"
             >
               What is your full name?
             </Label>
             <TextInput
-              id="full_name"
+              id="name"
               type="text"
-              value={formData.full_name}
+              value={formData.name}
               onChange={handleInputChange}
               className="w-full bg-white rounded-2xl border-gray-300"
               required
@@ -120,15 +132,15 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewCoverLetter }) 
           </div>
           <div>
             <Label
-              htmlFor="contact_info"
+              htmlFor="current_job_title"
               className="font-bold text-gray-700 mb-2 block"
             >
-              What is your email address for contact purposes?
+              What is your current job title?
             </Label>
             <TextInput
-              id="contact_info"
-              type="email"
-              value={formData.contact_info}
+              id="current_job_title"
+              type="text"
+              value={formData.current_job_title}
               onChange={handleInputChange}
               className="w-full bg-white rounded-2xl border-gray-300"
               required
@@ -136,16 +148,15 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewCoverLetter }) 
           </div>
           <div>
             <Label
-              htmlFor="recipient_name"
+              htmlFor="position_applied_for"
               className="font-bold text-gray-700 mb-2 block"
             >
-              What is the name of the person you are addressing the cover letter
-              to?
+              What position are you applying for?
             </Label>
             <TextInput
-              id="recipient_name"
+              id="position_applied_for"
               type="text"
-              value={formData.recipient_name}
+              value={formData.position_applied_for}
               onChange={handleInputChange}
               className="w-full bg-white rounded-2xl border-gray-300"
               required
@@ -153,15 +164,15 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewCoverLetter }) 
           </div>
           <div>
             <Label
-              htmlFor="company_name"
+              htmlFor="job_attract_aspects"
               className="font-bold text-gray-700 mb-2 block"
             >
-              What is the name of the company you are applying to?
+              What aspects of the job attract you the most?
             </Label>
             <TextInput
-              id="company_name"
+              id="job_attract_aspects"
               type="text"
-              value={formData.company_name}
+              value={formData.job_attract_aspects}
               onChange={handleInputChange}
               className="w-full bg-white rounded-2xl border-gray-300"
               required
@@ -169,15 +180,15 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewCoverLetter }) 
           </div>
           <div>
             <Label
-              htmlFor="interest_reason"
+              htmlFor="specific_skills"
               className="font-bold text-gray-700 mb-2 block"
             >
-              Why are you interested in working for this company?
+              What specific skills make you a good fit for this role?
             </Label>
             <TextInput
-              id="interest_reason"
+              id="specific_skills"
               type="text"
-              value={formData.interest_reason}
+              value={formData.specific_skills}
               onChange={handleInputChange}
               className="w-full bg-white rounded-2xl border-gray-300"
               required
@@ -185,15 +196,15 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewCoverLetter }) 
           </div>
           <div>
             <Label
-              htmlFor="relevant_experience"
+              htmlFor="unique_skills"
               className="font-bold text-gray-700 mb-2 block"
             >
-              Can you describe your relevant experience for this position?
+              What unique skills do you possess that others might not?
             </Label>
             <TextInput
-              id="relevant_experience"
+              id="unique_skills"
               type="text"
-              value={formData.relevant_experience}
+              value={formData.unique_skills}
               onChange={handleInputChange}
               className="w-full bg-white rounded-2xl border-gray-300"
               required
@@ -201,48 +212,15 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewCoverLetter }) 
           </div>
           <div>
             <Label
-              htmlFor="top_skills"
+              htmlFor="company_mission_and_values"
               className="font-bold text-gray-700 mb-2 block"
             >
-              Top Skills (max 3)
+              What do you know about the company’s mission and values?
             </Label>
             <TextInput
-              id="top_skills"
+              id="company_mission_and_values"
               type="text"
-              onKeyDown={handleKeyDown}
-              className="w-full bg-white rounded-2xl border-gray-300"
-              placeholder="Enter skill and press Enter"
-            />
-            <div className="flex flex-wrap gap-2 mt-2">
-              {formData.top_skills.map((skill, index) => (
-                <div
-                  key={index}
-                  className="bg-green-500 text-white px-2 py-1 rounded-full flex items-center"
-                >
-                  <span>{skill}</span>
-                  <button
-                    type="button"
-                    className="ml-2 text-xs"
-                    onClick={() => handleSkillRemove(skill)}
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div>
-            <Label
-              htmlFor="major_accomplishment"
-              className="font-bold text-gray-700 mb-2 block"
-            >
-              Describe a major accomplishment or responsibility from your
-              previous role
-            </Label>
-            <TextInput
-              id="major_accomplishment"
-              type="text"
-              value={formData.major_accomplishment}
+              value={formData.company_mission_and_values}
               onChange={handleInputChange}
               className="w-full bg-white rounded-2xl border-gray-300"
               required
@@ -250,16 +228,15 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewCoverLetter }) 
           </div>
           <div>
             <Label
-              htmlFor="relevant_project"
+              htmlFor="long_term_career_aspirations"
               className="font-bold text-gray-700 mb-2 block"
             >
-              Describe a specific project or task you worked on that is relevant
-              to this job
+              What are your long-term career aspirations?
             </Label>
             <TextInput
-              id="relevant_project"
+              id="long_term_career_aspirations"
               type="text"
-              value={formData.relevant_project}
+              value={formData.long_term_career_aspirations}
               onChange={handleInputChange}
               className="w-full bg-white rounded-2xl border-gray-300"
               required
@@ -267,18 +244,17 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewCoverLetter }) 
           </div>
           <div>
             <Label
-              htmlFor="unique_qualities"
+              htmlFor="availability_start_date"
               className="font-bold text-gray-700 mb-2 block"
             >
-              What sets you apart as a candidate for this position?
+              When are you available to start working?
             </Label>
-            <TextInput
-              id="unique_qualities"
-              type="text"
-              value={formData.unique_qualities}
-              onChange={handleInputChange}
+            <DatePicker
+              id="availability_start_date"
+              selected={formData.availability_start_date}
+              onChange={handleDateChange}
+              dateFormat="yyyy-MM-dd"
               className="w-full bg-white rounded-2xl border-gray-300"
-              required
             />
           </div>
           <Button
@@ -289,7 +265,7 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewCoverLetter }) 
             {isLoading ? <Spinner aria-label="Loading" /> : "Generate"}
           </Button>
           {error && (
-            <Alert color="failure" withBorderAccent>
+            <Alert color="failure" className="mt-4">
               {error}
             </Alert>
           )}
@@ -297,7 +273,9 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewCoverLetter }) 
       </div>
       <div className="flex flex-col items-start justify-center w-full bg-[rgba(35,149,85,0.19)] p-4 md:p-8">
         <Card className="w-full max-w-2xl bg-white shadow-md rounded-2xl">
-          <h2 className="text-4xl font-bold mb-2">Title of Cover Letter</h2>
+          <h2 className="text-4xl font-bold mb-2">
+            {`Motivation Letter for ${formData.position_applied_for}`}
+          </h2>
           <div
             contentEditable
             suppressContentEditableWarning
@@ -308,21 +286,20 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewCoverLetter }) 
           >
             {editableContent}
           </div>
-          <div className="flex justify-between mt-4 border-t border-gray-200 pt-4">
-            <span>E: {formData.contact_info}</span>
-          </div>
         </Card>
-        {generatedCoverLetter && (
+        {generatedMotivationLetter && (
           <div className="mt-4 flex gap-4">
-            <Button onClick={handleSaveAndApply} className="bg-green-500 text-white rounded-full px-4 py-2">
+            <Button
+              onClick={() => handleSaveAndApply(files[0]?.id)}
+              className="bg-green-500 text-white rounded-full px-4 py-2"
+            >
               Save and Apply
             </Button>
           </div>
         )}
       </div>
-
     </div>
   );
 };
 
-export default CoverLetterForm;
+export default MotivationLetterForm;

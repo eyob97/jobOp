@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import FormSkeleton, { Field } from "@/app/components/FormSkeleton";
+import FormSkeleton, { Field } from "@/app/components/LandingPage/FormSkeleton";
 import PhoneNumberDialog from "@/app/components/PhoneNumberDialog";
 import "react-phone-input-2/lib/style.css";
 import { Button } from "flowbite-react";

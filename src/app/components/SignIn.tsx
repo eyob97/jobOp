@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { loginUser, sendOTP } from "@/app/redux/authSlice";
-import FormSkeleton from "@/app/components/FormSkeleton";
+import FormSkeleton from "@/app/components/LandingPage/FormSkeleton";
 
 interface FormErrors {
   general?: string;

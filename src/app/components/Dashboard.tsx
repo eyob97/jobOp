@@ -1,45 +1,68 @@
 "use client";
-
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import DashboardHeader from "@/app/components/DashboardHeader";
-import FilterDashboard from "@/app/components/FilterDashboard";
-import CoverLetterForm from "@/app/components/CoverLetterForm";
-import CoverLetterView from "@/app/components/CoverLetterView";
+import LetterView from "@/app/components/Letters/LetterView";
 import Documents from "@/app/components/Documents";
-import { UploadCVCard } from "./UploadCVDialog";
+import { UploadCVCard } from "./JobSeeker/UploadCVDialog";
 import withAuth from "./withAuth";
-import EmployerDashboard from "@/app/components/Employer/EmployerDashboard"; 
+import EmployerDashboard from "@/app/components/Employer/EmployerDashboard";
+import CoverLetterForm from "@/app/components/Letters/CoverLetterForm";
+import MotivationLetterForm from "@/app/components/Letters/MotivationLetter";
+import FilterDashboard from "@/app/components/JobSeeker/FilterDashboard";
+import ApplicationsTable from "@/app/components/JobSeeker/ApplicationTable";
 
 const Dashboard: React.FC = () => {
-  const { jobSeekerData } = useSelector((state: RootState) => state.resume);
-  const { generatedCoverLetter } = useSelector((state: RootState) => state.coverLetter);
   const user = useSelector((state: RootState) => state.auth?.user);
+  const selectedJob = useSelector((state: RootState) => state.jobs.selectedJob);
   const [activeTab, setActiveTab] = useState("filter");
-  const [viewCoverLetter, setViewCoverLetter] = useState(false);
-  const [showCoverLetterForm, setShowCoverLetterForm] = useState(false);
+  const [viewLetter, setViewLetter] = useState(false);
+  const [showLetterForm, setShowLetterForm] = useState(false);
+  const [letterType, setLetterType] = useState<'coverLetter' | 'motivationLetter'>('coverLetter');
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    setViewLetter(false);
+    setShowLetterForm(false);
+  };
+
+  const handleGenerate = (type: 'coverLetter' | 'motivationLetter') => {
+    setLetterType(type);
+    setShowLetterForm(true);
+  };
 
   const renderContent = () => {
     if (user?.user_type === 'Employer') {
       return <EmployerDashboard />;
     }
 
-    if (viewCoverLetter) {
-      return <CoverLetterView onBack={() => setViewCoverLetter(false)} />;
+    if (viewLetter) {
+      return <LetterView letterType={letterType} onBack={() => setViewLetter(false)} jobId={selectedJob?.id || 0} />;
     }
-    if (showCoverLetterForm) {
-      return <CoverLetterForm onViewCoverLetter={() => setViewCoverLetter(true)} />;
+
+    if (showLetterForm) {
+      if (letterType === 'coverLetter') {
+        return <CoverLetterForm onViewLetter={() => setViewLetter(true)} />;
+      } else {
+        return <MotivationLetterForm onViewLetter={() => setViewLetter(true)} />;
+      }
     }
+
     switch (activeTab) {
       case "filter":
         return <FilterDashboard />;
       case "upload":
         return <UploadCVCard />;
       case "documents":
-        return <Documents onGenerate={() => setShowCoverLetterForm(true)} />;
+        return (
+          <Documents
+            letterType={letterType}
+            onGenerate={handleGenerate}
+          />
+        );
       case "applications":
-        return <div>Applications Content</div>;
+        return <ApplicationsTable />;
       default:
         return null;
     }
@@ -47,7 +70,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <>
-      <DashboardHeader onTabChange={setActiveTab} activeTab={activeTab} userType={user?.user_type || 'defaultUserType'} />
+      <DashboardHeader onTabChange={handleTabChange} activeTab={activeTab} userType={user?.user_type || 'defaultUserType'} />
       <main className={`min-h-screen w-full flex flex-col items-center ${activeTab === "filter" ? "bg-gray-100" : ""}`}>
         <div className="w-full h-full">
           {renderContent()}

@@ -4,7 +4,7 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { Label, TextInput, Button, Checkbox, Card } from "flowbite-react";
 import Select from "react-select";
 import Image from "next/image";
-import Layout from "../layout";
+import Layout from "../../layout";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import Link from "next/link";

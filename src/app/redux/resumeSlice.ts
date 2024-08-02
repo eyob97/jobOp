@@ -59,7 +59,6 @@ export const fetchJobSeekerData = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await apiClient.get(`${API_URL}/api/job-seeker/`);
-      console.log("Job seeker data:", response.data);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || error.message);
@@ -75,7 +74,6 @@ export const createJobSeekerProfile = createAsyncThunk(
       if (response.status !== 200) {
         return rejectWithValue(response.data);
       }
-      console.log("Job seeker data save:", response.data);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || error.message);

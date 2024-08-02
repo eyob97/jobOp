@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import JobCard from "./JobCard";
-import SearchBar from "./SearchForm";
+import SearchBar from "../SearchForm";
 
 interface SearchCriteria {
   jobTitle: string;

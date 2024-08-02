@@ -14,13 +14,22 @@ interface Job {
   companyLogo: string;
   postedDate: string;
   expiryDate: string;
+}interface Applicant {
+  id: number;
+  job: {
+    job_title: string;
+  };
+  created_date: string;
+  status: string;
 }
+
 
 interface JobState {
   jobs: Job[];
   selectedJob: Job | null;
   isLoading: boolean;
   error: string | null;
+  applicants: Applicant[];
 }
 
 const initialState: JobState = {
@@ -28,6 +37,7 @@ const initialState: JobState = {
   selectedJob: null,
   isLoading: false,
   error: null,
+  applicants: [],
 };
 
 export const fetchJobs = createAsyncThunk(
@@ -47,6 +57,30 @@ export const fetchJobs = createAsyncThunk(
         postedDate: job.created_date,
         expiryDate: job.expiry_date,
       }));
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const applyForJob = createAsyncThunk(
+  "jobs/applyForJob",
+  async (applicationData: { job: number, resume: number, cover_letter?: number, motivation_letter?: number }, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.post(`${API_URL}/api/applicants/`, applicationData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const fetchApplicants = createAsyncThunk(
+  "jobs/fetchApplicants",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.get(`${API_URL}/api/applicants/`);
+      return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || error.message);
     }
@@ -78,7 +112,31 @@ const jobSlice = createSlice({
       .addCase(fetchJobs.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+      })
+      .addCase(applyForJob.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(applyForJob.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(applyForJob.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(fetchApplicants.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchApplicants.fulfilled, (state, action: PayloadAction<Applicant[]>) => {
+        state.isLoading = false;
+        state.applicants = action.payload;
+      })
+      .addCase(fetchApplicants.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
       });
+
   },
 });
 

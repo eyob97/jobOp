@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import DashboardHeader from "@/app/components/DashboardHeader";
-import Footer from "@/app/components/Footer";
-import JobCard from "@/app/components/JobCard";
-import JobDetails from "@/app/components/JobDetails";
+import Footer from "@/app/components/LandingPage/Footer";
+import JobCard from "@/app/components/JobSeeker/JobCard";
+import JobDetails from "@/app/components/JobSeeker/JobDetails";
 import SearchBar from "@/app/components/SearchForm";
 import { RootState } from "@/app/redux/store";
 import { useSelector } from "react-redux";
@@ -24,7 +24,7 @@ const JobDetailPage = () => {
   };
   const { jobSeekerData } = useSelector((state: RootState) => state.resume);
   const { generatedCoverLetter } = useSelector(
-    (state: RootState) => state.coverLetter
+    (state: RootState) => state.letters.coverLetter
   );
   const [activeTab, setActiveTab] = useState("filter");
   const [viewCoverLetter, setViewCoverLetter] = useState(false);

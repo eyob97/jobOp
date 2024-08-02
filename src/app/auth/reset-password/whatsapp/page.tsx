@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import FormSkeleton from "@/app/components/FormSkeleton";
+import FormSkeleton from "@/app/components/LandingPage/FormSkeleton";
 
 interface FormErrors {
   general?: string;

@@ -7,7 +7,6 @@ import JobSeekerProfileForm from "./JobSeekerProfileForm";
 import { useDispatch, useSelector } from "react-redux";
 import { setFile, uploadResume, fetchJobSeekerData, clearError } from "@/app/redux/resumeSlice";
 import { RootState, AppDispatch } from "@/app/redux/store";
-import FilterDashboard from "@/app/components/FilterDashboard";
 
 interface FormErrors {
   general?: string;
