@@ -5,7 +5,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 interface AuthState {
   isAuthenticated: boolean;
-  isLoading: boolean;
+  isLoading: boolean | null;
   error: string | null;
   user: {
     id: number;

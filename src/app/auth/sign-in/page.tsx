@@ -28,6 +28,9 @@ const SignIn: React.FC = () => {
     (state: RootState) => state.auth
   );
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   useEffect(() => {
     if (error) {
       setErrors({ general: error });
