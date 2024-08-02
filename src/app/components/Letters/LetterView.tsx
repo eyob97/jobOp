@@ -99,7 +99,6 @@ const LetterView: React.FC<LetterViewProps> = ({ letterType, onBack, jobId }) =>
           Apply
         </Button>
       </div>
-      <ApplyModal show={showApplyModal} onClose={() => setShowApplyModal(false)} jobId={jobId} onGenerate={handleGenerate} />
     </div>
   );
 };

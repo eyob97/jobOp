@@ -31,7 +31,7 @@ export interface Field {
     | "email"
     | "numeric"
     | "decimal";
-    customComponent?: React.ReactNode;
+  customComponent?: React.ReactNode;
 }
 
 interface FormSkeletonProps {
@@ -44,8 +44,10 @@ interface FormSkeletonProps {
   additionalElements?: React.ReactNode;
   generalError?: string;
   showResend?: boolean;
-  onResend?: () => void;  showTabs?: boolean;
-  initialTab?: string;}
+  onResend?: () => void;
+  showTabs?: boolean;
+  initialTab?: string;
+}
 
 const FormSkeleton: React.FC<FormSkeletonProps> = ({
   title,
@@ -57,9 +59,11 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
   additionalElements,
   generalError,
   showResend = false,
-  onResend,  showTabs = false,
+  onResend,
+  showTabs = false,
   initialTab = "email",
-}) => {  const [tab, setTab] = useState(initialTab);
+}) => {
+  const [tab, setTab] = useState(initialTab);
 
   useEffect(() => {
     setTab(initialTab);
@@ -81,7 +85,10 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
             layout="fill"
             objectFit="cover"
             className="absolute inset-0 w-full h-full"
-                  loading="lazy"
+            loading="lazy"
+            quality={50}
+            placeholder="blur"
+            blurDataURL="/landing_assets/images/Frame 4.svg"
           />
         </div>
         <div className="flex items-start justify-center p-4 md:p-8 overflow-auto">

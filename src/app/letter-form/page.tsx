@@ -1,17 +1,13 @@
-import React, { Suspense } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
 
 const LetterFormPage = dynamic(() => import("@/app/components/Letters/LetterFormPage"), {
-  ssr: false, 
-  loading: () => <div>Loading...</div>, 
+  ssr: false,
+  loading: () => <div>Loading...</div>,
 });
 
 const Page: React.FC = () => {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <LetterFormPage />
-    </Suspense>
-  );
+  return <LetterFormPage />;
 };
 
 export default Page;

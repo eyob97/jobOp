@@ -1,5 +1,6 @@
-"use client"
-import React, { useEffect, useState, Suspense } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -9,7 +10,6 @@ const GenerateLetterPage = dynamic(() => import("./GenerateLetterPage"), {
 });
 
 const LetterFormPage: React.FC = () => {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const page = searchParams.get('page');
   const [letterType, setLetterType] = useState<'coverLetter' | 'motivationLetter'>('coverLetter');
@@ -20,11 +20,7 @@ const LetterFormPage: React.FC = () => {
     }
   }, [page]);
 
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <GenerateLetterPage letterType={letterType} />
-    </Suspense>
-  );
+  return <GenerateLetterPage letterType={letterType} />;
 };
 
 export default LetterFormPage;

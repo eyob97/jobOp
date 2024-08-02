@@ -12,7 +12,6 @@ import CoverLetterForm from "@/app/components/Letters/CoverLetterForm";
 import MotivationLetterForm from "@/app/components/Letters/MotivationLetter";
 import FilterDashboard from "@/app/components/JobSeeker/FilterDashboard";
 import ApplicationsTable from "@/app/components/JobSeeker/ApplicationTable";
-
 const Dashboard: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth?.user);
   const selectedJob = useSelector((state: RootState) => state.jobs.selectedJob);

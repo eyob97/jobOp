@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -28,11 +29,6 @@ const GenerateLetterPage: React.FC<{ letterType: 'coverLetter' | 'motivationLett
   const onBack = () => {
     setViewLetter(false);
     router.push("/dashboard");
-  };
-
-  const handleGenerate = (type: 'coverLetter' | 'motivationLetter') => {
-    setViewLetter(false);
-    router.push(`/letter-form?page=${type}`);
   };
 
   return (
