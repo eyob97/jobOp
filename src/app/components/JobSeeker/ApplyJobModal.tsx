@@ -19,7 +19,7 @@ interface ApplyModalProps {
 
 const ApplyModal: React.FC<ApplyModalProps> = ({ show, onClose, jobId, onGenerate }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter(); 
+  const router = useRouter();
   const { files } = useSelector((state: RootState) => state.letters.coverLetter);
   const { hasUploadedFile } = useSelector((state: RootState) => state.resume);
   const [selectedResume, setSelectedResume] = useState<number | null>(null);
@@ -32,6 +32,7 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ show, onClose, jobId, onGenerat
   useEffect(() => {
     if (show) {
       dispatch(fetchFiles());
+      setError(null); 
     }
   }, [show, dispatch]);
 
@@ -77,6 +78,7 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ show, onClose, jobId, onGenerat
         await dispatch(applyForJob(applicationData)).unwrap();
         setError(null);
         onClose();
+        router.push("/dashboard#applications");
       } catch (err) {
         setError("Failed to apply for the job. Please try again.");
       }
@@ -90,7 +92,7 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ show, onClose, jobId, onGenerat
   };
 
   return (
-    <Modal show={show} onClose={onClose} size="lg" className="rounded-4xl">
+    <Modal show={show} onClose={() => { onClose(); setError(null); }} size="lg" className="rounded-4xl">
       <Modal.Header>
         <h2 className="text-3xl font-bold">Apply</h2>
       </Modal.Header>
@@ -145,6 +147,11 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ show, onClose, jobId, onGenerat
               onChange={handleFileUpload}
               className="mt-2"
             />
+            {uploadedResume && (
+              <div className="mt-2">
+                <p className="text-gray-600">{uploadedResume.name}</p>
+              </div>
+            )}
           </div>
           <div>
             <Label htmlFor="coverLetterFile" className="block mb-2">
@@ -183,7 +190,7 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ show, onClose, jobId, onGenerat
         </div>
       </Modal.Body>
       <Modal.Footer className="flex justify-between">
-        <Button color="gray" className="rounded-full" onClick={onClose}>
+        <Button color="gray" className="rounded-full" onClick={() => { onClose(); setError(null); }}>
           Cancel
         </Button>
         <CustomButton onClick={handleApply} disabled={isButtonDisabled}>

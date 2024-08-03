@@ -15,6 +15,7 @@ import FilterDashboard from "@/app/components/JobSeeker/FilterDashboard";
 import ApplicationsTable from "@/app/components/JobSeeker/ApplicationTable";
 import JobPostForm from "./Employer/JobPostForm";
 import { UploadJobCard } from "./Employer/UploadJob";
+import DashboardFooter from "./DashboardFooter";
 
 const Dashboard: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth?.user);
@@ -77,14 +78,15 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <>
+<div key='uniqueKey'>
       <DashboardHeader onTabChange={handleTabChange} activeTab={activeTab} userType={user?.user_type || 'defaultUserType'} />
       <main className={`min-h-screen w-full flex flex-col items-center ${activeTab === "upload" || activeTab === "upload-job" ? "bg-green-700" : "bg-gray-100"}`}>
         <div className="w-full h-full">
           {renderContent()}
         </div>
       </main>
-    </>
+      {/* <DashboardFooter/> */}
+    </div>
   );
 };
 

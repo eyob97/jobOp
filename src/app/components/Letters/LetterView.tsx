@@ -20,7 +20,6 @@ const LetterView: React.FC<LetterViewProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const letterState = useSelector((state: RootState) => state.letters);
-  const [showApplyModal, setShowApplyModal] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -32,7 +31,6 @@ const LetterView: React.FC<LetterViewProps> = ({
   const fileData = letterState.coverLetter.files.find(
     (file) => file.id === jobId
   );
-
 
   const downloadAsPDF = () => {
     const input = document.getElementById("letter-content");
@@ -50,15 +48,13 @@ const LetterView: React.FC<LetterViewProps> = ({
     }
   };
 
-  const handleApply = () => {
-    router.push(`/dashboard`);
+  const handleContinue = () => {
+    router.push(`/dashboard#documents`);
   };
 
   if (!fileData) return <div>Loading...</div>;
 
   const getLetterContent = () => {
-
-
     if (
       fileData &&
       fileData.file_type.toLowerCase() === letterType.toLowerCase()
@@ -106,9 +102,9 @@ const LetterView: React.FC<LetterViewProps> = ({
         </Button>
         <Button
           className="bg-yellow-400 text-black rounded-full px-4 py-2"
-          onClick={handleApply}
+          onClick={handleContinue}
         >
-          Apply
+          Go to Dashboard
         </Button>
       </div>
     </div>

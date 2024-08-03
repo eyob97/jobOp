@@ -96,10 +96,7 @@ const SignIn: React.FC = () => {
   ];
 
   return (
-    <div>
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
+
         <FormSkeleton
           title="Sign In"
           subtitle={
@@ -123,11 +120,6 @@ const SignIn: React.FC = () => {
           showResend={showResend}
           onResend={handleResend}
         />
-      )}
-      {errors.general && (
-        <div className="text-red-500 mt-4">{errors.general}</div>
-      )}
-    </div>
   );
 };
 
