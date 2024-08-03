@@ -14,7 +14,6 @@ import {
 import { Button } from "flowbite-react";
 import { MapTrifold, CalendarBlank, Timer } from "phosphor-react";
 import CustomButton from "../CustomButton";
-// import ApplyModal from "./ApplyJobModal";
 import { RootState } from "../../redux/store";
 import { setSelectedJob } from "../../redux/jobSlice";
 
@@ -36,10 +35,7 @@ const JobDetails: React.FC = () => {
     setShowModal(false);
   };
 
-  const handleGenerate = (letterType: 'coverLetter' | 'motivationLetter') => {
 
-    // router.push(`/generate/${letterType}`);
-  };
 
   return (
     <div className="bg-white shadow-md rounded-lg p-12 mt-4">
@@ -60,7 +56,7 @@ const JobDetails: React.FC = () => {
                   @ {job.company}{" "}
                   <span
                     className={`px-2 py-1 rounded ${
-                      job.type === "Part-time"
+                      job.type === "Part Time"
                         ? "bg-blue-200 text-blue-800"
                         : "bg-green-200 text-green-800"
                     }`}

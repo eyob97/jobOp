@@ -416,14 +416,14 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
             <div className="flex items-center">
               <input
                 type="radio"
-                id="part-time"
+                id="Part Time"
                 name="preference"
-                value="part-time"
+                value="Part Time"
                 className="mr-2"
-                checked={profileData.work_status === "part-time"}
+                checked={profileData.work_status === "Part Time"}
                 onChange={handleProfileChange}
               />
-              <Label htmlFor="part-time">Part time</Label>
+              <Label htmlFor="Part Time">Part time</Label>
             </div>
             <div className="flex items-center">
               <input

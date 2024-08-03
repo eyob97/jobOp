@@ -58,7 +58,7 @@ const ConfirmCode: React.FC = () => {
           router.push("/auth/sign-in");
         }, 2000);
       } else {
-        const payload = resultAction.payload as APIErrorResponse; // Cast payload to APIErrorResponse
+        const payload = resultAction.payload as APIErrorResponse; 
         const normalizedErrors: FormErrors = {};
         if (payload.otp) {
           normalizedErrors.code = payload.otp[0];

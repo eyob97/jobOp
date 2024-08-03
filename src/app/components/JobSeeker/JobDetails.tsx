@@ -60,7 +60,7 @@ const JobDetails: React.FC = () => {
                   @ {job.company}{" "}
                   <span
                     className={`px-2 py-1 rounded ${
-                      job.type === "Part-time"
+                      job.type === "Part Time"
                         ? "bg-blue-200 text-blue-800"
                         : "bg-green-200 text-green-800"
                     }`}

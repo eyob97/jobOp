@@ -77,6 +77,7 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
     }
   };
 
+
   const createNewJobPost = async () => {
     const resultAction = await dispatch(createJobPost(jobPostData));
 

@@ -153,6 +153,7 @@ const ResetPasswordPage = () => {
       onResend={handleResend}
       initialTab={initialTab}
       showTabs={true}
+      isResetPassword={true}
       additionalElements={
         <div className="text-center mt-4">
           {message && <p className="text-green-500">{message}</p>}

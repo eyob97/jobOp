@@ -35,7 +35,6 @@ const JobCard: React.FC<JobCardProps> = ({ searchCriteria }) => {
     const matchesFilter = searchCriteria.filter ? job.type === searchCriteria.filter : true;
     return matchesTitle && matchesLocation && matchesFilter;
   });
-
   const toggleSaveJob = (jobId: string, event: React.MouseEvent) => {
     event.stopPropagation();
     setSavedJobs(prevSavedJobs => {
@@ -60,7 +59,7 @@ const JobCard: React.FC<JobCardProps> = ({ searchCriteria }) => {
       {error && <p>Error: {error}</p>}
       {filteredJobs.map((job) => (
         <Card key={job.id} className="max-w-sm cursor-pointer" onClick={() => handleJobClick(job.id)}>
-          <div className="flex justify-between items-center mb-2">
+           <div className="flex justify-between items-center mb-2">
             <h3 className="text-lg font-medium">{job.title}</h3>
           </div>
           <div className="flex justify-between items-center mb-2">

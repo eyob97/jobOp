@@ -47,6 +47,7 @@ interface FormSkeletonProps {
   onResend?: () => void;
   showTabs?: boolean;
   initialTab?: string;
+  isResetPassword?: boolean;
 }
 
 const FormSkeleton: React.FC<FormSkeletonProps> = ({
@@ -62,6 +63,7 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
   onResend,
   showTabs = false,
   initialTab = "email",
+  isResetPassword = false, 
 }) => {
   const [tab, setTab] = useState(initialTab);
 
@@ -69,12 +71,14 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
     setTab(initialTab);
   }, [initialTab]);
 
-  const updatedFields = fields.filter((field) => {
-    if (tab === "email") {
-      return field.id !== "phone";
-    }
-    return field.id !== "email";
-  });
+  const updatedFields = isResetPassword
+    ? fields.filter((field) => {
+        if (tab === "email") {
+          return field.id !== "phone";
+        }
+        return field.id !== "email";
+      })
+    : fields;
 
   return (
     <Layout>
@@ -98,7 +102,7 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
             <p className="text-base font-normal text-gray-500 mb-4">
               {subtitle}
             </p>
-            {showTabs && (
+            {showTabs && isResetPassword && (
               <div className="flex mb-4">
                 <button
                   className={`px-4 py-2 text-sm ${

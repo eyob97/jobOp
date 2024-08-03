@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { Dropdown, Button, TextInput } from "flowbite-react";
-import {
-  HiSearch,
-  HiOutlineLocationMarker,
-  HiOutlineAdjustments,
-} from "react-icons/hi";
+import { HiSearch, HiOutlineLocationMarker, HiOutlineAdjustments } from "react-icons/hi";
 import CustomButton from "./CustomButton";
 
 interface SearchBarProps {
@@ -65,8 +61,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           inline={true}
           className="relative lg:w-auto"
         >
-          <Dropdown.Item onClick={() => handleFilterSelect('Full-time')}>Full Time</Dropdown.Item>
-          <Dropdown.Item onClick={() => handleFilterSelect('Part-time')}>Part Time</Dropdown.Item>
+          <Dropdown.Item onClick={() => handleFilterSelect('Full Time')}>Full Time</Dropdown.Item>
+          <Dropdown.Item onClick={() => handleFilterSelect('Part Time')}>Part Time</Dropdown.Item>
           <Dropdown.Item onClick={() => handleFilterSelect('Remote')}>Remote</Dropdown.Item>
         </Dropdown>
       </div>
