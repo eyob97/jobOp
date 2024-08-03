@@ -13,7 +13,7 @@ interface FormErrors {
 }
 
 const ConfirmCode: React.FC = () => {
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
   const [message, setMessage] = useState("");
   const router = useRouter();
@@ -22,10 +22,19 @@ const ConfirmCode: React.FC = () => {
   const { error } = useSelector((state: RootState) => state.auth);
 
   const email = searchParams.get("email");
+  interface APIErrorResponse {
+    otp?: string[];
+    general?: string;
+  }
 
   useEffect(() => {
     if (error) {
-      setErrors({ general: error });
+      const apiError = error as APIErrorResponse;
+      if (apiError.otp) {
+        setErrors({ code: apiError.otp[0] });
+      } else {
+        setErrors({ general: apiError.general || "An error occurred." });
+      }
     }
   }, [error]);
 
@@ -46,10 +55,17 @@ const ConfirmCode: React.FC = () => {
       if (verifyOTP.fulfilled.match(resultAction)) {
         setMessage("Verification successful. Redirecting...");
         setTimeout(() => {
-          router.push('/auth/sign-in');
-        }, 2000); 
+          router.push("/auth/sign-in");
+        }, 2000);
       } else {
-        setErrors({ general: resultAction.payload as string });
+        const payload = resultAction.payload as APIErrorResponse; // Cast payload to APIErrorResponse
+        const normalizedErrors: FormErrors = {};
+        if (payload.otp) {
+          normalizedErrors.code = payload.otp[0];
+        } else {
+          normalizedErrors.general = payload.general || "An error occurred.";
+        }
+        setErrors(normalizedErrors);
       }
     } catch (err: any) {
       setErrors({ general: err.message || "An unexpected error occurred." });
@@ -58,18 +74,20 @@ const ConfirmCode: React.FC = () => {
 
   const fields: Field[] = [
     {
-      id: 'code',
-      label: 'Confirmation Code',
-      type: 'text',
-      placeholder: 'Enter the 6-digit code',
+      id: "code",
+      label: "Confirmation Code",
+      type: "text",
+      placeholder: "Enter the 6-digit code",
       value: code,
       required: true,
-      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setCode(e.target.value),
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+        setCode(e.target.value),
+      error: errors.code,
     },
   ];
 
   return (
-    <>
+    <div>
       <FormSkeleton
         title="Confirm Code"
         subtitle="Enter the confirmation code sent to your email"
@@ -78,10 +96,8 @@ const ConfirmCode: React.FC = () => {
         onSubmit={handleSubmit}
         generalError={errors.general}
       />
-      {message && (
-        <div className="text-green-500 mt-4">{message}</div>
-      )}
-    </>
+      {message && <div className="text-green-500 mt-4">{message}</div>}
+    </div>
   );
 };
 

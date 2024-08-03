@@ -62,8 +62,8 @@ const EnterCodePage: React.FC = () => {
     if (verifyOTP.fulfilled.match(resultAction)) {
       setMessage("Verification successful. Redirecting...");
       setTimeout(() => {
-        router.push('/auth/sign-in');
-      }, 2000); 
+        router.push("/auth/sign-in");
+      }, 2000);
     } else {
       setErrors({ code: resultAction.payload as string });
     }
@@ -77,7 +77,7 @@ const EnterCodePage: React.FC = () => {
 
     const resultAction = await dispatch(sendOTP(payload));
     if (sendOTP.fulfilled.match(resultAction)) {
-      setMessage('OTP sent successfully.');
+      setMessage("OTP sent successfully.");
     } else {
       setMessage(resultAction.payload as string);
     }
@@ -94,20 +94,24 @@ const EnterCodePage: React.FC = () => {
       onChange: handleChange,
       error: errors.code,
       maxLength: 6,
-      pattern: "\\d{6}", 
-      inputMode: "numeric", 
+      pattern: "\\d{6}",
+      inputMode: "numeric",
     },
   ];
 
   return (
-    <>
+    <div>
       <FormSkeleton
         title="Enter Code"
         subtitle={
           <span>
             Provide the code we just sent to your email <br />
             Didn’t get a code?{" "}
-            <a href="#" className="text-[#116034] bold-text" onClick={handleResend}>
+            <a
+              href="#"
+              className="text-[#116034] bold-text"
+              onClick={handleResend}
+            >
               Send again
             </a>
           </span>
@@ -116,10 +120,9 @@ const EnterCodePage: React.FC = () => {
         buttonText="Submit"
         onSubmit={handleSubmit}
         showCheckbox={false}
-        generalError={errors.general} 
-      /></>
-    
-
+        generalError={errors.general}
+      />
+    </div>
   );
 };
 

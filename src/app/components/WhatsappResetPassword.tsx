@@ -80,7 +80,7 @@ const EnterOTPComponent = () => {
         }
       } catch (parseError) {
         console.error("Error parsing response:", responseText);
-        setErrors({ general: 'Failed to reset password' });
+        setErrors({ general: "Failed to reset password" });
       }
     } catch (error) {
       console.error("Error resetting password:", error);
@@ -117,7 +117,7 @@ const EnterOTPComponent = () => {
       value: formData.new_password,
       required: true,
       onChange: handleChange,
-      error: errors.new_password, 
+      error: errors.new_password,
     },
     {
       id: "confirm_password",
@@ -127,7 +127,7 @@ const EnterOTPComponent = () => {
       value: formData.confirm_password,
       required: true,
       onChange: handleChange,
-      error: errors.confirm_password, 
+      error: errors.confirm_password,
     },
   ];
 

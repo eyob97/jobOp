@@ -58,9 +58,6 @@ const SignUpPage = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading, error } = useSelector((state: RootState) => state.auth);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
   useEffect(() => {
     if (error) {
       setErrors({ general: error });
@@ -295,7 +292,7 @@ const SignUpPage = () => {
   );
 
   return (
-    <>
+    <div>
       <FormSkeleton
         title="Sign Up"
         subtitle={
@@ -323,7 +320,7 @@ const SignUpPage = () => {
         onClose={() => setPhoneDialogOpen(false)}
         onSubmit={handlePhoneNumberSubmit}
       />
-    </>
+    </div>
   );
 };
 

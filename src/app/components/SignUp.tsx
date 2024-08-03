@@ -292,7 +292,7 @@ const SignUpPage = () => {
   );
 
   return (
-    <>
+    <div>
       <FormSkeleton
         title="Sign Up"
         subtitle={
@@ -320,7 +320,7 @@ const SignUpPage = () => {
         onClose={() => setPhoneDialogOpen(false)}
         onSubmit={handlePhoneNumberSubmit}
       />
-    </>
+    </div>
   );
 };
 

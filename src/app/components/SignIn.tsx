@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/app/redux/store";
 import { loginUser, sendOTP } from "@/app/redux/authSlice";
 import FormSkeleton from "@/app/components/LandingPage/FormSkeleton";
+import Link from "next/link";
 
 interface FormErrors {
   general?: string;
@@ -96,7 +96,7 @@ const SignIn: React.FC = () => {
   ];
 
   return (
-    <>
+    <div>
       {isLoading ? (
         <div>Loading...</div>
       ) : (
@@ -127,7 +127,7 @@ const SignIn: React.FC = () => {
       {errors.general && (
         <div className="text-red-500 mt-4">{errors.general}</div>
       )}
-    </>
+    </div>
   );
 };
 

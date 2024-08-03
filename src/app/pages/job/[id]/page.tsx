@@ -31,11 +31,11 @@ const JobDetailPage = () => {
   const user = useSelector((state: RootState) => state.auth?.user);
   return (
     <>
-<DashboardHeader
-  onTabChange={setActiveTab}
-  activeTab={activeTab}
-  userType={user?.user_type || 'Job Seeker'} 
-/>
+      <DashboardHeader
+        onTabChange={setActiveTab}
+        activeTab={activeTab}
+        userType={user?.user_type || "Job Seeker"}
+      />
 
       <main
         className={`min-h-screen w-full flex flex-col items-center bg-gray-100`}

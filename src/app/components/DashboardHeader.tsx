@@ -47,7 +47,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const linkClasses = (tab: string) => ({
     color: activeTab === tab ? "rgba(255, 196, 36, 1)" : "white",
     transform: activeTab === tab ? "translateY(-2px)" : "none",
-    transition: "transform 0.2s, color 0.2s"
+    transition: "transform 0.2s, color 0.2s",
   });
 
   return (
@@ -107,13 +107,22 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   </NavbarLink>
                 </>
               ) : (
-                <NavbarLink
-                  href="/dashboard#post"
-                  style={linkClasses("post")}
-                  onClick={() => handleNavigation("post", "/dashboard#post")}
-                >
-                  Job Post
-                </NavbarLink>
+                <>
+                  <NavbarLink
+                    href="/dashboard#post"
+                    style={linkClasses("post")}
+                    onClick={() => handleNavigation("post", "/dashboard#post")}
+                  >
+                    Job Post
+                  </NavbarLink>
+                  <NavbarLink
+                    href="/dashboard#upload-job"
+                    style={linkClasses("upload-job")}
+                    onClick={() => handleNavigation("upload-job", "/dashboard#upload-job")}
+                  >
+                    Job Post
+                  </NavbarLink>
+                </>
               )}
             </ul>
           </NavbarCollapse>

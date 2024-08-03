@@ -75,6 +75,7 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
     }
     return field.id !== "email";
   });
+
   return (
     <Layout>
       <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
@@ -141,7 +142,7 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
               </div>
             )}
             <form onSubmit={onSubmit} className="flex flex-col gap-4">
-              {fields.map((field) => (
+              {updatedFields.map((field) => (
                 <div key={field.id}>
                   <div className="mb-2 block">
                     <Label

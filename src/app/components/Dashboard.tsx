@@ -13,6 +13,8 @@ import CoverLetterForm from "@/app/components/Letters/CoverLetterForm";
 import MotivationLetterForm from "@/app/components/Letters/MotivationLetter";
 import FilterDashboard from "@/app/components/JobSeeker/FilterDashboard";
 import ApplicationsTable from "@/app/components/JobSeeker/ApplicationTable";
+import JobPostForm from "./Employer/JobPostForm";
+import { UploadJobCard } from "./Employer/UploadJob";
 
 const Dashboard: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth?.user);
@@ -35,7 +37,12 @@ const Dashboard: React.FC = () => {
 
   const renderContent = () => {
     if (user?.user_type === 'Employer') {
-      return <EmployerDashboard />;
+      switch (activeTab) {
+        case "upload-job":
+          return <UploadJobCard />; 
+        default:
+          return <EmployerDashboard />;
+      }
     }
 
     if (viewLetter) {
@@ -72,7 +79,7 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <DashboardHeader onTabChange={handleTabChange} activeTab={activeTab} userType={user?.user_type || 'defaultUserType'} />
-      <main className={`min-h-screen w-full flex flex-col items-center ${activeTab === "filter" ? "bg-gray-100" : ""}`}>
+      <main className={`min-h-screen w-full flex flex-col items-center ${activeTab === "upload" || activeTab === "upload-job" ? "bg-green-700" : "bg-gray-100"}`}>
         <div className="w-full h-full">
           {renderContent()}
         </div>

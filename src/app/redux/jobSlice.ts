@@ -14,7 +14,9 @@ interface Job {
   companyLogo: string;
   postedDate: string;
   expiryDate: string;
-}interface Applicant {
+}
+
+interface Applicant {
   id: number;
   job: {
     job_title: string;
@@ -22,7 +24,6 @@ interface Job {
   created_date: string;
   status: string;
 }
-
 
 interface JobState {
   jobs: Job[];
@@ -92,7 +93,6 @@ export const fetchApplicants = createAsyncThunk(
           case 401:
             errorMessage = 'Unauthorized. Please log in and try again.';
             break;
-
           default:
             errorMessage = 'Applicants not found. Please try again later.';
             break;
@@ -102,6 +102,18 @@ export const fetchApplicants = createAsyncThunk(
       }
 
       return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+export const createJobPost = createAsyncThunk(
+  "jobs/createJobPost",
+  async (jobData: any, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.post(`${API_URL}/api/jobs/`, jobData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
@@ -154,8 +166,19 @@ const jobSlice = createSlice({
       .addCase(fetchApplicants.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
+      })
+      .addCase(createJobPost.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(createJobPost.fulfilled, (state, action: PayloadAction<Job>) => {
+        state.isLoading = false;
+        state.jobs.push(action.payload);
+      })
+      .addCase(createJobPost.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
       });
-
   },
 });
 
