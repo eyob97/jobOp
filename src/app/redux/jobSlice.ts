@@ -82,7 +82,26 @@ export const fetchApplicants = createAsyncThunk(
       const response = await apiClient.get(`${API_URL}/api/applicants/`);
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data || error.message);
+      let errorMessage = 'An unknown error occurred';
+
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            errorMessage = 'Bad request. Please check the submitted data.';
+            break;
+          case 401:
+            errorMessage = 'Unauthorized. Please log in and try again.';
+            break;
+
+          default:
+            errorMessage = 'Applicants not found. Please try again later.';
+            break;
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      return rejectWithValue(errorMessage);
     }
   }
 );

@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/app/redux/store";
@@ -29,6 +27,7 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ show, onClose, jobId, onGenerat
   const [selectedCoverLetter, setSelectedCoverLetter] = useState<number | null>(null);
   const [selectedMotivationLetter, setSelectedMotivationLetter] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
 
   useEffect(() => {
     if (show) {
@@ -42,13 +41,21 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ show, onClose, jobId, onGenerat
     }
   }, [hasUploadedFile, dispatch]);
 
+  useEffect(() => {
+    if ((selectedResume || uploadedResume) && !error) {
+      setIsButtonDisabled(false);
+    } else {
+      setIsButtonDisabled(true);
+    }
+  }, [selectedResume, uploadedResume, error]);
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type === "application/pdf") {
       setUploadedResume(file);
       try {
         await dispatch(uploadResume(file)).unwrap();
-        setError(null); 
+        setError(null);
       } catch (err) {
         setError("Failed to upload the resume. Please try again.");
       }
@@ -58,28 +65,28 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ show, onClose, jobId, onGenerat
   };
 
   const handleApply = async () => {
-    if ((selectedResume || uploadedResume) && (selectedCoverLetter || selectedMotivationLetter)) {
-      const applicationData = {
+    if ((selectedResume || uploadedResume)) {
+      const applicationData: any = {
         job: jobId,
-        resume: selectedResume!,
+        resume: selectedResume ?? uploadedResume,
         cover_letter: selectedCoverLetter || undefined,
         motivation_letter: selectedMotivationLetter || undefined,
       };
 
       try {
         await dispatch(applyForJob(applicationData)).unwrap();
-        setError(null); 
+        setError(null);
         onClose();
       } catch (err) {
         setError("Failed to apply for the job. Please try again.");
       }
     } else {
-      setError("Please select or upload a resume and at least one letter.");
+      setError("Please select or upload a resume.");
     }
   };
 
   const handleGenerate = (type: 'coverLetter' | 'motivationLetter') => {
-    router.push(`/letter-form?page=${type}`); 
+    router.push(`/letter-form?page=${type}`);
   };
 
   return (
@@ -100,7 +107,7 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ show, onClose, jobId, onGenerat
             <Button
               type="button"
               className="text-green-600"
-              onClick={() => handleGenerate('coverLetter')} 
+              onClick={() => handleGenerate('coverLetter')}
             >
               Generate
             </Button>
@@ -115,7 +122,7 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ show, onClose, jobId, onGenerat
             <Button
               type="button"
               className="text-green-600"
-              onClick={() => handleGenerate('motivationLetter')} 
+              onClick={() => handleGenerate('motivationLetter')}
             >
               Generate
             </Button>
@@ -179,7 +186,7 @@ const ApplyModal: React.FC<ApplyModalProps> = ({ show, onClose, jobId, onGenerat
         <Button color="gray" className="rounded-full" onClick={onClose}>
           Cancel
         </Button>
-        <CustomButton onClick={handleApply}>
+        <CustomButton onClick={handleApply} disabled={isButtonDisabled}>
           Apply <FaArrowRight className="mt-1" />
         </CustomButton>
       </Modal.Footer>

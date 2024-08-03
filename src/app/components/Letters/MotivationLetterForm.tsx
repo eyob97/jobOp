@@ -39,18 +39,15 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("Generated motivation letter updated", generatedMotivationLetter);
     setEditableContent(generatedMotivationLetter?.motivation_letter || "");
   }, [generatedMotivationLetter]);
 
   useEffect(() => {
-    console.log("Fetching files");
     dispatch(fetchFiles());
   }, [dispatch]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    console.log(`Input change: ${id} = ${value}`);
     setFormData((prevData) => ({
       ...prevData,
       [id]: value,
@@ -58,7 +55,6 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
   };
 
   const handleDateChange = (date: Date | null) => {
-    console.log(`Date change: ${date}`);
     if (date) {
       setFormData((prevData) => ({
         ...prevData,
@@ -78,10 +74,8 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
           .toISOString()
           .split("T")[0],
       };
-      console.log("Submitting form data", formattedData);
       await dispatch(generateMotivationLetterAPI(formattedData)).unwrap();
     } catch (err: any) {
-      console.error("Failed to generate motivation letter", err);
       setError("Failed to generate motivation letter. Please try again.");
     } finally {
       setIsLoading(false);
@@ -89,12 +83,10 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
   };
 
   const handleEditableChange = (e: React.FormEvent<HTMLDivElement>) => {
-    console.log("Editable content change", e.currentTarget.innerHTML);
     setEditableContent(e.currentTarget.innerHTML);
   };
 
   const handleSaveAndApply = async (fileId: number) => {
-    console.log("Save and Apply clicked", fileId);
     try {
       const form = new FormData();
       form.append("file_name", `${formData.current_job_title} Motivation Letter`);
@@ -296,6 +288,7 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
         {generatedMotivationLetter && (
           <div className="mt-4 flex gap-4">
             <Button
+                        disabled={!files[0]}
               onClick={() => handleSaveAndApply(files[0]?.id)}
               className="bg-green-500 text-white rounded-full px-4 py-2"
             >

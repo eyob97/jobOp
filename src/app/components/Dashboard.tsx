@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import DashboardHeader from "@/app/components/DashboardHeader";
@@ -12,13 +13,14 @@ import CoverLetterForm from "@/app/components/Letters/CoverLetterForm";
 import MotivationLetterForm from "@/app/components/Letters/MotivationLetter";
 import FilterDashboard from "@/app/components/JobSeeker/FilterDashboard";
 import ApplicationsTable from "@/app/components/JobSeeker/ApplicationTable";
+
 const Dashboard: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth?.user);
   const selectedJob = useSelector((state: RootState) => state.jobs.selectedJob);
   const [activeTab, setActiveTab] = useState("filter");
   const [viewLetter, setViewLetter] = useState(false);
   const [showLetterForm, setShowLetterForm] = useState(false);
-  const [letterType, setLetterType] = useState<'coverLetter' | 'motivationLetter'>('coverLetter');
+  const [letterType, setLetterType] = useState<'Cover Letter' | 'Motivation Letter'>('Cover Letter');
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
@@ -26,7 +28,7 @@ const Dashboard: React.FC = () => {
     setShowLetterForm(false);
   };
 
-  const handleGenerate = (type: 'coverLetter' | 'motivationLetter') => {
+  const handleGenerate = (type: 'Cover Letter'| 'Motivation Letter') => {
     setLetterType(type);
     setShowLetterForm(true);
   };
@@ -41,7 +43,7 @@ const Dashboard: React.FC = () => {
     }
 
     if (showLetterForm) {
-      if (letterType === 'coverLetter') {
+      if (letterType === 'Cover Letter') {
         return <CoverLetterForm onViewLetter={() => setViewLetter(true)} />;
       } else {
         return <MotivationLetterForm onViewLetter={() => setViewLetter(true)} />;

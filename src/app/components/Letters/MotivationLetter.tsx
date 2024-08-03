@@ -11,6 +11,7 @@ import {
   generateMotivationLetterAPI,
   saveAndApplyAPI,
 } from "@/app/redux/letterSlice";
+import LetterView from "./LetterView";
 
 interface MotivationLetterFormProps {
   onViewLetter: () => void;
@@ -38,7 +39,8 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
   const editableRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const [isLetterView, setIsLetterView] = useState(false);
+  
   useEffect(() => {
     setEditableContent(generatedMotivationLetter?.motivation_letter || "");
   }, [generatedMotivationLetter]);
@@ -92,16 +94,20 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
   const handleSaveAndApply = async (fileId: number) => {
     try {
       const form = new FormData();
-      form.append("file_name", `${formData.current_job_title} Cover Letter`);
-      form.append("file_type", "Cover Letter");
+      form.append("file_name", `${formData.current_job_title} Motivation Letter`);
+      form.append("file_type", "Motivation Letter");
       form.append("details", editableContent);
 
       await dispatch(saveAndApplyAPI({ id: fileId, formData: form })).unwrap();
-      onViewLetter();
+      setIsLetterView(true); 
     } catch (err) {
-      setError("Failed to update cover letter. Please try again.");
+      setError("Failed to update Motivation Letter. Please try again.");
     }
   };
+
+  if (isLetterView) {
+    return <LetterView letterType="Motivation Letter" onBack={() => setIsLetterView(false)} jobId={files[0]?.id || 0} />;
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 h-screen">

@@ -12,8 +12,8 @@ import { useRouter } from "next/navigation";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 interface DocumentsProps {
-  letterType: 'coverLetter' | 'motivationLetter';
-  onGenerate: (letterType: 'coverLetter' | 'motivationLetter') => void;
+  letterType: 'Cover Letter' | 'Motivation Letter';
+  onGenerate: (letterType: 'Cover Letter' | 'Motivation Letter') => void;
 }
 
 const Documents: React.FC<DocumentsProps> = ({ letterType, onGenerate }) => {
@@ -74,7 +74,7 @@ const Documents: React.FC<DocumentsProps> = ({ letterType, onGenerate }) => {
             type="submit"
             className="rounded-full text-black"
             style={{ backgroundColor: "#FFC424", color: "#000" }}
-            onClick={() => onGenerate('coverLetter')}
+            onClick={() => onGenerate('Cover Letter')}
           >
             Generate Cover Letter
           </Button>
@@ -82,7 +82,7 @@ const Documents: React.FC<DocumentsProps> = ({ letterType, onGenerate }) => {
             type="submit"
             className="rounded-full text-black"
             style={{ backgroundColor: "#FFC424", color: "#000" }}
-            onClick={() => onGenerate('motivationLetter')}
+            onClick={() => onGenerate('Motivation Letter')}
           >
             Generate Motivation Letter
           </Button>

@@ -22,10 +22,14 @@ import { AppDispatch, RootState } from "../redux/store";
 interface DashboardHeaderProps {
   onTabChange: (tab: string) => void;
   activeTab: string;
-  userType: string; 
+  userType: string;
 }
 
-const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onTabChange, activeTab, userType }) => {
+const DashboardHeader: React.FC<DashboardHeaderProps> = ({
+  onTabChange,
+  activeTab,
+  userType,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const user = useSelector((state: RootState) => state.auth?.user);
@@ -40,65 +44,80 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onTabChange, activeTa
     router.push(path);
   };
 
+  const linkClasses = (tab: string) => ({
+    color: activeTab === tab ? "rgba(255, 196, 36, 1)" : "white",
+    transform: activeTab === tab ? "translateY(-2px)" : "none",
+    transition: "transform 0.2s, color 0.2s"
+  });
+
   return (
     <Navbar fluid className="bg-green-800">
-      <div className="flex items-center justify-between w-full">
-        <NavbarBrand href="/">
+      <div className="flex items-center justify-between w-full px-4">
+        <NavbarBrand href="/" className="flex items-center">
           <img
             src="/landing_assets/vectors/group3_x2.svg"
             alt="JobOp Logo"
-            className="h-20 ml-10"
+            className="h-20"
           />
         </NavbarBrand>
-        <nav id="navbar" className="navbar">
-          <ul className="flex space-x-4">
-            {userType === 'Job Seeker' ? (
-              <>
-                <li>
-                  <a
-                    className={`nav-link scrollto ${activeTab === 'filter' ? 'active' : ''}`}
-                    onClick={() => handleNavigation('filter', '/dashboard#find-job')}
+        <div className="flex items-center">
+          <NavbarToggle className="lg:hidden" />
+          <NavbarCollapse>
+            <ul className="flex flex-col lg:flex-row space-x-0 lg:space-x-4 lg:items-center">
+              {userType === "Job Seeker" ? (
+                <>
+                  <NavbarLink
+                    href="/dashboard#find-job"
+                    style={linkClasses("filter")}
+                    onClick={() =>
+                      handleNavigation("filter", "/dashboard#find-job")
+                    }
                   >
                     Filter Dashboard
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className={`nav-link scrollto ${activeTab === 'upload' ? 'active' : ''}`}
-                    onClick={() => handleNavigation('upload', '/dashboard#upload-cv')}
+                  </NavbarLink>
+                  <NavbarLink
+                    href="/dashboard#upload-cv"
+                    style={linkClasses("upload")}
+                    onClick={() =>
+                      handleNavigation("upload", "/dashboard#upload-cv")
+                    }
                   >
                     Upload CV
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className={`nav-link scrollto ${activeTab === 'documents' ? 'active' : ''}`}
-                    onClick={() => handleNavigation('documents', '/dashboard#documents')}
+                  </NavbarLink>
+                  <NavbarLink
+                    href="/dashboard#documents"
+                    style={linkClasses("documents")}
+                    onClick={() =>
+                      handleNavigation("documents", "/dashboard#documents")
+                    }
                   >
                     Documents
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className={`nav-link scrollto ${activeTab === 'applications' ? 'active' : ''}`}
-                    onClick={() => handleNavigation('applications', '/dashboard#applications')}
+                  </NavbarLink>
+                  <NavbarLink
+                    href="/dashboard#applications"
+                    style={linkClasses("applications")}
+                    onClick={() =>
+                      handleNavigation(
+                        "applications",
+                        "/dashboard#applications"
+                      )
+                    }
                   >
                     Applications
-                  </a>
-                </li>
-              </>
-            ) : (
-              <li>
-                <a
-                  className={`nav-link scrollto ${activeTab === 'post' ? 'active' : ''}`}
-                  onClick={() => handleNavigation('post', '/dashboard#post')}
+                  </NavbarLink>
+                </>
+              ) : (
+                <NavbarLink
+                  href="/dashboard#post"
+                  style={linkClasses("post")}
+                  onClick={() => handleNavigation("post", "/dashboard#post")}
                 >
                   Job Post
-                </a>
-              </li>
-            )}
-          </ul>
-        </nav>
+                </NavbarLink>
+              )}
+            </ul>
+          </NavbarCollapse>
+        </div>
         <div className="flex items-center relative">
           {user ? (
             <Dropdown
@@ -129,55 +148,13 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onTabChange, activeTa
             <Button
               className="text-black"
               onClick={() => router.push("/auth/sign-in")}
-              gradientDuoTone="greenToBlue"
+              gradientDuoTone="greenToYellow"
             >
               Sign in
             </Button>
           )}
         </div>
       </div>
-      <NavbarCollapse className="lg:hidden">
-        {userType === 'Job Seeker' ? (
-          <>
-            <NavbarLink
-              href="#find-job"
-              className={`text-white hover:underline ${activeTab === 'filter' ? 'active' : ''}`}
-              onClick={() => handleNavigation('filter', '/find-job')}
-            >
-              Filter Dashboard
-            </NavbarLink>
-            <NavbarLink
-              href="#upload-cv"
-              className={`text-white hover:underline ${activeTab === 'upload' ? 'active' : ''}`}
-              onClick={() => handleNavigation('upload', '/upload-cv')}
-            >
-              Upload CV
-            </NavbarLink>
-            <NavbarLink
-              href="#documents"
-              className={`text-white hover:underline ${activeTab === 'documents' ? 'active' : ''}`}
-              onClick={() => handleNavigation('documents', '/documents')}
-            >
-              Documents
-            </NavbarLink>
-            <NavbarLink
-              href="#applications"
-              className={`text-white hover:underline ${activeTab === 'applications' ? 'active' : ''}`}
-              onClick={() => handleNavigation('applications', '/applications')}
-            >
-              Applications
-            </NavbarLink>
-          </>
-        ) : (
-          <NavbarLink
-            href="#documents"
-            className={`text-white hover:underline ${activeTab === 'documents' ? 'active' : ''}`}
-            onClick={() => handleNavigation('documents', '/documents')}
-          >
-            Documents
-          </NavbarLink>
-        )}
-      </NavbarCollapse>
     </Navbar>
   );
 };
