@@ -401,43 +401,45 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
             Preferences
           </Label>
           <div className="flex gap-4">
-            <div className="flex items-center">
-              <input
-                type="radio"
-                id="Full Time"
-                name="preference"
-                value="Full Time"
-                className="mr-2"
-                checked={profileData.work_status === "Full Time"}
-                onChange={handleProfileChange}
-              />
-              <Label htmlFor="Full Time">Full Time</Label>
-            </div>
-            <div className="flex items-center">
-              <input
-                type="radio"
-                id="Part Time"
-                name="preference"
-                value="Part Time"
-                className="mr-2"
-                checked={profileData.work_status === "Part Time"}
-                onChange={handleProfileChange}
-              />
-              <Label htmlFor="Part Time">Part time</Label>
-            </div>
-            <div className="flex items-center">
-              <input
-                type="radio"
-                id="any"
-                name="preference"
-                value="any"
-                className="mr-2"
-                checked={profileData.work_status === "any"}
-                onChange={handleProfileChange}
-              />
-              <Label htmlFor="any">Any</Label>
-            </div>
-          </div>
+  <div className="flex items-center">
+    <input
+      type="radio"
+      id="Full Time"
+      name="preference"
+      value="Full Time"
+      className="mr-2"
+      checked={profileData.work_status === "Full Time"}
+      onChange={() => setProfileData({ ...profileData, work_status: "Full Time" })}
+    />
+    <Label htmlFor="Full Time">Full Time</Label>
+  </div>
+  <div className="flex items-center">
+    <input
+      type="radio"
+      id="Part Time"
+      name="preference"
+      value="Part Time"
+      className="mr-2"
+      checked={profileData.work_status === "Part Time"}
+      onChange={() => setProfileData({ ...profileData, work_status: "Part Time" })}
+    />
+    <Label htmlFor="Part Time">Part Time</Label>
+  </div>
+  {/* <div className="flex items-center">
+    <input
+      type="radio"
+      id="any"
+      name="preference"
+      value="any"
+      className="mr-2"
+      checked={profileData.work_status === "any"}
+      onChange={() => setProfileData({ ...profileData, work_status: "any" })}
+    />
+    <Label htmlFor="any">Any</Label>
+  </div> */}
+</div>
+
+
           {errors.work_status && (
             <p className="text-red-500">{errors.work_status}</p>
           )}
