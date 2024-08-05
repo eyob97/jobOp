@@ -31,6 +31,7 @@ interface MotivationLetterFormData {
 interface CoverLetterState {
   data: CoverLetterFormData | null;
   generatedCoverLetter: { id: number; cover_letter: string } | null;
+  editableContent: string;
   files: Array<Record<string, any>>;
   isLoading: boolean;
   error: string | null;
@@ -39,6 +40,7 @@ interface CoverLetterState {
 interface MotivationLetterState {
   data: MotivationLetterFormData | null;
   generatedMotivationLetter: { id: number; motivation_letter: string } | null;
+  editableContent: string;
   files: Array<Record<string, any>>;
   isLoading: boolean;
   error: string | null;
@@ -56,6 +58,7 @@ const initialState: LettersState = {
     files: [],
     isLoading: false,
     error: null,
+    editableContent: "",
   },
   motivationLetter: {
     data: null,
@@ -63,6 +66,7 @@ const initialState: LettersState = {
     files: [],
     isLoading: false,
     error: null,
+    editableContent: "",
   },
 };
 
@@ -151,10 +155,15 @@ const letterSlice = createSlice({
     clearCoverLetter(state) {
       state.coverLetter.data = null;
       state.coverLetter.generatedCoverLetter = null;
+      state.coverLetter.editableContent = ""; 
     },
     clearMotivationLetter(state) {
       state.motivationLetter.data = null;
       state.motivationLetter.generatedMotivationLetter = null;
+      state.motivationLetter.editableContent = ""; 
+    },
+    setEditableContent(state, action: PayloadAction<string>) {
+      state.coverLetter.editableContent = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -244,5 +253,5 @@ const letterSlice = createSlice({
   },
 });
 
-export const { clearCoverLetter, clearMotivationLetter } = letterSlice.actions;
+export const { clearCoverLetter, clearMotivationLetter, setEditableContent } = letterSlice.actions;
 export default letterSlice.reducer;

@@ -11,6 +11,7 @@ import {
   generateMotivationLetterAPI,
   saveAndApplyAPI,
 } from "@/app/redux/letterSlice";
+import LetterView from "./LetterView";
 
 interface MotivationLetterFormProps {
   onViewLetter: () => void;
@@ -37,6 +38,7 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
   const editableRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isLetterView, setIsLetterView] = useState(false);
 
   useEffect(() => {
     setEditableContent(generatedMotivationLetter?.motivation_letter || "");
@@ -82,24 +84,23 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
     }
   };
 
-  const handleEditableChange = (e: React.FormEvent<HTMLDivElement>) => {
-    setEditableContent(e.currentTarget.innerHTML);
-  };
-
   const handleSaveAndApply = async (fileId: number) => {
     try {
       const form = new FormData();
       form.append("file_name", `${formData.current_job_title} Motivation Letter`);
       form.append("file_type", "Motivation Letter");
-      form.append("details", editableContent);
+      form.append("details", editableRef.current?.innerHTML || "");
 
       await dispatch(saveAndApplyAPI({ id: fileId, formData: form })).unwrap();
-      onViewLetter();
+      setIsLetterView(true);
     } catch (err) {
-      console.error("Failed to update cover letter", err);
-      setError("Failed to update cover letter. Please try again.");
+      setError("Failed to update Motivation Letter. Please try again.");
     }
   };
+
+  if (isLetterView) {
+    return <LetterView letterType="Motivation Letter" onBack={() => setIsLetterView(false)} jobId={files[0]?.id || 0} />;
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
@@ -277,7 +278,6 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
           <div
             contentEditable
             suppressContentEditableWarning
-            onInput={handleEditableChange}
             ref={editableRef}
             className="whitespace-pre-wrap p-4 border border-gray-300 rounded-lg focus:border-green-500 focus:outline-none focus:shadow-outline-green"
             style={{ minHeight: "200px" }}
@@ -288,7 +288,6 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
         {generatedMotivationLetter && (
           <div className="mt-4 flex gap-4">
             <Button
-                        disabled={!files[0]}
               onClick={() => handleSaveAndApply(files[0]?.id)}
               className="bg-green-500 text-white rounded-full px-4 py-2"
             >

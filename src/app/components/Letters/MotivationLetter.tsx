@@ -30,7 +30,6 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
     availability_start_date: new Date(),
   });
 
-
   const dispatch = useDispatch<AppDispatch>();
   const { generatedMotivationLetter, files } = useSelector(
     (state: RootState) => state.letters.motivationLetter
@@ -40,7 +39,7 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLetterView, setIsLetterView] = useState(false);
-  
+
   useEffect(() => {
     setEditableContent(generatedMotivationLetter?.motivation_letter || "");
   }, [generatedMotivationLetter]);
@@ -48,7 +47,6 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
   useEffect(() => {
     dispatch(fetchFiles());
   }, [dispatch]);
-
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -86,20 +84,15 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
     }
   };
 
-  const handleEditableChange = (e: React.FormEvent<HTMLDivElement>) => {
-    setEditableContent(e.currentTarget.innerHTML);
-  };
-
-
   const handleSaveAndApply = async (fileId: number) => {
     try {
       const form = new FormData();
       form.append("file_name", `${formData.current_job_title} Motivation Letter`);
       form.append("file_type", "Motivation Letter");
-      form.append("details", editableContent);
+      form.append("details", editableRef.current?.innerHTML || "");
 
       await dispatch(saveAndApplyAPI({ id: fileId, formData: form })).unwrap();
-      setIsLetterView(true); 
+      setIsLetterView(true);
     } catch (err) {
       setError("Failed to update Motivation Letter. Please try again.");
     }
@@ -285,7 +278,6 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
           <div
             contentEditable
             suppressContentEditableWarning
-            onInput={handleEditableChange}
             ref={editableRef}
             className="whitespace-pre-wrap p-4 border border-gray-300 rounded-lg focus:border-green-500 focus:outline-none focus:shadow-outline-green"
             style={{ minHeight: "200px" }}

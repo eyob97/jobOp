@@ -7,7 +7,7 @@ import {
   generateCoverLetterAPI,
   saveAndApplyAPI,
 } from "@/app/redux/letterSlice";
-import LetterView from "./LetterView"; 
+import LetterView from "./LetterView";
 
 interface CoverLetterFormProps {
   onViewLetter: () => void;
@@ -111,14 +111,7 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewLetter }) => {
     }
   };
 
-  const debouncedHandleEditableChange = useRef(
-    debounce((content: string) => {
-      setEditableContent(content);
-    }, 300)
-  ).current;
-
   const handleEditableChange = (e: React.FormEvent<HTMLDivElement>) => {
-    debouncedHandleEditableChange(e.currentTarget.innerHTML);
   };
 
   const handleSaveAndApply = async (fileId: number) => {
@@ -126,17 +119,23 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewLetter }) => {
       const form = new FormData();
       form.append("file_name", `${formData.company_name} Cover Letter`);
       form.append("file_type", "Cover Letter");
-      form.append("details", editableContent);
+      form.append("details", editableRef.current?.innerHTML || "");
 
       await dispatch(saveAndApplyAPI({ id: fileId, formData: form })).unwrap();
-      setIsLetterView(true); 
+      setIsLetterView(true);
     } catch (err) {
       setError("Failed to update cover letter. Please try again.");
     }
   };
 
   if (isLetterView) {
-    return <LetterView letterType="Cover Letter" onBack={() => setIsLetterView(false)} jobId={files[0]?.id || 0} />;
+    return (
+      <LetterView
+        letterType="Cover Letter"
+        onBack={() => setIsLetterView(false)}
+        jobId={files[0]?.id || 0}
+      />
+    );
   }
 
   return (
@@ -366,7 +365,7 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({ onViewLetter }) => {
         {generatedCoverLetter && (
           <div className="mt-4 flex gap-4">
             <Button
-                        disabled={!files[0]}
+              disabled={!files[0]}
               onClick={() => handleSaveAndApply(files[0]?.id)}
               className="bg-green-500 text-white rounded-full px-4 py-2"
             >

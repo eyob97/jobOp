@@ -4,7 +4,11 @@ import { AppDispatch, RootState } from "@/app/redux/store";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { Button, Card } from "flowbite-react";
-import { fetchFiles } from "@/app/redux/letterSlice";
+import {
+  fetchFiles,
+  clearCoverLetter,
+  clearMotivationLetter,
+} from "@/app/redux/letterSlice";
 import { useRouter } from "next/navigation";
 
 interface LetterViewProps {
@@ -48,6 +52,15 @@ const LetterView: React.FC<LetterViewProps> = ({
     }
   };
 
+  const handleBack = () => {
+    if (letterType === "Cover Letter") {
+      dispatch(clearCoverLetter());
+    } else {
+      dispatch(clearMotivationLetter());
+    }
+    onBack();
+  };
+
   const handleContinue = () => {
     router.push(`/dashboard#documents`);
   };
@@ -65,7 +78,6 @@ const LetterView: React.FC<LetterViewProps> = ({
   };
 
   const letterContent = getLetterContent();
-
   const contact_info = fileData && fileData.user?.contact_info;
   const full_name = fileData && fileData.user?.full_name;
 
@@ -96,7 +108,7 @@ const LetterView: React.FC<LetterViewProps> = ({
       <div className="flex justify-end w-full p-4 gap-4">
         <Button
           className="bg-gray-200 text-black rounded-full px-4 py-2"
-          onClick={onBack}
+          onClick={handleBack}
         >
           Back
         </Button>

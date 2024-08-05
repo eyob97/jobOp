@@ -233,7 +233,7 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
     const jobSeekerId = jobSeekerData[0].id;
 
     const updatedData: Partial<JobSeekerProfile> = { ...profileData };
-    delete updatedData.employment_history; 
+    delete updatedData.employment_history;
 
     const resultAction = await dispatch(
       updateProfile({
@@ -245,7 +245,7 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
 
     if (updateProfile.fulfilled.match(resultAction)) {
       setSuccessMessage("Profile updated successfully.");
-      setIsModalOpen(true); 
+      setIsModalOpen(true);
     } else {
       const payload = resultAction.payload as any;
       setErrors(payload || { general: "Failed to update profile." });
@@ -270,7 +270,7 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
 
       if (updateProfile.fulfilled.match(resultAction)) {
         setSuccessMessage("Profile created and updated successfully.");
-        setIsModalOpen(true); 
+        setIsModalOpen(true);
       } else {
         const payload = resultAction.payload as any;
         setErrors(payload || { general: "Failed to update profile." });
@@ -311,7 +311,7 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
             htmlFor="profile_description"
             className="block text-sm font-medium text-gray-700"
           >
-            Profile Description
+            Job title
           </Label>
           <TextInput
             id="profile_description"
@@ -469,7 +469,7 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
                 </p>
               )}
             </div>
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <Label
                 htmlFor="current_work_status"
                 className="block text-sm font-medium text-gray-700"
@@ -496,7 +496,7 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
               {errors.current_work_status && (
                 <p className="text-red-500">{errors.current_work_status}</p>
               )}
-            </div>
+            </div> */}
 
             <div className="mb-4">
               <Label
