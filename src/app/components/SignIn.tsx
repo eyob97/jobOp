@@ -51,9 +51,15 @@ const SignIn: React.FC = () => {
         setErrors({ general: payload.inactive[0] });
         setShowResend(true);
       } else {
-        setErrors(
-          payload || { general: "An error occurred. Please try again later." }
-        );
+        if (
+          payload?.password &&
+          payload?.password[0] === "Incorrect password."
+        ) {
+          setErrors({ password: "Incorrect password or email" });
+        } else
+          setErrors(
+            payload || { general: "An error occurred. Please try again later." }
+          );
       }
     }
   };
@@ -96,30 +102,29 @@ const SignIn: React.FC = () => {
   ];
 
   return (
-
-        <FormSkeleton
-          title="Sign In"
-          subtitle={
-            <span>
-              Don't have an account?{" "}
-              <Link href="/auth/sign-up" legacyBehavior>
-                <a className="text-[#116034] bold-text">Sign up</a>
-              </Link>
-              <br />
-              Did you forget your password?{" "}
-              <Link href="/auth/reset-password" legacyBehavior>
-                <a className="text-[#116034] bold-text">Reset password</a>
-              </Link>
-            </span>
-          }
-          fields={fields}
-          buttonText="Sign In"
-          onSubmit={handleSubmit}
-          showCheckbox={false}
-          generalError={errors.general}
-          showResend={showResend}
-          onResend={handleResend}
-        />
+    <FormSkeleton
+      title="Sign In"
+      subtitle={
+        <span>
+          Don't have an account?{" "}
+          <Link href="/auth/sign-up" legacyBehavior>
+            <a className="text-[#116034] bold-text">Sign up</a>
+          </Link>
+          <br />
+          Did you forget your password?{" "}
+          <Link href="/auth/reset-password" legacyBehavior>
+            <a className="text-[#116034] bold-text">Reset password</a>
+          </Link>
+        </span>
+      }
+      fields={fields}
+      buttonText="Sign In"
+      onSubmit={handleSubmit}
+      showCheckbox={false}
+      generalError={errors.general}
+      showResend={showResend}
+      onResend={handleResend}
+    />
   );
 };
 
