@@ -12,8 +12,6 @@ import Testimonials from "./LandingPage/Testimonials";
 import SignIn from "./SignIn";
 
 const ClientHome: React.FC = () => {
-
-
   return (
     <>
       <Header />
@@ -34,8 +32,8 @@ const ClientHome: React.FC = () => {
                     Empowering South Africa's Workforce
                   </h1>
                   <div className="text-white text-left">
-                    Connecting workers with meaningful job opportunities
-                    through a simple WhatsApp interface
+                    Connecting workers with meaningful job opportunities through
+                    a simple WhatsApp interface
                   </div>
                   <div className="row mt-4">
                     <div className="col-lg-4 col-md-6 col-sm-12 mb-2">
@@ -79,7 +77,7 @@ const ClientHome: React.FC = () => {
                     <div>
                       <img
                         src="/landing_assets/images/rectangle1.png"
-                        alt=""
+                        alt="rec image"
                         className="rectangle"
                       />
                     </div>
@@ -90,7 +88,8 @@ const ClientHome: React.FC = () => {
                 </div>
                 <p className="heading-3-create-account text-center">Sign Up</p>
                 <p className="hiw-text">
-                  Sign up in seconds using your mobile number. Start your 30-day free trial today!
+                  Sign up in seconds using your mobile number. Start your 30-day
+                  free trial today!
                 </p>
               </div>
               <div className="col-sm-4">
@@ -99,7 +98,7 @@ const ClientHome: React.FC = () => {
                     <div>
                       <img
                         src="/landing_assets/images/rectangle.png"
-                        alt=""
+                        alt="rec image"
                         className="rectangle"
                       />
                     </div>
@@ -108,9 +107,12 @@ const ClientHome: React.FC = () => {
                     <span className="heading-3-complete-your-profile">2</span>
                   </div>
                 </div>
-                <p className="heading-3-create-account text-center">Receive Job Alerts</p>
+                <p className="heading-3-create-account text-center">
+                  Receive Job Alerts
+                </p>
                 <p className="hiw-text">
-                  Get personalized job alerts directly through WhatsApp based on your skills and preferences.
+                  Get personalized job alerts directly through WhatsApp based on
+                  your skills and preferences.
                 </p>
               </div>
               <div className="col-sm-4">
@@ -119,7 +121,7 @@ const ClientHome: React.FC = () => {
                     <div>
                       <img
                         src="/landing_assets/images/rectangle2.png"
-                        alt=""
+                        alt="rec image"
                         className="rectangle"
                       />
                     </div>
@@ -128,9 +130,12 @@ const ClientHome: React.FC = () => {
                     <span className="heading-3-complete-your-profile">3</span>
                   </div>
                 </div>
-                <p className="heading-3-create-account text-center">Apply Easily</p>
+                <p className="heading-3-create-account text-center">
+                  Apply Easily
+                </p>
                 <p className="hiw-text">
-                  Reply with interest directly to recruiters and secure your next job opportunity.
+                  Reply with interest directly to recruiters and secure your
+                  next job opportunity.
                 </p>
               </div>
             </div>
@@ -219,7 +224,8 @@ const ClientHome: React.FC = () => {
                     <span className="bold-text"> Cancel anytime.</span>
                   </p>
                   <div className="list-out-benefits-such-as-unlimited-job-alerts-priority-support-and-additional-resources">
-                    List out benefits such as unlimited job alerts, priority support, and additional resources.
+                    List out benefits such as unlimited job alerts, priority
+                    support, and additional resources.
                   </div>
                   <div className="col-lg-4 col-md-6 col-sm-12 mb-2">
                     <a
