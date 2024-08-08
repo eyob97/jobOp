@@ -8,6 +8,8 @@ interface AuthState {
   isLoading: boolean | null;
   error: string | null;
   user: {
+    last_name: string;
+    first_name: string;
     id: number;
     firstName: string;
     lastName: string;
