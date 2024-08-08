@@ -23,21 +23,46 @@ const JobDetails: React.FC = () => {
   const job = useSelector((state: RootState) => state.jobs.selectedJob);
   const [showModal, setShowModal] = useState(false);
 
+  const jobLink = window.location.href;
+  const handleCopyLink = () => {
+    console.log("Copy link clicked", jobLink);
+    navigator.clipboard
+      .writeText(jobLink)
+      .then(() => alert("Link copied to clipboard!"))
+      .catch((err) => console.error("Failed to copy the link: ", err));
+  };
+  const handleLinkedInShare = () => {
+    const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+      jobLink
+    )}`;
+    window.open(linkedInUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const handleFacebookShare = () => {
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+      jobLink
+    )}`;
+    window.open(facebookUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const handleTwitterShare = () => {};
+
   if (!job) {
-    return <div className="mt-4 flex flex-col items-center">No job selected</div>;
+    return (
+      <div className="mt-4 flex flex-col items-center">No job selected</div>
+    );
   }
 
   const handleOpenModal = () => {
     setShowModal(true);
-    dispatch(setSelectedJob(job.id)); 
+    dispatch(setSelectedJob(job.id));
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
   };
 
-  const handleGenerate = (letterType: 'coverLetter' | 'motivationLetter') => {
-
+  const handleGenerate = (letterType: "coverLetter" | "motivationLetter") => {
     // router.push(`/generate/${letterType}`);
   };
 
@@ -129,16 +154,28 @@ const JobDetails: React.FC = () => {
             {/* Divider */}
             <h3 className="text-lg font-semibold mb-2">Share this job:</h3>
             <div className="flex space-x-2">
-              <Button className="bg-gray-200 text-gray-700 rounded-full">
+              <Button
+                className="bg-gray-200 text-gray-700 rounded-full"
+                onClick={handleCopyLink}
+              >
                 <FaCopy className="mr-1" /> Copy link
               </Button>
-              <Button className="bg-green-700 rounded-full text-white">
+              <Button
+                className="bg-green-700 rounded-full text-white"
+                onClick={handleLinkedInShare}
+              >
                 <FaLinkedin className="mr-1" size={24} />
               </Button>
-              <Button className="bg-green-700 rounded-full text-white">
+              <Button
+                className="bg-green-700 rounded-full text-white"
+                onClick={handleFacebookShare}
+              >
                 <FaFacebook className="mr-1" size={24} />
               </Button>
-              <Button className="bg-green-700 rounded-full text-white">
+              <Button
+                className="bg-green-700 rounded-full text-white"
+                onClick={handleTwitterShare}
+              >
                 <span className="text-xl">X</span>
               </Button>
             </div>
