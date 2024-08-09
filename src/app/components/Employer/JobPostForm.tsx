@@ -1,10 +1,18 @@
 "use client";
 
 import { useState, ChangeEvent, useEffect } from "react";
-import { Button, Label, TextInput, Modal } from "flowbite-react";
+import {
+  Button,
+  Label,
+  TextInput,
+  Modal,
+  Textarea,
+  Select,
+  Checkbox,
+} from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { createJobPost, fetchApplicants } from "../../redux/jobSlice";
+import { createJobPost, getSkills } from "../../redux/jobSlice";
 import { clearError } from "../../redux/resumeSlice";
 import { CountryDropdown } from "react-country-region-selector";
 
@@ -13,7 +21,7 @@ interface JobPost {
   job_title: string;
   description: string;
   responsibilities: string;
-  desirable_skills: string;
+  desirable_skills: string[];
   fixed_salary: number;
   min_salary: number;
   max_salary: number;
@@ -22,6 +30,16 @@ interface JobPost {
   work_type: "Remote" | "On Site" | "Hybrid";
   employment_type: "Full Time" | "Part Time" | "Any";
   status: "Open" | "Closed" | "On Hold";
+  skills: string[];
+}
+
+interface Skill {
+  id: number;
+  name: string;
+  sector: {
+    id: number;
+    name: string;
+  };
 }
 
 interface JobPostFormProps {
@@ -34,13 +52,14 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [skills, setSkills] = useState<Skill[]>([]);
   const [jobPostData, setJobPostData] = useState<JobPost>({
     company: 35,
     job_title: "",
     description: "",
     responsibilities: "",
-    desirable_skills: "",
+    desirable_skills: [],
+    skills: [],
     fixed_salary: 80000,
     min_salary: 70000,
     max_salary: 90000,
@@ -53,16 +72,28 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
 
   useEffect(() => {
     if (error) {
-      setErrors({ general: error.details || "An error occurred. Please try again later." });
+      setErrors({
+        general: error.details || "An error occurred. Please try again later.",
+      });
       dispatch(clearError());
     }
   }, [error, dispatch]);
 
   const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { id, value } = e.target;
     setJobPostData({ ...jobPostData, [id]: value });
+  };
+
+  const handleSkillChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const selectedSkillId = e.target.value;
+    if (!jobPostData.skills.includes(selectedSkillId)) {
+      setJobPostData({
+        ...jobPostData,
+        skills: [...jobPostData.skills, selectedSkillId],
+      });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,7 +108,6 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
     }
   };
 
-
   const createNewJobPost = async () => {
     const resultAction = await dispatch(createJobPost(jobPostData));
 
@@ -89,18 +119,38 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
       setErrors(payload || { general: "Failed to create job post." });
     }
   };
+  const removeSkill = (skillId: string) => {
+    setJobPostData({
+      ...jobPostData,
+      skills: jobPostData.skills.filter((id) => id !== skillId),
+    });
+  };
+
   const handleLocationChange = (val: string) => {
     setJobPostData({ ...jobPostData, location: val });
   };
+
+  useEffect(() => {
+    const fetchSkills = async () => {
+      const resp: any = await dispatch(getSkills());
+      setSkills(resp.payload);
+    };
+    fetchSkills();
+  }, [dispatch]);
+
+
   return (
-    <div>
+    <div className="p-6 bg-white rounded-lg shadow-md">
       <h2 className="mb-5 text-lg font-bold text-black">Job Post</h2>
       {successMessage && (
         <div className="mb-4 text-green-500">{successMessage}</div>
       )}
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <Label htmlFor="job_title" className="block text-sm font-medium text-gray-700">
+          <Label
+            htmlFor="job_title"
+            className="block text-sm font-medium text-gray-700"
+          >
             Job Title
           </Label>
           <TextInput
@@ -110,96 +160,51 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
             value={jobPostData.job_title}
             onChange={handleInputChange}
           />
-          {errors.job_title && <p className="text-red-500">{errors.job_title}</p>}
-        </div>
-        <div className="mb-4">
-          <Label htmlFor="description" className="block text-sm font-medium text-gray-700">
-            Description
-          </Label>
-          <TextInput
-            id="description"
-            type="text"
-            className="mt-1 w-full"
-            value={jobPostData.description}
-            onChange={handleInputChange}
-          />
-          {errors.description && <p className="text-red-500">{errors.description}</p>}
-        </div>
-        <div className="mb-4">
-          <Label htmlFor="responsibilities" className="block text-sm font-medium text-gray-700">
-            Responsibilities
-          </Label>
-          <TextInput
-            id="responsibilities"
-            type="text"
-            className="mt-1 w-full"
-            value={jobPostData.responsibilities}
-            onChange={handleInputChange}
-          />
-          {errors.responsibilities && (
-            <p className="text-red-500">{errors.responsibilities}</p>
+          {errors.job_title && (
+            <p className="text-red-500">{errors.job_title}</p>
           )}
         </div>
+
         <div className="mb-4">
-          <Label htmlFor="desirable_skills" className="block text-sm font-medium text-gray-700">
-            Desirable Skills
+          <Label
+            htmlFor="fixed_salary"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Salary Range (Annually)
           </Label>
-          <TextInput
-            id="desirable_skills"
-            type="text"
-            className="mt-1 w-full"
-            value={jobPostData.desirable_skills}
-            onChange={handleInputChange}
-          />
-          {errors.desirable_skills && (
-            <p className="text-red-500">{errors.desirable_skills}</p>
-          )}
+          <div className="flex gap-2">
+            <TextInput
+              id="fixed_salary"
+              type="number"
+              placeholder="Min"
+              className="w-1/2"
+              value={jobPostData.min_salary.toString()}
+              onChange={handleInputChange}
+            />
+            <TextInput
+              id="max_salary"
+              type="number"
+              placeholder="Max"
+              className="w-1/2"
+              value={jobPostData.max_salary.toString()}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="show_salary"
+              onChange={() =>
+                setJobPostData((prevData) => ({
+                  ...prevData,
+                  min_salary: 0,
+                  max_salary: 0,
+                }))
+              }
+            />
+            <Label htmlFor="show_salary">Not to show salary range</Label>
+          </div>
         </div>
-        <div className="mb-4">
-          <Label htmlFor="fixed_salary" className="block text-sm font-medium text-gray-700">
-            Fixed Salary
-          </Label>
-          <TextInput
-            id="fixed_salary"
-            type="number"
-            className="mt-1 w-full"
-            value={jobPostData.fixed_salary.toString()}
-            onChange={handleInputChange}
-          />
-          {errors.fixed_salary && (
-            <p className="text-red-500">{errors.fixed_salary}</p>
-          )}
-        </div>
-        <div className="mb-4">
-          <Label htmlFor="min_salary" className="block text-sm font-medium text-gray-700">
-            Minimum Salary
-          </Label>
-          <TextInput
-            id="min_salary"
-            type="number"
-            className="mt-1 w-full"
-            value={jobPostData.min_salary.toString()}
-            onChange={handleInputChange}
-          />
-          {errors.min_salary && (
-            <p className="text-red-500">{errors.min_salary}</p>
-          )}
-        </div>
-        <div className="mb-4">
-          <Label htmlFor="max_salary" className="block text-sm font-medium text-gray-700">
-            Maximum Salary
-          </Label>
-          <TextInput
-            id="max_salary"
-            type="number"
-            className="mt-1 w-full"
-            value={jobPostData.max_salary.toString()}
-            onChange={handleInputChange}
-          />
-          {errors.max_salary && (
-            <p className="text-red-500">{errors.max_salary}</p>
-          )}
-        </div>
+
         <div className="mb-4">
           <Label
             htmlFor="location"
@@ -209,13 +214,165 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
           </Label>
           <CountryDropdown
             value={jobPostData.location}
-            onChange={(val) => handleLocationChange(val)}
+            onChange={handleLocationChange}
             classes="form-control mt-1 w-full"
           />
           {errors.location && <p className="text-red-500">{errors.location}</p>}
         </div>
+
         <div className="mb-4">
-          <Label htmlFor="expiry_date" className="block text-sm font-medium text-gray-700">
+          <Label
+            htmlFor="description"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Description
+          </Label>
+          <Textarea
+            id="description"
+            className="mt-1 w-full"
+            value={jobPostData.description}
+            onChange={handleInputChange}
+            rows={4}
+          />
+          {errors.description && (
+            <p className="text-red-500">{errors.description}</p>
+          )}
+        </div>
+
+        <div className="mb-4">
+          <Label
+            htmlFor="responsibilities"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Responsibilities
+          </Label>
+          <Textarea
+            id="responsibilities"
+            className="mt-1 w-full"
+            value={jobPostData.responsibilities}
+            onChange={handleInputChange}
+            rows={4}
+          />
+          {errors.responsibilities && (
+            <p className="text-red-500">{errors.responsibilities}</p>
+          )}
+        </div>
+
+        <div className="mb-4">
+          <Label
+            htmlFor="desirable_skills"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Desirable Skills
+          </Label>
+          <Textarea
+            id="desirable_skills"
+            className="mt-1 w-full"
+            value={jobPostData?.desirable_skills}
+            onChange={handleInputChange}
+            rows={4}
+          />
+          {errors.desirable_skills && (
+            <p className="text-red-500">{errors.desirable_skills}</p>
+          )}
+        </div>
+
+        <div className="mb-4">
+          <Label
+            htmlFor="work_type"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Work Type
+          </Label>
+          <Select
+            id="work_type"
+            className="mt-1 w-full"
+            value={jobPostData.work_type}
+            onChange={handleInputChange}
+          >
+            <option value="Remote">Remote</option>
+            <option value="On Site">On-site</option>
+            <option value="Hybrid">Hybrid</option>
+          </Select>
+          {errors.work_type && (
+            <p className="text-red-500">{errors.work_type}</p>
+          )}
+        </div>
+
+        <div className="mb-4">
+          <Label
+            htmlFor="employment_type"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Employment Type
+          </Label>
+          <Select
+            id="employment_type"
+            className="mt-1 w-full"
+            value={jobPostData.employment_type}
+            onChange={handleInputChange}
+          >
+            <option value="Full Time">Full-time</option>
+            <option value="Part Time">Part-time</option>
+            <option value="Any">Any</option>
+          </Select>
+          {errors.employment_type && (
+            <p className="text-red-500">{errors.employment_type}</p>
+          )}
+        </div>
+
+        <div className="mb-4">
+          <Label
+            htmlFor="skills"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Skills
+          </Label>
+          <div className="flex flex-wrap gap-2 mb-2">
+            {jobPostData.skills.map((skillId) => {
+              const skill = skills.find((s) => s.id.toString() === skillId);
+              return (
+                skill && (
+                  <div
+                    key={skill.id}
+                    className="flex items-center px-3 py-1 bg-gray-200 rounded-full"
+                  >
+                    <span className="mr-2">{skill.name}</span>
+                    <button
+                      type="button"
+                      className="text-red-500"
+                      onClick={() => removeSkill(skillId)}
+                    >
+                      &times;
+                    </button>
+                  </div>
+                )
+              );
+            })}
+          </div>
+          <Select
+            id="skills"
+            className="mt-1 w-full"
+            onChange={handleSkillChange}
+            value=""
+          >
+            <option value="" disabled>
+              Select a skill
+            </option>
+            {skills.map((skill) => (
+              <option key={skill.id} value={skill.id.toString()}>
+                {skill.name} ({skill.sector.name})
+              </option>
+            ))}
+          </Select>
+          {errors.skills && <p className="text-red-500">{errors.skills}</p>}
+        </div>
+
+        <div className="mb-4">
+          <Label
+            htmlFor="expiry_date"
+            className="block text-sm font-medium text-gray-700"
+          >
             Expiry Date
           </Label>
           <TextInput
@@ -229,47 +386,15 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
             <p className="text-red-500">{errors.expiry_date}</p>
           )}
         </div>
+
         <div className="mb-4">
-          <Label htmlFor="work_type" className="block text-sm font-medium text-gray-700">
-            Work Type
-          </Label>
-          <select
-            id="work_type"
-            className="mt-1 w-full"
-            value={jobPostData.work_type}
-            onChange={handleInputChange}
+          <Label
+            htmlFor="status"
+            className="block text-sm font-medium text-gray-700"
           >
-            <option value="Remote">Remote</option>
-            <option value="On Site">On Site</option>
-            <option value="Hybrid">Hybrid</option>
-          </select>
-          {errors.work_type && (
-            <p className="text-red-500">{errors.work_type}</p>
-          )}
-        </div>
-        <div className="mb-4">
-          <Label htmlFor="employment_type" className="block text-sm font-medium text-gray-700">
-            Employment Type
-          </Label>
-          <select
-            id="employment_type"
-            className="mt-1 w-full"
-            value={jobPostData.employment_type}
-            onChange={handleInputChange}
-          >
-            <option value="Full Time">Full Time</option>
-            <option value="Part Time">Part Time</option>
-            <option value="Any">Any</option>
-          </select>
-          {errors.employment_type && (
-            <p className="text-red-500">{errors.employment_type}</p>
-          )}
-        </div>
-        <div className="mb-4">
-          <Label htmlFor="status" className="block text-sm font-medium text-gray-700">
             Status
           </Label>
-          <select
+          <Select
             id="status"
             className="mt-1 w-full"
             value={jobPostData.status}
@@ -278,10 +403,11 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
             <option value="Open">Open</option>
             <option value="Closed">Closed</option>
             <option value="On Hold">On Hold</option>
-          </select>
+          </Select>
           {errors.status && <p className="text-red-500">{errors.status}</p>}
         </div>
-        <div className="flex justify-end gap-4">
+
+        <div className="flex justify-end">
           <Button
             type="button"
             className="w-full rounded-full text-black"
@@ -298,23 +424,20 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
             Save
           </Button>
         </div>
-        {errors.general && <p className="text-red-500 mt-2">{errors.general}</p>}
       </form>
-      <Modal
-        show={isModalOpen}
-        size="md"
-        popup={true}
-        onClose={() => setIsModalOpen(false)}
-      >
-        <Modal.Header />
-        <Modal.Body>
-          <div className="text-center">
-            <h3 className="mb-5 text-lg font-normal text-green-500 dark:text-green-400">
-              {successMessage}
-            </h3>
-          </div>
-        </Modal.Body>
-      </Modal>
+
+      {isModalOpen && (
+        <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
+          <Modal.Header>Success</Modal.Header>
+          <Modal.Body>
+            <p>{successMessage}</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={() => setView("jobPosts")}>Go to Job Posts</Button>
+            <Button onClick={() => setIsModalOpen(false)}>Close</Button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </div>
   );
 };
