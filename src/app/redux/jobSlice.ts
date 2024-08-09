@@ -50,11 +50,15 @@ export const fetchJobs = createAsyncThunk(
         id: job.id,
         title: job.job_title,
         type: job.employment_type,
-        salary: job.min_salary && job.max_salary ? `${job.min_salary} - ${job.max_salary}` : "N/A",
+        salary:
+          job.min_salary && job.max_salary
+            ? `${job.min_salary} - ${job.max_salary}`
+            : "N/A",
         description: job.description,
-        company: job.company, 
+        company: job.company,
         location: job.location,
-        companyLogo: "https://lh3.googleusercontent.com/MssYWuI7KeRbQGF6o0f-Bncx5bX6HtzHHE8Kn2reQNGodTU_lQRJsJnCNIflaso0NrsOhzZAEWDuOa9TKSWGgHCxy6gSvQFaQtYo4OY3Uyr_F0TlQpA",
+        companyLogo:
+          "https://lh3.googleusercontent.com/MssYWuI7KeRbQGF6o0f-Bncx5bX6HtzHHE8Kn2reQNGodTU_lQRJsJnCNIflaso0NrsOhzZAEWDuOa9TKSWGgHCxy6gSvQFaQtYo4OY3Uyr_F0TlQpA",
         postedDate: job.created_date,
         expiryDate: job.expiry_date,
       }));
@@ -66,9 +70,20 @@ export const fetchJobs = createAsyncThunk(
 
 export const applyForJob = createAsyncThunk(
   "jobs/applyForJob",
-  async (applicationData: { job: number, resume: number, cover_letter?: number, motivation_letter?: number }, { rejectWithValue }) => {
+  async (
+    applicationData: {
+      job: number;
+      resume: number;
+      cover_letter?: number;
+      motivation_letter?: number;
+    },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await apiClient.post(`${API_URL}/api/applicants/`, applicationData);
+      const response = await apiClient.post(
+        `${API_URL}/api/applicants/`,
+        applicationData
+      );
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || error.message);
@@ -83,18 +98,18 @@ export const fetchApplicants = createAsyncThunk(
       const response = await apiClient.get(`${API_URL}/api/applicants/`);
       return response.data;
     } catch (error: any) {
-      let errorMessage = 'An unknown error occurred';
+      let errorMessage = "An unknown error occurred";
 
       if (error.response) {
         switch (error.response.status) {
           case 400:
-            errorMessage = 'Bad request. Please check the submitted data.';
+            errorMessage = "Bad request. Please check the submitted data.";
             break;
           case 401:
-            errorMessage = 'Unauthorized. Please log in and try again.';
+            errorMessage = "Unauthorized. Please log in and try again.";
             break;
           default:
-            errorMessage = 'Applicants not found. Please try again later.';
+            errorMessage = "Applicants not found. Please try again later.";
             break;
         }
       } else if (error.message) {
@@ -111,6 +126,18 @@ export const createJobPost = createAsyncThunk(
   async (jobData: any, { rejectWithValue }) => {
     try {
       const response = await apiClient.post(`${API_URL}/api/jobs/`, jobData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const getSkills = createAsyncThunk(
+  "jobs/skills",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.get(`${API_URL}/api/skills/`);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data || error.message);
@@ -159,10 +186,13 @@ const jobSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(fetchApplicants.fulfilled, (state, action: PayloadAction<Applicant[]>) => {
-        state.isLoading = false;
-        state.applicants = action.payload;
-      })
+      .addCase(
+        fetchApplicants.fulfilled,
+        (state, action: PayloadAction<Applicant[]>) => {
+          state.isLoading = false;
+          state.applicants = action.payload;
+        }
+      )
       .addCase(fetchApplicants.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
