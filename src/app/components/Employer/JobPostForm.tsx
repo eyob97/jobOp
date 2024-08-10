@@ -138,7 +138,6 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
     fetchSkills();
   }, [dispatch]);
 
-
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <h2 className="mb-5 text-lg font-bold text-black">Job Post</h2>
@@ -359,11 +358,12 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
             <option value="" disabled>
               Select a skill
             </option>
-            {skills.map((skill) => (
-              <option key={skill.id} value={skill.id.toString()}>
-                {skill.name} ({skill.sector.name})
-              </option>
-            ))}
+            {skills.length > 0 &&
+              skills.map((skill) => (
+                <option key={skill.id} value={skill.id.toString()}>
+                  {skill.name} ({skill.sector.name})
+                </option>
+              ))}
           </Select>
           {errors.skills && <p className="text-red-500">{errors.skills}</p>}
         </div>

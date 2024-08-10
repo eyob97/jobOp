@@ -19,11 +19,11 @@ import { RootState } from "../../redux/store";
 import { setSelectedJob } from "../../redux/jobSlice";
 
 const JobDetails: React.FC = () => {
+  const jobLink = window.location.href;
   const dispatch = useDispatch();
-  const job = useSelector((state: RootState) => state.jobs.selectedJob);
+  const job: any = useSelector((state: RootState) => state.jobs.selectedJob);
   const [showModal, setShowModal] = useState(false);
 
-  const jobLink = window.location.href;
   const handleCopyLink = () => {
     console.log("Copy link clicked", jobLink);
     navigator.clipboard
@@ -74,15 +74,15 @@ const JobDetails: React.FC = () => {
         <div className="col-span-4">
           <div className="flex items-center mb-4">
             <img
-              src={job.companyLogo}
-              alt={job.company}
+              src={job?.companyLogo}
+              alt={job?.company?.name}
               className="w-16 h-16 rounded-full mr-4"
             />
             <div>
-              <h3 className="text-xl font-normal">{job.title}</h3>
+              <h3 className="text-xl font-normal">{job?.title}</h3>
               <div className="flex justify-between items-center mb-2">
                 <p className="text-gray-600">
-                  @ {job.company}{" "}
+                  @ {job.company?.name}{" "}
                   <span
                     className={`px-2 py-1 rounded ${
                       job.type === "Part Time"
@@ -90,7 +90,7 @@ const JobDetails: React.FC = () => {
                         : "bg-green-200 text-green-800"
                     }`}
                   >
-                    {job.type}
+                    {job?.type}
                   </span>
                 </p>
               </div>
