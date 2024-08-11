@@ -18,6 +18,7 @@ interface EmploymentHistory {
   job_title: string;
   start_date: string;
   end_date: string | null;
+  work_type: string;
 }
 
 interface JobSeekerProfile {
@@ -85,6 +86,7 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
         job_title: "",
         start_date: "",
         end_date: null,
+        work_type: "",
       },
     ],
   });
@@ -124,6 +126,7 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
                   job_title: job.job_title || "",
                   start_date: job.start_date || "",
                   end_date: job.end_date || null,
+                  work_type: job?.work_type || "",
                 }))
               : [
                   {
@@ -131,6 +134,7 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
                     job_title: "",
                     start_date: "",
                     end_date: null,
+                    work_type: "",
                   },
                 ],
         });
@@ -158,6 +162,7 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
         job_title: "",
         start_date: "",
         end_date: null,
+        work_type: "",
       },
     ];
     setProfileData({ ...profileData, employment_history: updatedHistory });
@@ -280,6 +285,11 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
       setErrors(payload || { general: "Failed to create profile." });
     }
   };
+  const options = [
+    { value: "Remote", label: "Remote" },
+    { value: "On Site", label: "On-site" },
+    { value: "Hybrid", label: "Hybrid" },
+  ];
 
   return (
     <div>
@@ -401,31 +411,35 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
             Preferences
           </Label>
           <div className="flex gap-4">
-  <div className="flex items-center">
-    <input
-      type="radio"
-      id="Full Time"
-      name="preference"
-      value="Full Time"
-      className="mr-2"
-      checked={profileData.work_status === "Full Time"}
-      onChange={() => setProfileData({ ...profileData, work_status: "Full Time" })}
-    />
-    <Label htmlFor="Full Time">Full Time</Label>
-  </div>
-  <div className="flex items-center">
-    <input
-      type="radio"
-      id="Part Time"
-      name="preference"
-      value="Part Time"
-      className="mr-2"
-      checked={profileData.work_status === "Part Time"}
-      onChange={() => setProfileData({ ...profileData, work_status: "Part Time" })}
-    />
-    <Label htmlFor="Part Time">Part Time</Label>
-  </div>
-  {/* <div className="flex items-center">
+            <div className="flex items-center">
+              <input
+                type="radio"
+                id="Full Time"
+                name="preference"
+                value="Full Time"
+                className="mr-2"
+                checked={profileData.work_status === "Full Time"}
+                onChange={() =>
+                  setProfileData({ ...profileData, work_status: "Full Time" })
+                }
+              />
+              <Label htmlFor="Full Time">Full Time</Label>
+            </div>
+            <div className="flex items-center">
+              <input
+                type="radio"
+                id="Part Time"
+                name="preference"
+                value="Part Time"
+                className="mr-2"
+                checked={profileData.work_status === "Part Time"}
+                onChange={() =>
+                  setProfileData({ ...profileData, work_status: "Part Time" })
+                }
+              />
+              <Label htmlFor="Part Time">Part Time</Label>
+            </div>
+            {/* <div className="flex items-center">
     <input
       type="radio"
       id="any"
@@ -437,8 +451,7 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
     />
     <Label htmlFor="any">Any</Label>
   </div> */}
-</div>
-
+          </div>
 
           {errors.work_status && (
             <p className="text-red-500">{errors.work_status}</p>
@@ -499,6 +512,28 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
                 <p className="text-red-500">{errors.current_work_status}</p>
               )}
             </div> */}
+            <div className="mb-4">
+              <Label
+                htmlFor="work_type"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Work Type
+              </Label>
+              <Select
+                id={`work_type-${index}`}
+                className="mt-1 w-full"
+                value={{ value: job.work_type, label: job.work_type }}
+                options={options}
+                onChange={(selectedOption) =>
+                  handleChange(index, "work_type", selectedOption?.value || "")
+                }
+              />
+              {errors[`employment_history[${index}].work_type`] && (
+                <p className="text-red-500">
+                  {errors[`employment_history[${index}].work_type`]}
+                </p>
+              )}
+            </div>
 
             <div className="mb-4">
               <Label
