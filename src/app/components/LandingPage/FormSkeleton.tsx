@@ -63,7 +63,7 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
   onResend,
   showTabs = false,
   initialTab = "email",
-  isResetPassword = false, 
+  isResetPassword = false,
 }) => {
   const [tab, setTab] = useState(initialTab);
 
@@ -87,13 +87,14 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
           <Image
             src="/landing_assets/images/Frame 4.svg"
             alt="Form image"
-            layout="fill"
+            fill
             objectFit="cover"
             className="absolute inset-0 w-full h-full"
-            loading="lazy"
+            // loading="lazy"
             quality={50}
             placeholder="blur"
             blurDataURL="/landing_assets/images/Frame 4.svg"
+            priority
           />
         </div>
         <div className="flex items-start justify-center p-4 md:p-8 overflow-auto">

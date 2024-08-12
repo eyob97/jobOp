@@ -112,7 +112,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     style={linkClasses("post")}
                     onClick={() => handleNavigation("post", "/dashboard#post")}
                   >
-                    Job Post
+                    Jobs
                   </NavbarLink>
                   <NavbarLink
                     href="/dashboard#upload-job"
@@ -122,6 +122,16 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     }
                   >
                     Job Post
+                  </NavbarLink>
+
+                  <NavbarLink
+                    href="/dashboard#applicants"
+                    style={linkClasses("applicants")}
+                    onClick={() =>
+                      handleNavigation("applicants", "/dashboard#applicants")
+                    }
+                  >
+                    Applications
                   </NavbarLink>
                 </>
               )}

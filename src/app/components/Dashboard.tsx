@@ -16,6 +16,7 @@ import ApplicationsTable from "@/app/components/JobSeeker/ApplicationTable";
 import JobPostForm from "./Employer/JobPostForm";
 import { UploadJobCard } from "./Employer/UploadJob";
 import DashboardFooter from "./DashboardFooter";
+import Applications from "@/app/components/Employer/Applications";
 
 const Dashboard: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth?.user);
@@ -23,7 +24,9 @@ const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState("filter");
   const [viewLetter, setViewLetter] = useState(false);
   const [showLetterForm, setShowLetterForm] = useState(false);
-  const [letterType, setLetterType] = useState<'Cover Letter' | 'Motivation Letter'>('Cover Letter');
+  const [letterType, setLetterType] = useState<
+    "Cover Letter" | "Motivation Letter"
+  >("Cover Letter");
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
@@ -31,30 +34,40 @@ const Dashboard: React.FC = () => {
     setShowLetterForm(false);
   };
 
-  const handleGenerate = (type: 'Cover Letter'| 'Motivation Letter') => {
+  const handleGenerate = (type: "Cover Letter" | "Motivation Letter") => {
     setLetterType(type);
     setShowLetterForm(true);
   };
 
   const renderContent = () => {
-    if (user?.user_type === 'Employer') {
+    if (user?.user_type === "Employer") {
       switch (activeTab) {
         case "upload-job":
-          return <UploadJobCard />; 
+          return <UploadJobCard />;
+        case "applicants":
+          return <Applications />;
         default:
           return <EmployerDashboard />;
       }
     }
 
     if (viewLetter) {
-      return <LetterView letterType={letterType} onBack={() => setViewLetter(false)} jobId={selectedJob?.id || 0} />;
+      return (
+        <LetterView
+          letterType={letterType}
+          onBack={() => setViewLetter(false)}
+          jobId={selectedJob?.id || 0}
+        />
+      );
     }
 
     if (showLetterForm) {
-      if (letterType === 'Cover Letter') {
+      if (letterType === "Cover Letter") {
         return <CoverLetterForm onViewLetter={() => setViewLetter(true)} />;
       } else {
-        return <MotivationLetterForm onViewLetter={() => setViewLetter(true)} />;
+        return (
+          <MotivationLetterForm onViewLetter={() => setViewLetter(true)} />
+        );
       }
     }
 
@@ -65,10 +78,7 @@ const Dashboard: React.FC = () => {
         return <UploadCVCard />;
       case "documents":
         return (
-          <Documents
-            letterType={letterType}
-            onGenerate={handleGenerate}
-          />
+          <Documents letterType={letterType} onGenerate={handleGenerate} />
         );
       case "applications":
         return <ApplicationsTable />;
@@ -78,12 +88,20 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-<div key='uniqueKey'>
-      <DashboardHeader onTabChange={handleTabChange} activeTab={activeTab} userType={user?.user_type || 'defaultUserType'} />
-      <main className={`min-h-screen w-full flex flex-col items-center ${activeTab === "upload" || activeTab === "upload-job" ? "bg-green-700" : "bg-gray-100"}`}>
-        <div className="w-full h-full">
-          {renderContent()}
-        </div>
+    <div key="uniqueKey">
+      <DashboardHeader
+        onTabChange={handleTabChange}
+        activeTab={activeTab}
+        userType={user?.user_type || "defaultUserType"}
+      />
+      <main
+        className={`min-h-screen w-full flex flex-col items-center ${
+          activeTab === "upload" || activeTab === "upload-job"
+            ? "bg-green-700"
+            : "bg-gray-100"
+        }`}
+      >
+        <div className="w-full h-full">{renderContent()}</div>
       </main>
       {/* <DashboardFooter/> */}
     </div>
