@@ -12,12 +12,16 @@ import {
 } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { createJobPost, getSkills } from "../../redux/jobSlice";
+import {
+  createJobPost,
+  fetchEmployerCompany,
+  getSkills,
+} from "../../redux/jobSlice";
 import { clearError } from "../../redux/resumeSlice";
 import { CountryDropdown } from "react-country-region-selector";
 
 interface JobPost {
-  company: number;
+  company?: number;
   job_title: string;
   description: string;
   responsibilities: string;
@@ -53,14 +57,15 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [skills, setSkills] = useState<Skill[]>([]);
+  const [company, setCompany] = useState<{ id: number }>();
   const [jobPostData, setJobPostData] = useState<JobPost>({
-    company: 35,
+    company: company?.id,
     job_title: "",
     description: "",
     responsibilities: "",
     desirable_skills: [],
     skills: [],
-    fixed_salary: 80000,
+    fixed_salary: NaN,
     min_salary: 70000,
     max_salary: 90000,
     location: "",
@@ -109,6 +114,8 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
   };
 
   const createNewJobPost = async () => {
+    const company: any = await dispatch(fetchEmployerCompany());
+    jobPostData.company = company?.payload?.data[0]?.id;
     const resultAction = await dispatch(createJobPost(jobPostData));
 
     if (createJobPost.fulfilled.match(resultAction)) {
@@ -136,6 +143,12 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
       setSkills(resp.payload);
     };
     fetchSkills();
+
+    const getCompany = async () => {
+      const company: any = await dispatch(fetchEmployerCompany());
+      setCompany(company.payload.data[0].id);
+    };
+    getCompany();
   }, [dispatch]);
 
   return (
