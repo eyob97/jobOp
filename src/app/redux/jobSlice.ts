@@ -68,6 +68,30 @@ export const fetchJobs = createAsyncThunk(
   }
 );
 
+export const fetchEmployerCompany = createAsyncThunk(
+  "/api/company",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.get(`${API_URL}/api/company`);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const fetchEmployerJobs = createAsyncThunk(
+  "/api/jobs",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await apiClient.get(`${API_URL}/api/jobs`);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 export const applyForJob = createAsyncThunk(
   "jobs/applyForJob",
   async (
