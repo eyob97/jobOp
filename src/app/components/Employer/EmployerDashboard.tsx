@@ -1,135 +1,102 @@
 "use client";
 
-import React from "react";
-import { Button, Table } from "flowbite-react";
+import React, { useEffect, useState } from "react";
+import { Button, Card, Table } from "flowbite-react";
 import { HiDownload, HiPlus } from "react-icons/hi";
+import { AppDispatch, RootState } from "@/app/redux/store";
+import { useSelector } from "react-redux";
+import { fetchEmployerCompany, fetchEmployerJobs } from "@/app/redux/jobSlice";
+import { useDispatch } from "react-redux";
+import { FaMapMarkerAlt } from "react-icons/fa";
+import { format } from "date-fns";
 
 const EmployerDashboard: React.FC = () => {
-  const jobs = [
-    {
-      name: "Professional cleaner",
-      postDate: "Apr 23, 2024",
-      applicants: 23,
-      status: "Active",
-      dueDate: "May 23, 2024",
-    },
-    {
-      name: "Cleaner",
-      postDate: "Apr 23, 2024",
-      applicants: 11,
-      status: "Deactivated",
-      dueDate: "May 23, 2024",
-    },
-    {
-      name: "Waiter",
-      postDate: "Apr 18, 2024",
-      applicants: 80,
-      status: "Active",
-      dueDate: "May 18, 2024",
-    },
-    {
-      name: "Bartender",
-      postDate: "Apr 15, 2024",
-      applicants: 15,
-      status: "Active",
-      dueDate: "May 15, 2024",
-    },
-    {
-      name: "Bartender",
-      postDate: "Apr 15, 2024",
-      applicants: 20,
-      status: "Active",
-      dueDate: "May 15, 2024",
-    },
-    {
-      name: "Waiter",
-      postDate: "Apr 11, 2024",
-      applicants: 80,
-      status: "Deactivated",
-      dueDate: "May 11, 2024",
-    },
-  ];
+  const dispatch = useDispatch<AppDispatch>();
+  const [jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      const jobs: any = await dispatch(fetchEmployerJobs());
+      setJobs(jobs.payload.data);
+    };
+    fetchJobs();
+  }, []);
 
   return (
     <>
-        <div className="bg-[rgba(214,235,223,1)] min-h-screen">
-      <div className="p-6">
-        <div className="w-full flex justify-between items-center bg-white p-4 shadow-md mb-4">
-          <h2 className="text-2xl font-bold mb-2">My job posts</h2>
-          <div className="flex space-x-4">
-            <Button
-              type="button"
-              className="rounded-full text-black flex items-center"
-              style={{ backgroundColor: "#fff", color: "#000" }}
-            >
-              <HiDownload className="mt-1 mr-1" />
-              Upload PDF
-            </Button>
-            <Button
-              type="button"
-              className="rounded-full text-black flex items-center"
-              style={{ backgroundColor: "#FFC424", color: "#000" }}
-            >
-              <HiPlus className="mt-1 mr-1" />
-              Create Job Post
-            </Button>
+      <div className="bg-[rgba(214,235,223,1)] min-h-screen">
+        <div className="p-6">
+          <div className="w-full flex justify-between items-center bg-white p-4 shadow-md mb-4">
+            <h2 className="text-2xl font-bold mb-2">My job posts</h2>
+            <div className="flex space-x-4">
+              <Button
+                type="button"
+                className="rounded-full text-black flex items-center"
+                style={{ backgroundColor: "#fff", color: "#000" }}
+              >
+                <HiDownload className="mt-1 mr-1" />
+                Upload PDF
+              </Button>
+              <Button
+                type="button"
+                className="rounded-full text-black flex items-center"
+                style={{ backgroundColor: "#FFC424", color: "#000" }}
+              >
+                <HiPlus className="mt-1 mr-1" />
+                Create Job Post
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="p-6 bg-white rounded-lg shadow-md">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1">
+            {jobs?.length > 0 &&
+              jobs?.map((job: any) => {
+                return (
+                  <Card key={job?.id} className="max-w-sm cursor-pointer">
+                    <div className="flex justify-between items-center mb-2">
+                      <h3 className="text-lg font-medium">{job?.job_title}</h3>
+                    </div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span
+                        className={`px-2 py-1 rounded ${
+                          job?.work_type === "Part-time"
+                            ? "bg-blue-200 text-blue-800"
+                            : "bg-green-200 text-green-800"
+                        }`}
+                      >
+                        {job?.work_type}
+                      </span>
+                      <div className="text-gray-600">Status: {job?.status}</div>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-4">
+                      {typeof job?.description === "string"
+                        ? job?.description
+                        : "No description available"}
+                    </p>
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center">
+                        <div>
+                          <p className="text-sm font-medium">
+                            {job?.company?.name}
+                          </p>
+                          <p className="text-sm text-gray-600 flex items-center">
+                            <FaMapMarkerAlt className="mr-1 text-green-600" />{" "}
+                            {job?.location}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      Posted: {format(new Date(job?.created_date), "PPP")}
+                    </div>
+                  </Card>
+                );
+              })}
           </div>
         </div>
       </div>
-      <div className="p-6 bg-white rounded-lg shadow-md">
-      <Table hoverable>
-        <Table.Head>
-          <Table.HeadCell>Product name</Table.HeadCell>
-          <Table.HeadCell>Color</Table.HeadCell>
-          <Table.HeadCell>Category</Table.HeadCell>
-          <Table.HeadCell>Price</Table.HeadCell>
-          <Table.HeadCell>
-            <span className="sr-only">Edit</span>
-          </Table.HeadCell>
-        </Table.Head>
-        <Table.Body className="divide-y">
-          <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-              {'Apple MacBook Pro 17"'}
-            </Table.Cell>
-            <Table.Cell>Sliver</Table.Cell>
-            <Table.Cell>Laptop</Table.Cell>
-            <Table.Cell>$2999</Table.Cell>
-            <Table.Cell>
-              <a href="#" className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
-                Edit
-              </a>
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-              Microsoft Surface Pro
-            </Table.Cell>
-            <Table.Cell>White</Table.Cell>
-            <Table.Cell>Laptop PC</Table.Cell>
-            <Table.Cell>$1999</Table.Cell>
-            <Table.Cell>
-              <a href="#" className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
-                Edit
-              </a>
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-            <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">Magic Mouse 2</Table.Cell>
-            <Table.Cell>Black</Table.Cell>
-            <Table.Cell>Accessories</Table.Cell>
-            <Table.Cell>$99</Table.Cell>
-            <Table.Cell>
-              <a href="#" className="font-medium text-cyan-600 hover:underline dark:text-cyan-500">
-                Edit
-              </a>
-            </Table.Cell>
-          </Table.Row>
-        </Table.Body>
-      </Table>
-      </div>
-    </div></>
-
+    </>
   );
 };
 
