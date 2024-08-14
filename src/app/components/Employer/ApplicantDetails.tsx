@@ -47,12 +47,14 @@ const ApplicantProfile = () => {
   if (!selectedApplicant) {
     return <p>Loading applicant data...</p>;
   }
+
   const coverLetterPreview = selectedApplicant?.cover_letter?.details
     ?.split("\n")
     .slice(0, 3)
     .join("\n");
 
   const coverLetterFull = selectedApplicant?.cover_letter?.details;
+
   return (
     <>
       <DashboardHeader
@@ -62,53 +64,54 @@ const ApplicantProfile = () => {
       />
       <div className="bg-gray-50 min-h-screen p-6">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold mb-5">Applicant profile</h2>
+          <h2 className="text-4xl font-extrabold mb-5">Applicant Profile</h2>
           <div className="flex items-center mb-6">
             <img
               src={
                 selectedApplicant.seeker.profile_picture || "default-avatar.png"
               }
               alt={selectedApplicant.seeker.full_name}
-              className="h-16 w-16 rounded-full mr-4"
+              className="h-16 w-16 rounded-full mr-4 border-2 border-gray-300"
             />
-            <h2 className="text-2xl font-semibold">
+            <h2 className="text-3xl font-semibold text-gray-800">
               {selectedApplicant.seeker.full_name}
             </h2>
           </div>
 
-          <div className="bg-white shadow-md rounded-lg p-4">
-            <h3 className="text-xl font-semibold mb-3">Attached Documents</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white shadow-lg rounded-lg p-6">
+            <h3 className="text-2xl font-semibold mb-4">Attached Documents</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {selectedApplicant.resume && (
-                <Card className="mb-4 w-64 p-4">
-                  <h4 className="text-lg font-medium mb-2">
-                    Resume : {selectedApplicant.resume.file_name}
+                <Card className="p-4 border rounded-lg hover:shadow-xl transition-shadow">
+                  <h4 className="text-lg font-medium mb-3">
+                    {`Resume ${selectedApplicant?.resume?.file_name}`}
                   </h4>
                   <Button
                     color="gray"
                     onClick={() =>
                       window.open(selectedApplicant.resume.file, "_blank")
                     }
+                    className="w-full"
                   >
                     Download Resume
                   </Button>
                 </Card>
               )}
               {selectedApplicant.cover_letter && (
-                <Card className="mb-4  p-4">
-                  <h4 className="text-lg font-medium mb-2">Cover Letter</h4>
-                  <div className="text-sm mb-2">
+                <Card className="p-4 border rounded-lg hover:shadow-xl transition-shadow">
+                  <h4 className="text-lg font-medium mb-3">Cover Letter</h4>
+                  <div className="text-sm text-gray-600">
                     {isCoverLetterExpanded
                       ? coverLetterFull
                       : coverLetterPreview}
                     {coverLetterFull &&
-                      coverLetterFull.split("\n").length > 5 && (
+                      coverLetterFull.split("\n").length > 3 && (
                         <Button
-                          gradientDuoTone="blueToGreen"
+                          color="gray"
                           onClick={() =>
                             setIsCoverLetterExpanded(!isCoverLetterExpanded)
                           }
-                          className="mt-2"
+                          className="mt-2 w-full"
                         >
                           {isCoverLetterExpanded ? "See Less" : "See More"}
                         </Button>
@@ -118,12 +121,12 @@ const ApplicantProfile = () => {
               )}
 
               {selectedApplicant.motivation_letter && (
-                <Card className="mb-4 w-64 p-4">
-                  <h4 className="text-lg font-medium mb-2">
+                <Card className="p-4 border rounded-lg hover:shadow-xl transition-shadow">
+                  <h4 className="text-lg font-medium mb-3">
                     Motivation Letter
                   </h4>
                   <Button
-                    gradientDuoTone="greenToBlue"
+                    color="gray"
                     onClick={() =>
                       window.open(
                         selectedApplicant.motivation_letter.file,
@@ -138,11 +141,11 @@ const ApplicantProfile = () => {
               )}
             </div>
 
-            <div className="mt-4 flex justify-end space-x-4">
-              <Button color="gray" className="px-4 py-2 text-sm">
+            <div className="mt-6 flex justify-end space-x-4">
+              <Button color="gray" className="px-4 py-2 text-sm rounded-lg">
                 Reject
               </Button>
-              <Button color="gray" className="px-4 py-2 text-sm">
+              <Button color="success" className="px-4 py-2 text-sm rounded-lg">
                 Invite to Interview
               </Button>
             </div>
