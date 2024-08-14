@@ -9,8 +9,8 @@ const ApplicantComponent = dynamic(
   }
 );
 
-export const page = () => {
+const Page = () => {
   return <ApplicantComponent />;
 };
 
-export default page;
+export default Page;
