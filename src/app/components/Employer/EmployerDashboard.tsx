@@ -1,26 +1,35 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Button, Card, Table } from "flowbite-react";
+import { Button, Card, Spinner, Alert } from "flowbite-react";
 import { HiDownload, HiPlus } from "react-icons/hi";
 import { AppDispatch, RootState } from "@/app/redux/store";
-import { useSelector } from "react-redux";
-import { fetchEmployerCompany, fetchEmployerJobs } from "@/app/redux/jobSlice";
+import { fetchEmployerJobs } from "@/app/redux/jobSlice";
 import { useDispatch } from "react-redux";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { format } from "date-fns";
 
 const EmployerDashboard: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [jobs, setJobs] = useState([]);
 
   useEffect(() => {
     const fetchJobs = async () => {
-      const jobs: any = await dispatch(fetchEmployerJobs());
-      setJobs(jobs.payload.data);
+      try {
+        setLoading(true);
+        const jobs: any = await dispatch(fetchEmployerJobs());
+        setJobs(jobs.payload.data);
+        setError(null);
+      } catch (err) {
+        setError("Failed to load jobs. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
     };
     fetchJobs();
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
@@ -49,51 +58,68 @@ const EmployerDashboard: React.FC = () => {
           </div>
         </div>
         <div className="p-6 bg-white rounded-lg shadow-md">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1">
-            {jobs?.length > 0 &&
-              jobs?.map((job: any) => {
-                return (
-                  <Card key={job?.id} className="max-w-sm cursor-pointer">
+          {loading && (
+            <div className="flex justify-center">
+              <Spinner size="lg" aria-label="Loading jobs" />
+            </div>
+          )}
+          {error && (
+            <div className="mb-4">
+              <Alert color="failure">
+                <span>{error}</span>
+              </Alert>
+            </div>
+          )}
+          {!loading && !error && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {jobs.length > 0 ? (
+                jobs.map((job: any) => (
+                  <Card key={job.id} className="max-w-sm cursor-pointer">
                     <div className="flex justify-between items-center mb-2">
-                      <h3 className="text-lg font-medium">{job?.job_title}</h3>
+                      <h3 className="text-lg font-medium">{job.job_title}</h3>
                     </div>
                     <div className="flex justify-between items-center mb-2">
                       <span
                         className={`px-2 py-1 rounded ${
-                          job?.work_type === "Part-time"
+                          job.work_type === "Part-time"
                             ? "bg-blue-200 text-blue-800"
                             : "bg-green-200 text-green-800"
                         }`}
                       >
-                        {job?.work_type}
+                        {job.work_type}
                       </span>
-                      <div className="text-gray-600">Status: {job?.status}</div>
+                      <div className="text-gray-600">Status: {job.status}</div>
                     </div>
                     <p className="text-sm text-gray-600 mb-4">
-                      {typeof job?.description === "string"
-                        ? job?.description
+                      {typeof job.description === "string"
+                        ? job.description
                         : "No description available"}
                     </p>
                     <div className="flex justify-between items-center">
                       <div className="flex items-center">
                         <div>
                           <p className="text-sm font-medium">
-                            {job?.company?.name}
+                            {job.company?.name}
                           </p>
                           <p className="text-sm text-gray-600 flex items-center">
                             <FaMapMarkerAlt className="mr-1 text-green-600" />{" "}
-                            {job?.location}
+                            {job.location}
                           </p>
                         </div>
                       </div>
                     </div>
                     <div className="text-sm text-gray-600">
-                      Posted: {format(new Date(job?.created_date), "PPP")}
+                      Posted: {format(new Date(job.created_date), "PPP")}
                     </div>
                   </Card>
-                );
-              })}
-          </div>
+                ))
+              ) : (
+                <p className="text-center text-gray-600">
+                  No job posts available.
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </>
