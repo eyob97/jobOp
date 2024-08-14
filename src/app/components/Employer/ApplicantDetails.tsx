@@ -7,7 +7,6 @@ import { Button, Card } from "flowbite-react";
 import { useDispatch } from "react-redux";
 import { fetchEmployerJobs } from "@/app/redux/jobSlice";
 import DashboardHeader from "../DashboardHeader";
-import { HiUserCircle } from "react-icons/hi";
 
 const ApplicantProfile = () => {
   const dispatch = useDispatch<AppDispatch>();

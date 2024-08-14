@@ -1,12 +1,16 @@
 import ApplicantProfile from "@/app/components/Employer/ApplicantDetails";
+import dynamic from "next/dynamic";
 import React from "react";
 
+const ApplicantComponent = dynamic(
+  () => import("../../../../components/Employer/ApplicantDetails"),
+  {
+    ssr: false,
+  }
+);
+
 export const page = () => {
-  return (
-    <>
-      <ApplicantProfile />
-    </>
-  );
+  return <ApplicantComponent />;
 };
 
 export default page;
