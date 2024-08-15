@@ -123,6 +123,9 @@ const Applications = () => {
                 <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-sm leading-4 text-gray-600 uppercase tracking-wider">
                   Status
                 </th>
+                <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-sm leading-4 text-gray-600 uppercase tracking-wider">
+                  Due Time
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -130,7 +133,7 @@ const Applications = () => {
                 <tr
                   key={app.id}
                   onClick={() => handleClick(app.id)}
-                  className="cursor-pointer"
+                  className="cursor-pointer hover:bg-gray-100 transition-all duration-200 ease-in-out"
                 >
                   <td className="px-6 py-4 border-b border-gray-200">
                     {app.jobName}
@@ -147,6 +150,9 @@ const Applications = () => {
                     }`}
                   >
                     {app.status}
+                  </td>
+                  <td className="px-6 py-4 border-b border-gray-200">
+                    {app.dueTime}
                   </td>
                 </tr>
               ))}

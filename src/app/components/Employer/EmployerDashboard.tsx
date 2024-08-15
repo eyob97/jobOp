@@ -8,8 +8,10 @@ import { fetchEmployerJobs } from "@/app/redux/jobSlice";
 import { useDispatch } from "react-redux";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 
 const EmployerDashboard: React.FC = () => {
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,6 +33,10 @@ const EmployerDashboard: React.FC = () => {
     fetchJobs();
   }, [dispatch]);
 
+  const handleNavigation = (tab: string, path: string) => {
+    router.push(path);
+  };
+
   return (
     <>
       <div className="bg-[rgba(214,235,223,1)] min-h-screen">
@@ -50,6 +56,9 @@ const EmployerDashboard: React.FC = () => {
                 type="button"
                 className="rounded-full text-black flex items-center"
                 style={{ backgroundColor: "#FFC424", color: "#000" }}
+                onClick={() =>
+                  handleNavigation("upload-job", "/dashboard#upload-job")
+                }
               >
                 <HiPlus className="mt-1 mr-1" />
                 Create Job Post
