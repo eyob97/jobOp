@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { Button, Card } from "flowbite-react";
@@ -9,6 +9,7 @@ import { fetchEmployerJobs } from "@/app/redux/jobSlice";
 import DashboardHeader from "../DashboardHeader";
 
 const ApplicantProfile = () => {
+  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const [activeTab, setActiveTab] = useState("filter");
   const user = useSelector((state: RootState) => state.auth?.user);
@@ -47,13 +48,18 @@ const ApplicantProfile = () => {
     return <p>Loading applicant data...</p>;
   }
 
+  const getInitials = (firstName: string, lastName: string) => {
+    return `${firstName?.charAt(0) || ""}${
+      lastName?.charAt(0) || ""
+    }`.toUpperCase();
+  };
+
   const coverLetterPreview = selectedApplicant?.cover_letter?.details
     ?.split("\n")
     .slice(0, 3)
     .join("\n");
 
   const coverLetterFull = selectedApplicant?.cover_letter?.details;
-
   return (
     <>
       <DashboardHeader
@@ -65,15 +71,22 @@ const ApplicantProfile = () => {
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-extrabold mb-5">Applicant Profile</h2>
           <div className="flex items-center mb-6">
-            <img
-              src={
-                selectedApplicant.seeker.profile_picture || "default-avatar.png"
-              }
-              alt={selectedApplicant.seeker.full_name}
-              className="h-16 w-16 rounded-full mr-4 border-2 border-gray-300"
-            />
+            {selectedApplicant.seeker.profile_picture ? (
+              <img
+                src={selectedApplicant.seeker.profile_picture}
+                alt={`${selectedApplicant.seeker.user.first_name} ${selectedApplicant.seeker.user.last_name}`}
+                className="h-16 w-16 rounded-full mr-4 border-2 border-gray-300"
+              />
+            ) : (
+              <div className="h-16 w-16 rounded-full mr-4 border-2 border-gray-300 bg-gray-200 flex items-center justify-center text-xl font-bold text-gray-600">
+                {getInitials(
+                  selectedApplicant.seeker.user.first_name,
+                  selectedApplicant.seeker.user.last_name
+                )}
+              </div>
+            )}
             <h2 className="text-3xl font-semibold text-gray-800">
-              {selectedApplicant.seeker.full_name}
+              {`${selectedApplicant.seeker.user.first_name} ${selectedApplicant.seeker.user.last_name}`}
             </h2>
           </div>
 

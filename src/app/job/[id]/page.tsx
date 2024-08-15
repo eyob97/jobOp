@@ -50,7 +50,16 @@ const page = () => {
   const handleViewClick = (appId: number) => {
     const numericId = parseInt(id, 10);
     dispatch(setSelectedJob(numericId));
-    router.push(`/job/${id}/applicant/${appId}`);
+    router.push(`/job/${id}/applicants/${appId}`);
+  };
+
+  const handleViewApplicants = () => {
+    router.push(`/job/${id}/applicants`);
+  };
+  const getInitials = (firstName: string, lastName: string) => {
+    return `${firstName?.charAt(0) || ""}${
+      lastName?.charAt(0) || ""
+    }`.toUpperCase();
   };
   return (
     <>
@@ -64,11 +73,11 @@ const page = () => {
         <div className="max-w-7xl mx-auto">
           <div className="bg-white shadow-md rounded-lg p-4 mb-6">
             <div className="flex items-center">
-              <img
+              {/* <img
                 src="company-logo.png"
                 alt="Company Logo"
                 className="h-16 w-16 rounded-full mr-4"
-              />
+              /> */}
               <div>
                 <h2 className="text-2xl font-bold">
                   {selectedJob?.job_title || "Loading..."}
@@ -84,35 +93,35 @@ const page = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="col-span-2">
               <Card className="mb-6">
-                <h3 className="text-xl font-semibold mb-4">Job Description</h3>
-                <p>{selectedJob?.description || "No description available."}</p>
-              </Card>
-
-              <Card className="mb-6">
-                <h3 className="text-xl font-semibold mb-4">Responsibilities</h3>
-                <p>
-                  {selectedJob?.responsibilities ||
-                    "No responsibilities listed."}
-                </p>
-              </Card>
-
-              <Card className="mb-6">
-                <h3 className="text-xl font-semibold mb-4">Desirable Skills</h3>
-                <p>
-                  {selectedJob?.desirable_skills ||
-                    "No desirable skills listed."}
-                </p>
-              </Card>
-
-              <Card>
-                <h3 className="text-xl font-semibold mb-4">Benefits</h3>
-                <ul className="list-disc pl-6">
-                  {selectedJob?.benefits?.map(
-                    (benefit: string, index: number) => (
-                      <li key={index}>{benefit}</li>
-                    )
-                  )}
-                </ul>
+                <h3 className="text-xl font-semibold mb-4">Job Details</h3>
+                <div>
+                  <h4 className="font-medium mb-2">Job Description</h4>
+                  <p className="mb-4">
+                    {selectedJob?.description || "No description available."}
+                  </p>
+                  <h4 className="font-medium mb-2">Responsibilities</h4>
+                  <p className="mb-4">
+                    {selectedJob?.responsibilities ||
+                      "No responsibilities listed."}
+                  </p>
+                  <h4 className="font-medium mb-2">Desirable Skills</h4>
+                  <p className="mb-4">
+                    {selectedJob?.desirable_skills ||
+                      "No desirable skills listed."}
+                  </p>
+                  <h4 className="font-medium mb-2">Benefits</h4>
+                  <ul className="list-disc pl-6">
+                    {selectedJob?.benefits?.length > 0 ? (
+                      selectedJob?.benefits?.map(
+                        (benefit: string, index: number) => (
+                          <li key={index}>{benefit}</li>
+                        )
+                      )
+                    ) : (
+                      <p>No benefits listed.</p>
+                    )}
+                  </ul>
+                </div>
               </Card>
             </div>
 
@@ -122,43 +131,55 @@ const page = () => {
                   <h3 className="text-xl font-semibold">
                     Applicants ({selectedJob?.applicants?.length || 0})
                   </h3>
-                  <a href="#" className="text-green-600 font-medium">
+                  <a
+                    href="#"
+                    className="text-green-600 font-medium"
+                    onClick={handleViewApplicants}
+                  >
                     View all
                   </a>
                 </div>
                 <ul className="space-y-3">
-                  {selectedJob?.applicants?.map(
-                    (applicant: any, index: number) => (
-                      <li
-                        key={index}
-                        className="flex items-center justify-between"
-                      >
-                        <div className="flex items-center">
-                          <img
-                            src={
-                              applicant.seeker?.profile_image ||
-                              "/default-profile.png"
-                            }
-                            alt={
-                              applicant.seeker?.full_name || "Unnamed Applicant"
-                            }
-                            className="h-8 w-8 rounded-full mr-2"
-                          />
-                          <span className="font-medium text-gray-900">
-                            {applicant.seeker?.full_name || "Unnamed Applicant"}
-                          </span>
-                        </div>
-                        <a
-                          // href={applicant.resume?.file}
-                          target="_blank"
-                          className="text-green-600 font-medium"
-                          onClick={() => handleViewClick(applicant.id)}
+                  {selectedJob?.applicants
+                    ?.slice(0, 5)
+                    .map((applicant: any, index: number) => {
+                      const firstName =
+                        applicant.seeker?.user?.first_name || "";
+                      const lastName = applicant.seeker?.user?.last_name || "";
+                      const profileImage = applicant.seeker?.profile_image;
+
+                      return (
+                        <li
+                          key={index}
+                          className="flex items-center justify-between"
                         >
-                          View
-                        </a>
-                      </li>
-                    )
-                  )}
+                          <div className="flex items-center">
+                            {profileImage ? (
+                              <img
+                                src={profileImage}
+                                alt={`${firstName} ${lastName}`}
+                                className="h-8 w-8 rounded-full mr-2"
+                              />
+                            ) : (
+                              <div className="h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center text-white font-medium mr-2">
+                                {getInitials(firstName, lastName)}
+                              </div>
+                            )}
+                            <span className="font-medium text-gray-900">
+                              {`${firstName} ${lastName}` ||
+                                "Unnamed Applicant"}
+                            </span>
+                          </div>
+                          <a
+                            target="_blank"
+                            className="text-green-600 font-medium cursor-pointer"
+                            onClick={() => handleViewClick(applicant.id)}
+                          >
+                            View
+                          </a>
+                        </li>
+                      );
+                    })}
                 </ul>
               </Card>
 
