@@ -84,7 +84,13 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
     <Layout>
       <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
         <div className="hidden md:block relative">
-          <Image
+          <img
+            alt="form image"
+            src="/landing_assets/images/image.png"
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="lazy"
+          />
+          {/* <Image
             src="/landing_assets/images/Frame 4.svg"
             alt="Form image"
             fill
@@ -95,7 +101,7 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
             placeholder="blur"
             blurDataURL="/landing_assets/images/Frame 4.svg"
             priority
-          />
+          /> */}
         </div>
         <div className="flex items-start justify-center p-4 md:p-8 overflow-auto">
           <Card className="w-full max-w-md bg-white p-6 shadow-md rounded-2xl">
