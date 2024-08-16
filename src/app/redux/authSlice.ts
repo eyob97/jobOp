@@ -82,7 +82,7 @@ interface UpdateCoverLetterPayload {
   file_name: string;
   file_type: string;
   details: string;
-} 
+}
 
 export const verifyCompleteSignUp = createAsyncThunk(
   "auth/verifyCompleteSignUp",
@@ -146,6 +146,11 @@ export const signUpUser = createAsyncThunk(
     }
   }
 );
+
+export const updateUser = createAsyncThunk("/api/users/update", async () => {
+  try {
+  } catch (error) {}
+});
 
 export const sendOTP = createAsyncThunk(
   "auth/sendOTP",
@@ -226,7 +231,6 @@ export const completeSignUp = createAsyncThunk(
     }
   }
 );
-
 
 export const updateCoverLetter = createAsyncThunk(
   "letters/updateCoverLetter",
