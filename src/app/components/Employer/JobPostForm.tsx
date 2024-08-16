@@ -49,9 +49,12 @@ interface Skill {
 
 interface JobPostFormProps {
   setView: (view: string) => void;
+  extractedJob?: any;
 }
 
-const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
+const JobPostForm: React.FC<JobPostFormProps> = ({ setView, extractedJob }) => {
+  console.log("extractedJob man:", extractedJob);
+
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const { error } = useSelector((state: RootState) => state.resume);

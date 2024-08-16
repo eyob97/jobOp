@@ -4,6 +4,12 @@ import apiClient from "../apiClient";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 interface ResumeState {
+  job_post_file?: {
+    name: string;
+    size: number;
+    type: string;
+    lastModified: number;
+  } | null;
   pdf_file: {
     name: string;
     size: number;
@@ -18,6 +24,7 @@ interface ResumeState {
 }
 
 const initialState: ResumeState = {
+  job_post_file: null,
   pdf_file: null,
   jobSeekerData: null,
   isLoading: false,
@@ -35,6 +42,34 @@ export const uploadResume = createAsyncThunk(
     try {
       const response = await apiClient.post(
         `${API_URL}/api/cv-extraction/upload-pdf/`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status !== 200) {
+        return rejectWithValue(response.data);
+      }
+
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const uploadJob = createAsyncThunk(
+  "/job/upload",
+  async (file: File, { rejectWithValue }) => {
+    const formData = new FormData();
+    formData.append("job_post_file", file);
+
+    try {
+      const response = await apiClient.post(
+        `${API_URL}/api/upload/extract-job-post/`,
         formData,
         {
           headers: {
@@ -146,6 +181,21 @@ const resumeSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as Record<string, any>;
       })
+      .addCase(uploadJob.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(uploadJob.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.job_post_file = null;
+        state.jobSeekerData = action.payload;
+        state.hasUploadedFile = true;
+        state.hasCompletedUpload = false;
+      })
+      .addCase(uploadJob.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as Record<string, any>;
+      })
       .addCase(fetchJobSeekerData.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -173,5 +223,10 @@ const resumeSlice = createSlice({
   },
 });
 
-export const { setFile, clearError, setHasUploadedFile, setHasCompletedUpload } = resumeSlice.actions;
+export const {
+  setFile,
+  clearError,
+  setHasUploadedFile,
+  setHasCompletedUpload,
+} = resumeSlice.actions;
 export default resumeSlice.reducer;
