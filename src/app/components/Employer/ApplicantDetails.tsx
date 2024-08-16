@@ -5,8 +5,17 @@ import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { Button, Card } from "flowbite-react";
 import { useDispatch } from "react-redux";
-import { fetchEmployerJobs } from "@/app/redux/jobSlice";
+import { fetchEmployerJobs, updateApplicantStatus } from "@/app/redux/jobSlice";
 import DashboardHeader from "../DashboardHeader";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+type ApplicantStatus =
+  | "Hired"
+  | "Pending"
+  | "Rejected"
+  | "Invited for Interview"
+  | "Cancelled";
 
 const ApplicantProfile = () => {
   const router = useRouter();
@@ -16,6 +25,7 @@ const ApplicantProfile = () => {
   const { id, applicantId } = useParams<{ id: string; applicantId: string }>();
   const [selectedApplicant, setSelectedApplicant] = useState<any>(null);
   const [isCoverLetterExpanded, setIsCoverLetterExpanded] = useState(false);
+  const [status, setStatus] = useState<ApplicantStatus>("Pending");
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -42,6 +52,38 @@ const ApplicantProfile = () => {
 
     fetchJobs();
   }, [dispatch, id, applicantId]);
+
+  const handleChangeStatus = async (status: ApplicantStatus) => {
+    try {
+      await dispatch(
+        updateApplicantStatus({
+          applicantId: parseInt(applicantId, 10),
+          status,
+        })
+      );
+      toast.success(`Applicant status updated to ${status}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setStatus(status);
+    } catch (error) {
+      console.error("Error updating applicant status:", error);
+      toast.error("Failed to update status", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
 
   console.log(selectedApplicant);
   if (!selectedApplicant) {
@@ -71,22 +113,22 @@ const ApplicantProfile = () => {
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-extrabold mb-5">Applicant Profile</h2>
           <div className="flex items-center mb-6">
-            {selectedApplicant.seeker.profile_picture ? (
+            {selectedApplicant?.seeker?.profile_picture ? (
               <img
-                src={selectedApplicant.seeker.profile_picture}
-                alt={`${selectedApplicant.seeker.user.first_name} ${selectedApplicant.seeker.user.last_name}`}
+                src={selectedApplicant?.seeker?.profile_picture}
+                alt={`${selectedApplicant?.seeker?.user?.first_name} ${selectedApplicant?.seeker?.user?.last_name}`}
                 className="h-16 w-16 rounded-full mr-4 border-2 border-gray-300"
               />
             ) : (
               <div className="h-16 w-16 rounded-full mr-4 border-2 border-gray-300 bg-gray-200 flex items-center justify-center text-xl font-bold text-gray-600">
                 {getInitials(
-                  selectedApplicant.seeker.user.first_name,
-                  selectedApplicant.seeker.user.last_name
+                  selectedApplicant?.seeker?.user?.first_name,
+                  selectedApplicant?.seeker?.user?.last_name
                 )}
               </div>
             )}
             <h2 className="text-3xl font-semibold text-gray-800">
-              {`${selectedApplicant.seeker.user.first_name} ${selectedApplicant.seeker.user.last_name}`}
+              {`${selectedApplicant?.seeker?.user?.first_name} ${selectedApplicant?.seeker?.user?.last_name}`}
             </h2>
           </div>
 
@@ -154,12 +196,40 @@ const ApplicantProfile = () => {
             </div>
 
             <div className="mt-6 flex justify-end space-x-4">
-              <Button color="gray" className="px-4 py-2 text-sm rounded-lg">
+              <Button
+                color="gray"
+                className="px-4 py-2 text-sm rounded-lg"
+                onClick={() => handleChangeStatus("Rejected")}
+                disabled={
+                  status === "Rejected" ||
+                  status === "Invited for Interview" ||
+                  status === "Hired"
+                }
+              >
                 Reject
               </Button>
-              <Button color="success" className="px-4 py-2 text-sm rounded-lg">
+              <Button
+                color="success"
+                className="px-4 py-2 text-sm rounded-lg"
+                onClick={() => handleChangeStatus("Invited for Interview")}
+                disabled={
+                  status === "Rejected" ||
+                  status === "Invited for Interview" ||
+                  status === "Hired"
+                }
+              >
                 Invite to Interview
               </Button>
+              {status === "Invited for Interview" && (
+                <Button
+                  color="success"
+                  className="px-4 py-2 text-sm rounded-lg"
+                  onClick={() => handleChangeStatus("Hired")}
+                  disabled={status !== "Invited for Interview"}
+                >
+                  Hired
+                </Button>
+              )}
             </div>
           </div>
         </div>
