@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Card, Spinner, Alert } from "flowbite-react";
 import { HiDownload, HiPlus } from "react-icons/hi";
 import { AppDispatch, RootState } from "@/app/redux/store";
-import { fetchEmployerJobs } from "@/app/redux/jobSlice";
+import { fetchEmployerJobs, setSelectedJob } from "@/app/redux/jobSlice";
 import { useDispatch } from "react-redux";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { format } from "date-fns";
@@ -35,6 +35,11 @@ const EmployerDashboard: React.FC = () => {
 
   const handleNavigation = (tab: string, path: string) => {
     router.push(path);
+  };
+
+  const handleClick = (jobId: number) => {
+    dispatch(setSelectedJob(jobId));
+    router.push(`/job/${jobId}`);
   };
 
   return (
@@ -80,10 +85,14 @@ const EmployerDashboard: React.FC = () => {
             </div>
           )}
           {!loading && !error && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mx-5">
               {jobs.length > 0 ? (
                 jobs.map((job: any) => (
-                  <Card key={job.id} className="max-w-sm cursor-pointer">
+                  <Card
+                    key={job.id}
+                    className="max-w-sm cursor-pointer transition-transform transform hover:scale-105 hover:shadow-lg active:scale-95 active:shadow-md"
+                    onClick={() => handleClick(job?.id)}
+                  >
                     <div className="flex justify-between items-center mb-2">
                       <h3 className="text-lg font-medium">{job.job_title}</h3>
                     </div>

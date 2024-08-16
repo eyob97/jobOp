@@ -19,6 +19,7 @@ import {
 } from "../../redux/jobSlice";
 import { clearError } from "../../redux/resumeSlice";
 import { CountryDropdown } from "react-country-region-selector";
+import { useRouter } from "next/navigation";
 
 interface JobPost {
   company?: number;
@@ -52,6 +53,7 @@ interface JobPostFormProps {
 
 const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
   const { error } = useSelector((state: RootState) => state.resume);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -489,8 +491,15 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
             <p>{successMessage}</p>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={() => setView("jobPosts")}>Go to Job Posts</Button>
-            <Button onClick={() => setIsModalOpen(false)}>Close</Button>
+            <Button
+              color="success"
+              onClick={() => router.push("/dashboard#post")}
+            >
+              Go to Job Posts
+            </Button>
+            <Button color="gray" onClick={() => setIsModalOpen(false)}>
+              Close
+            </Button>
           </Modal.Footer>
         </Modal>
       )}
