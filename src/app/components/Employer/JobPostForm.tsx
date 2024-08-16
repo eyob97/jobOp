@@ -74,6 +74,25 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
     employment_type: "Part Time",
     status: "Open",
   });
+  const southAfricanCities = [
+    "Cape Town",
+    "Durban",
+    "Johannesburg",
+    "Pretoria",
+    "Port Elizabeth",
+    "Bloemfontein",
+    "East London",
+    "Polokwane",
+    "Nelspruit",
+    "George",
+    "Kimberley",
+    "Pietermaritzburg",
+    "Rustenburg",
+    "Mthatha",
+    "Vanderbijlpark",
+    "Klerksdorp",
+    "Secunda",
+  ];
 
   useEffect(() => {
     if (error) {
@@ -216,8 +235,32 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
             <Label htmlFor="show_salary">Not to show salary range</Label>
           </div>
         </div>
-
         <div className="mb-4">
+          <Label
+            htmlFor="location"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Location
+          </Label>
+          <Select
+            id="location"
+            className="mt-1 w-full"
+            value={jobPostData.location}
+            onChange={handleInputChange}
+          >
+            <option value="" disabled>
+              Select a city
+            </option>
+            {southAfricanCities.map((city, index) => (
+              <option key={index} value={city}>
+                {city}
+              </option>
+            ))}
+          </Select>
+          {errors.location && <p className="text-red-500">{errors.location}</p>}
+        </div>
+
+        {/* <div className="mb-4">
           <Label
             htmlFor="location"
             className="block text-sm font-medium text-gray-700"
@@ -230,7 +273,7 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView }) => {
             classes="form-control mt-1 w-full"
           />
           {errors.location && <p className="text-red-500">{errors.location}</p>}
-        </div>
+        </div> */}
 
         <div className="mb-4">
           <Label
