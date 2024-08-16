@@ -70,14 +70,39 @@ const SignUpPage = () => {
       [e.target.id]: e.target.value,
     });
   };
+  const southAfricanCities = [
+    "Cape Town",
+    "Durban",
+    "Johannesburg",
+    "Pretoria",
+    "Port Elizabeth",
+    "Bloemfontein",
+    "East London",
+    "Polokwane",
+    "Nelspruit",
+    "George",
+    "Kimberley",
+    "Pietermaritzburg",
+    "Rustenburg",
+    "Mthatha",
+    "Vanderbijlpark",
+    "Klerksdorp",
+    "Secunda",
+  ];
 
-  const handleLocationChange = (val: string) => {
+  // const handleLocationChange = (val: string) => {
+  //   setFormData({
+  //     ...formData,
+  //     location: val,
+  //   });
+  // };
+
+  const handleLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFormData({
       ...formData,
-      location: val,
+      location: e.target.value,
     });
   };
-
   const handlePhoneNumberChange = (value: string) => {
     setFormData({
       ...formData,
@@ -181,17 +206,26 @@ const SignUpPage = () => {
       id: "location",
       label: "Location",
       type: "custom",
-      placeholder: "Select your country",
+      placeholder: "Select your City",
       value: formData.location,
       required: true,
       onChange: handleLocationChange,
       error: errors.location,
       customComponent: (
-        <CountryDropdown
+        <select
           value={formData.location}
-          onChange={(val) => handleLocationChange(val)}
-          classes="form-control"
-        />
+          onChange={handleLocationChange}
+          className="form-control"
+        >
+          <option value="" disabled>
+            Select a City
+          </option>
+          {southAfricanCities.map((city) => (
+            <option key={city} value={city}>
+              {city}
+            </option>
+          ))}
+        </select>
       ),
     },
     {

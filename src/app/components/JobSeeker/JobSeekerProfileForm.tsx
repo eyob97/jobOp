@@ -285,6 +285,25 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
       setErrors(payload || { general: "Failed to create profile." });
     }
   };
+  const southAfricanCities = [
+    "Cape Town",
+    "Durban",
+    "Johannesburg",
+    "Pretoria",
+    "Port Elizabeth",
+    "Bloemfontein",
+    "East London",
+    "Polokwane",
+    "Nelspruit",
+    "George",
+    "Kimberley",
+    "Pietermaritzburg",
+    "Rustenburg",
+    "Mthatha",
+    "Vanderbijlpark",
+    "Klerksdorp",
+    "Secunda",
+  ];
   const options = [
     { value: "Remote", label: "Remote" },
     { value: "On Site", label: "On-site" },
@@ -334,8 +353,31 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
             <p className="text-red-500">{errors.profile_description}</p>
           )}
         </div>
-
         <div className="mb-4">
+          <Label
+            htmlFor="location"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Location
+          </Label>
+          <select
+            id="location"
+            className="mt-1 w-full"
+            value={profileData.location}
+            onChange={(e) => handleLocationChange(e.target.value)}
+          >
+            <option value="" disabled>
+              Select a city
+            </option>
+            {southAfricanCities.map((city, index) => (
+              <option key={index} value={city}>
+                {city}
+              </option>
+            ))}
+          </select>
+          {errors.location && <p className="text-red-500">{errors.location}</p>}
+        </div>
+        {/* <div className="mb-4">
           <Label
             htmlFor="location"
             className="block text-sm font-medium text-gray-700"
@@ -348,7 +390,7 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
             classes="form-control mt-1 w-full"
           />
           {errors.location && <p className="text-red-500">{errors.location}</p>}
-        </div>
+        </div> */}
         <div className="mb-4">
           <Label
             htmlFor="email"
@@ -484,7 +526,29 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
                 </p>
               )}
             </div>
-            {/* <div className="mb-4">
+            <div className="mb-4">
+              <Label
+                htmlFor={`company_name-${index}`}
+                className="block text-sm font-medium text-gray-700"
+              >
+                Job Title
+              </Label>
+              <TextInput
+                id={`job_title-${index}`}
+                type="text"
+                className="mt-1 w-full"
+                value={job.job_title}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  handleChange(index, "job_title", e.target.value)
+                }
+              />
+              {errors[`employment_history[${index}].job_title`] && (
+                <p className="text-red-500">
+                  {errors[`employment_history[${index}].job_title`]}
+                </p>
+              )}
+            </div>
+            <div className="mb-4">
               <Label
                 htmlFor="current_work_status"
                 className="block text-sm font-medium text-gray-700"
@@ -511,7 +575,7 @@ const JobSeekerProfileForm: React.FC<JobSeekerProfileFormProps> = ({
               {errors.current_work_status && (
                 <p className="text-red-500">{errors.current_work_status}</p>
               )}
-            </div> */}
+            </div>
             <div className="mb-4">
               <Label
                 htmlFor="work_type"

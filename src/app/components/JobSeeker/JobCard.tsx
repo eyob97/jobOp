@@ -64,7 +64,6 @@ const JobCard: React.FC<JobCardProps> = ({ searchCriteria }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {isLoading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
       {!isLoading && filteredJobs.length === 0 && (
         <p>No jobs found based on your search criteria...</p>
       )}
