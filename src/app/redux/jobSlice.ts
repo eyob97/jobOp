@@ -61,6 +61,7 @@ export const fetchJobs = createAsyncThunk(
           "https://lh3.googleusercontent.com/MssYWuI7KeRbQGF6o0f-Bncx5bX6HtzHHE8Kn2reQNGodTU_lQRJsJnCNIflaso0NrsOhzZAEWDuOa9TKSWGgHCxy6gSvQFaQtYo4OY3Uyr_F0TlQpA",
         postedDate: job.created_date,
         expiryDate: job.expiry_date,
+        is_applied: job?.is_applied,
       }));
     } catch (error: any) {
       return rejectWithValue(error.response?.data || error.message);

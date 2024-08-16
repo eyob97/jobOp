@@ -109,9 +109,13 @@ const JobDetails: React.FC = () => {
         {/* Additional Job Info */}
         <div className="col-span-3 space-y-4">
           <div className="flex justify-end">
-            <CustomButton onClick={handleOpenModal}>
-              Apply now <FaArrowRight className="mt-1 m-1" />
-            </CustomButton>
+            {job?.is_applied ? (
+              "You have Applied to this job."
+            ) : (
+              <CustomButton onClick={handleOpenModal}>
+                Apply now <FaArrowRight className="mt-1 m-1" />
+              </CustomButton>
+            )}
           </div>
           <div className="p-4 bg-white shadow-md rounded-lg flex flex-col items-center">
             <h3 className="text-lg font-semibold mb-2">Salary </h3>

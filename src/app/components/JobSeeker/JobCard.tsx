@@ -65,6 +65,9 @@ const JobCard: React.FC<JobCardProps> = ({ searchCriteria }) => {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {isLoading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
+      {!isLoading && filteredJobs.length === 0 && (
+        <p>No jobs found based on your search criteria...</p>
+      )}
       {filteredJobs.length > 0 &&
         filteredJobs.map((job: any) => {
           return (
@@ -75,6 +78,9 @@ const JobCard: React.FC<JobCardProps> = ({ searchCriteria }) => {
             >
               <div className="flex justify-between items-center mb-2">
                 <h3 className="text-lg font-medium">{job.title}</h3>
+                <h5 className="text-lg font-medium">
+                  {job?.is_applied ? "Applied" : undefined}
+                </h5>
               </div>
               <div className="flex justify-between items-center mb-2">
                 <span
