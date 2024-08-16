@@ -169,6 +169,26 @@ export const getSkills = createAsyncThunk(
   }
 );
 
+export const updateApplicantStatus = createAsyncThunk(
+  "applicants/updateApplicantStatus",
+  async (
+    { applicantId, status }: { applicantId: number; status: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await apiClient.patch(
+        `${API_URL}/api/applicants/${applicantId}/`,
+        {
+          status,
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
 const jobSlice = createSlice({
   name: "jobs",
   initialState,
@@ -230,6 +250,26 @@ const jobSlice = createSlice({
         state.jobs.push(action.payload);
       })
       .addCase(createJobPost.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(updateApplicantStatus.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateApplicantStatus.fulfilled,
+        (state, action: PayloadAction<Applicant>) => {
+          state.isLoading = false;
+          const index = state.applicants.findIndex(
+            (applicant) => applicant.id === action.payload.id
+          );
+          if (index !== -1) {
+            state.applicants[index] = action.payload;
+          }
+        }
+      )
+      .addCase(updateApplicantStatus.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });
