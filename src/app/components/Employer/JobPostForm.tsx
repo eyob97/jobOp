@@ -53,8 +53,6 @@ interface JobPostFormProps {
 }
 
 const JobPostForm: React.FC<JobPostFormProps> = ({ setView, extractedJob }) => {
-  console.log("extractedJob man:", extractedJob);
-
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const { error } = useSelector((state: RootState) => state.resume);

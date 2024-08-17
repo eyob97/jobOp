@@ -7,7 +7,7 @@ import React, {
   useState,
   useCallback,
 } from "react";
-import { Button, Card } from "flowbite-react";
+import { Button, Card, Modal } from "flowbite-react";
 import { HiDocumentText, HiPencil } from "react-icons/hi";
 import JobPostForm from "./JobPostForm";
 import { useDispatch, useSelector } from "react-redux";
@@ -32,6 +32,7 @@ export function UploadJobCard() {
   const [errors, setErrors] = useState<FormErrors>({});
   const dispatch = useDispatch<AppDispatch>();
   const [extractedJob, setExtractedJob] = useState();
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const { job_post_file, jobSeekerData, isLoading, error } = useSelector(
     (state: RootState) => state.resume
   );
@@ -121,9 +122,10 @@ export function UploadJobCard() {
     const resultAction = await dispatch(uploadJob(selectedFile));
 
     if (uploadJob.fulfilled.match(resultAction)) {
-      setExtractedJob(resultAction?.payload?.data);
-      dispatch(fetchJobSeekerData());
-      setView("create");
+      // setExtractedJob(resultAction?.payload?.data);
+      // dispatch(fetchJobSeekerData());
+      // setView("create");
+      setShowSuccessModal(true);
     } else {
       const payload = resultAction.payload as any;
       if (payload && payload.details) {
@@ -226,6 +228,20 @@ export function UploadJobCard() {
         {view === "create" && renderCreateView(extractedJob)}
         {view === "profile" && renderProfileView()}
       </Card>
+      <Modal show={showSuccessModal} onClose={() => setShowSuccessModal(false)}>
+        <Modal.Header>Job Upload Successful!</Modal.Header>
+        <Modal.Body>
+          <div className="text-center">
+            <p>Your job post has been successfully uploaded and extracted.</p>
+            <p>Click continue to create or edit your job post.</p>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button color="success" onClick={() => setShowSuccessModal(false)}>
+            Continue
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }
