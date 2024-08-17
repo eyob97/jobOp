@@ -18,7 +18,6 @@ import {
   getSkills,
 } from "../../redux/jobSlice";
 import { clearError } from "../../redux/resumeSlice";
-import { CountryDropdown } from "react-country-region-selector";
 import { useRouter } from "next/navigation";
 
 interface JobPost {
@@ -27,9 +26,9 @@ interface JobPost {
   description: string;
   responsibilities: string;
   desirable_skills: string[];
-  fixed_salary: number;
-  min_salary: number;
-  max_salary: number;
+  fixed_salary?: number;
+  min_salary?: number;
+  max_salary?: number;
   location: string;
   expiry_date: string;
   work_type: "Remote" | "On Site" | "Hybrid";
@@ -60,6 +59,7 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView, extractedJob }) => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [skills, setSkills] = useState<Skill[]>([]);
+  const [showSalaryRange, setShowSalaryRange] = useState(false);
   const [company, setCompany] = useState<{ id: number }>();
   const [jobPostData, setJobPostData] = useState<JobPost>({
     company: company?.id,
@@ -68,9 +68,9 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView, extractedJob }) => {
     responsibilities: "",
     desirable_skills: [],
     skills: [],
-    fixed_salary: NaN,
-    min_salary: 70000,
-    max_salary: 90000,
+    fixed_salary: undefined,
+    min_salary: undefined,
+    max_salary: undefined,
     location: "",
     expiry_date: "",
     work_type: "On Site",
@@ -129,16 +129,37 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView, extractedJob }) => {
     setSuccessMessage(null);
 
     try {
-      await createNewJobPost();
+      const updatedJobPostData = { ...jobPostData };
+
+      if (showSalaryRange) {
+        delete updatedJobPostData.fixed_salary;
+      } else {
+        delete updatedJobPostData.min_salary;
+        delete updatedJobPostData.max_salary;
+      }
+
+      await createNewJobPost(updatedJobPostData);
     } catch (error: any) {
       setErrors({ general: error.message || "Failed to save job post." });
     }
   };
 
-  const createNewJobPost = async () => {
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setErrors({});
+  //   setSuccessMessage(null);
+
+  //   try {
+  //     await createNewJobPost();
+  //   } catch (error: any) {
+  //     setErrors({ general: error.message || "Failed to save job post." });
+  //   }
+  // };
+
+  const createNewJobPost = async (updatedJobPostData: JobPost) => {
     const company: any = await dispatch(fetchEmployerCompany());
-    jobPostData.company = company?.payload?.data[0]?.id;
-    const resultAction = await dispatch(createJobPost(jobPostData));
+    updatedJobPostData.company = company?.payload?.data[0]?.id;
+    const resultAction = await dispatch(createJobPost(updatedJobPostData));
 
     if (createJobPost.fulfilled.match(resultAction)) {
       setSuccessMessage("Job post created successfully.");
@@ -201,41 +222,55 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView, extractedJob }) => {
 
         <div className="mb-4">
           <Label
-            htmlFor="fixed_salary"
+            htmlFor="salary"
             className="block text-sm font-medium text-gray-700"
           >
-            Salary Range (Annually)
+            {showSalaryRange
+              ? "Salary Range (Annually)"
+              : "Fixed Salary (Annually)"}
           </Label>
-          <div className="flex gap-2">
+
+          {showSalaryRange ? (
+            <div className="flex gap-2">
+              <TextInput
+                id="min_salary"
+                type="number"
+                placeholder="Min"
+                className="w-1/2"
+                value={jobPostData.min_salary?.toString() || ""}
+                onChange={handleInputChange}
+              />
+              <TextInput
+                id="max_salary"
+                type="number"
+                placeholder="Max"
+                className="w-1/2"
+                value={jobPostData.max_salary?.toString() || ""}
+                onChange={handleInputChange}
+              />
+            </div>
+          ) : (
             <TextInput
               id="fixed_salary"
               type="number"
-              placeholder="Min"
-              className="w-1/2"
-              value={jobPostData.min_salary.toString()}
+              placeholder="Fixed Salary"
+              className="w-full"
+              value={jobPostData.fixed_salary?.toString() || ""}
               onChange={handleInputChange}
             />
-            <TextInput
-              id="max_salary"
-              type="number"
-              placeholder="Max"
-              className="w-1/2"
-              value={jobPostData.max_salary.toString()}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="flex items-center gap-2">
+          )}
+
+          <div className="flex items-center gap-2 mt-2">
             <Checkbox
-              id="show_salary"
-              onChange={() =>
-                setJobPostData((prevData) => ({
-                  ...prevData,
-                  min_salary: 0,
-                  max_salary: 0,
-                }))
-              }
+              id="toggle_salary"
+              checked={showSalaryRange}
+              onChange={() => setShowSalaryRange(!showSalaryRange)}
             />
-            <Label htmlFor="show_salary">Not to show salary range</Label>
+            <Label htmlFor="toggle_salary">
+              {showSalaryRange
+                ? "Switch to Fixed Salary"
+                : "Switch to Salary Range"}
+            </Label>
           </div>
         </div>
         <div className="mb-4">
@@ -494,7 +529,12 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView, extractedJob }) => {
           <Modal.Footer>
             <Button
               color="success"
-              onClick={() => router.push("/dashboard#post")}
+              onClick={() => {
+                setIsModalOpen(false);
+                setTimeout(() => {
+                  router.push("/dashboard");
+                }, 300);
+              }}
             >
               Go to Job Posts
             </Button>
