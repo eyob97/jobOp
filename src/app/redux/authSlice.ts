@@ -8,6 +8,7 @@ interface AuthState {
   isLoading: boolean | null;
   error: string | null;
   user: {
+    image: string | null;
     last_name: string;
     first_name: string;
     id: number;
@@ -147,10 +148,33 @@ export const signUpUser = createAsyncThunk(
   }
 );
 
-export const updateUser = createAsyncThunk("/api/users/update", async () => {
-  try {
-  } catch (error) {}
-});
+export const updateUser = createAsyncThunk(
+  "auth/updateUser",
+  async (payload: { id: number; image: File }, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append("image", payload.image);
+
+      const response = await apiClient.patch(
+        `${API_URL}/api/users/${payload.id}/`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status !== 200 && response.status !== 201) {
+        return rejectWithValue(response.data);
+      }
+
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
 export const sendOTP = createAsyncThunk(
   "auth/sendOTP",
@@ -371,6 +395,19 @@ const authSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(createWhatsapp.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = { ...state.user, ...action.payload.user };
+        state.error = null;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload as string;
       });
