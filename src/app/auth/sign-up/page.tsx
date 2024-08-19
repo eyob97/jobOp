@@ -39,7 +39,7 @@ interface FormErrors {
   user_type?: string;
 }
 
-export const schema = z.object({
+const schema = z.object({
   first_name: z
     .string()
     .regex(/^[A-Za-z\s]+$/, "First name must only contain letters"),
