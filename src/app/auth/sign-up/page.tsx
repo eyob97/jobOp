@@ -10,7 +10,7 @@ import { Button } from "flowbite-react";
 import Link from "next/link";
 import { signUpUser } from "@/app/redux/authSlice";
 import { AppDispatch, RootState } from "@/app/redux/store";
-import { CountryDropdown } from "react-country-region-selector";
+import { z } from "zod";
 
 interface FormData {
   firstName: string;
@@ -30,6 +30,7 @@ interface FormErrors {
   last_name?: string;
   company_name?: string;
   work_email?: string;
+  phone_number?: string;
   location?: string;
   email?: string;
   phone?: string;
@@ -37,6 +38,27 @@ interface FormErrors {
   confirm_password?: string;
   user_type?: string;
 }
+
+export const schema = z.object({
+  first_name: z
+    .string()
+    .regex(/^[A-Za-z\s]+$/, "First name must only contain letters"),
+  last_name: z
+    .string()
+    .regex(/^[A-Za-z\s]+$/, "Last name must only contain letters"),
+  company_name: z
+    .string()
+    .regex(/^[A-Za-z\s]+$/, "Company name must only contain letters"),
+  location: z.string(),
+  work_email: z.string().email("Invalid email address").optional(),
+  email: z.string().email("Invalid email address").optional(),
+  phone_number: z.string().min(10, "Phone number is too short"),
+  password: z.string().min(6, "Password must be at least 6 characters long"),
+  confirm_password: z
+    .string()
+    .min(6, "Confirm password must be at least 6 characters long"),
+  user_type: z.enum(["Employer", "Job Seeker"]),
+});
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState<FormData>({
@@ -89,13 +111,6 @@ const SignUpPage = () => {
     "Klerksdorp",
     "Secunda",
   ];
-
-  // const handleLocationChange = (val: string) => {
-  //   setFormData({
-  //     ...formData,
-  //     location: val,
-  //   });
-  // };
 
   const handleLocationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFormData({
@@ -162,6 +177,18 @@ const SignUpPage = () => {
       confirm_password: formData.confirmPassword,
     };
 
+    // Validate using zod schema
+    const validation = schema.safeParse(payload);
+    if (!validation.success) {
+      const fieldErrors: FormErrors = {};
+      validation.error.errors.forEach((err) => {
+        const field = err.path[0] as keyof FormErrors;
+        fieldErrors[field] = err.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
     const resultAction = await dispatch(signUpUser(payload));
     if (signUpUser.fulfilled.match(resultAction)) {
       setSuccessMessage(
@@ -176,7 +203,6 @@ const SignUpPage = () => {
           ? payload[key][0]
           : payload[key];
       });
-
       setErrors(normalizedErrors);
     }
   };
@@ -246,7 +272,7 @@ const SignUpPage = () => {
       value: formData.phone,
       required: true,
       onChange: handlePhoneNumberChange,
-      error: errors.phone,
+      error: errors.phone || errors.phone_number,
     },
     {
       id: "password",
