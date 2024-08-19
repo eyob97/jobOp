@@ -123,7 +123,7 @@ const Documents: React.FC<DocumentsProps> = ({ letterType, onGenerate }) => {
               {file.file_name || "Untitled"}
             </h3>
             <p className="text-gray-500">{file.file_type}</p>
-            {file.file && (
+            {/* {file.file && (
               <div className="mt-4">
                 <Document
                   file={file.file}
@@ -133,7 +133,7 @@ const Documents: React.FC<DocumentsProps> = ({ letterType, onGenerate }) => {
                   <Page pageNumber={1} width={300} />
                 </Document>
               </div>
-            )}
+            )} */}
           </Card>
         ))}
       </div>

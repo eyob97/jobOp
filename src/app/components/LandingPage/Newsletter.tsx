@@ -4,10 +4,9 @@ import { useState } from "react";
 const Newsletter = () => {
   const [subscribeNumber, setSubscribeNumber] = useState("");
 
-  const handleSubscribeChange = (e:any) => setSubscribeNumber(e.target.value);
+  const handleSubscribeChange = (e: any) => setSubscribeNumber(e.target.value);
 
-  const handleSubmit = () => {
-  };
+  const handleSubmit = () => {};
 
   return (
     <div className="row">
@@ -22,7 +21,7 @@ const Newsletter = () => {
             </div>
             <div className="form">
               <input
-                type="tel"
+                type="number"
                 value={subscribeNumber}
                 onChange={handleSubscribeChange}
                 placeholder="Enter Your Number"
