@@ -22,7 +22,7 @@ const Documents: React.FC<DocumentsProps> = ({ letterType, onGenerate }) => {
   const [files, setFiles] = useState<any[]>([]);
   const [numPages, setNumPages] = useState<number | null>(null);
   const isLoading = useSelector(
-    (state: RootState) => state.letters.coverLetter.isLoading || {}
+    (state: RootState) => state.letters.coverLetter.isLoading
   );
   const error = useSelector(
     (state: RootState) => state.letters.coverLetter.error

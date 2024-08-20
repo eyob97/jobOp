@@ -17,7 +17,9 @@ interface MotivationLetterFormProps {
   onViewLetter: () => void;
 }
 
-const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLetter }) => {
+const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({
+  onViewLetter,
+}) => {
   const [formData, setFormData] = useState({
     name: "",
     current_job_title: "",
@@ -87,7 +89,10 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
   const handleSaveAndApply = async (fileId: number) => {
     try {
       const form = new FormData();
-      form.append("file_name", `${formData.current_job_title} Motivation Letter`);
+      form.append(
+        "file_name",
+        `${formData.current_job_title} Motivation Letter`
+      );
       form.append("file_type", "Motivation Letter");
       form.append("details", editableRef.current?.innerHTML || "");
 
@@ -99,7 +104,13 @@ const MotivationLetterForm: React.FC<MotivationLetterFormProps> = ({ onViewLette
   };
 
   if (isLetterView) {
-    return <LetterView letterType="Motivation Letter" onBack={() => setIsLetterView(false)} jobId={files[0]?.id || 0} />;
+    return (
+      <LetterView
+        letterType="Motivation Letter"
+        onBack={() => setIsLetterView(false)}
+        jobId={files[0]?.id || 0}
+      />
+    );
   }
 
   return (
