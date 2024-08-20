@@ -1,16 +1,25 @@
 import React, { useState } from "react";
 import { Dropdown, Button, TextInput } from "flowbite-react";
-import { HiSearch, HiOutlineLocationMarker, HiOutlineAdjustments } from "react-icons/hi";
+import {
+  HiSearch,
+  HiOutlineLocationMarker,
+  HiOutlineAdjustments,
+} from "react-icons/hi";
 import CustomButton from "./CustomButton";
 
 interface SearchBarProps {
-  onSearch: (criteria: { jobTitle: string; location: string; filter: string }) => void;
+  onSearch: (criteria: {
+    jobTitle: string;
+    location: string;
+    filter: string;
+  }) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const [jobTitle, setJobTitle] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [filter, setFilter] = useState<string>("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,6 +28,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
   const handleFilterSelect = (value: string) => {
     setFilter(value);
+    setIsDropdownOpen(false);
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   return (
@@ -50,21 +64,41 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           onChange={(e) => setLocation(e.target.value)}
         />
       </div>
-      <div className="flex-shrink-0 min-w-[120px] col-span-1 sm:col-span-1 lg:col-span-2">
-        <Dropdown
-          label={
-            <Button className="flex items-center space-x-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full  w-full lg:w-auto">
-              <HiOutlineAdjustments className="mt-1" />
-              <span>{filter ? filter : "Filters"}</span>
-            </Button>
-          }
-          inline={true}
-          className="relative lg:w-auto"
-        >
-          <Dropdown.Item onClick={() => handleFilterSelect('Full Time')}>Full Time</Dropdown.Item>
-          <Dropdown.Item onClick={() => handleFilterSelect('Part Time')}>Part Time</Dropdown.Item>
-          <Dropdown.Item onClick={() => handleFilterSelect('Remote')}>Remote</Dropdown.Item>
-        </Dropdown>
+      <div className="relative flex-shrink-0 min-w-[120px] col-span-1 sm:col-span-1 lg:col-span-2">
+        <div className="inline-block relative w-full">
+          <Button
+            className="flex items-center space-x-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full w-full lg:w-auto border-none focus:outline-none focus:ring-0 active:outline-none active:ring-0"
+            onClick={toggleDropdown}
+            type="button"
+          >
+            <HiOutlineAdjustments className="mt-1" />
+            <span>{filter ? filter : "Filters"}</span>
+          </Button>
+          {isDropdownOpen && (
+            <div className="absolute mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 w-full lg:w-auto">
+              <ul className="py-1 text-gray-700">
+                <li
+                  onClick={() => handleFilterSelect("Full Time")}
+                  className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                >
+                  Full Time
+                </li>
+                <li
+                  onClick={() => handleFilterSelect("Part Time")}
+                  className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                >
+                  Part Time
+                </li>
+                <li
+                  onClick={() => handleFilterSelect("Remote")}
+                  className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                >
+                  Remote
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
       <div className="flex-shrink-0  w-full col-span-1 sm:col-span-1 lg:col-span-2">
         <CustomButton type="submit">Find Job</CustomButton>
