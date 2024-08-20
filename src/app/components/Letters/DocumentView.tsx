@@ -21,7 +21,7 @@ const DocumentView: React.FC = () => {
 
   const [numPages, setNumPages] = useState<number | null>(null);
   const { files, isLoading, error } = useSelector(
-    (state: RootState) => state.letters.coverLetter || {}
+    (state: RootState) => state.letters.coverLetter
   );
   const [selectedFile, setSelectedFile] = useState<any>(null);
 

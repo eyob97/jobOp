@@ -7,7 +7,7 @@ import { fetchApplicants } from "@/app/redux/jobSlice";
 const ApplicationsTable: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { applicants, isLoading, error } = useSelector(
-    (state: RootState) => state.jobs || {}
+    (state: RootState) => state.jobs
   );
 
   useEffect(() => {
