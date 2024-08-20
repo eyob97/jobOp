@@ -15,7 +15,7 @@ const withAuth = (
   const Wrapper = (props: any) => {
     const router = useRouter();
     const authState = useSelector((state: RootState) => state.auth);
-    const { user, isLoading } = authState || { user: null, isLoading: false };
+    const { user, isLoading } = authState;
 
     useEffect(() => {
       if (!isLoading && !user && !options?.allowUnauthenticatedAccess) {

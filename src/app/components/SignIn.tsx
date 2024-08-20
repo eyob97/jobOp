@@ -24,9 +24,7 @@ const SignIn: React.FC = () => {
 
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { isLoading, error } = useSelector(
-    (state: RootState) => state.auth || { error: null, isLoading: false }
-  );
+  const { isLoading, error } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     if (error) {
