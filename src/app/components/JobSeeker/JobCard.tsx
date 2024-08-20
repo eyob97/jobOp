@@ -23,6 +23,7 @@ const JobCard: React.FC<JobCardProps> = ({ searchCriteria }) => {
   const isLoading = useSelector((state: RootState) => state.jobs.isLoading);
   const error = useSelector((state: RootState) => state.jobs.error);
   const [savedJobs, setSavedJobs] = useState<Set<string>>(new Set());
+  const [expandedJobs, setExpandedJobs] = useState<Set<string>>(new Set());
   const router = useRouter();
 
   useEffect(() => {
@@ -56,6 +57,19 @@ const JobCard: React.FC<JobCardProps> = ({ searchCriteria }) => {
     });
   };
 
+  const toggleExpandJob = (jobId: string, event: React.MouseEvent) => {
+    event.stopPropagation();
+    setExpandedJobs((prevExpandedJobs) => {
+      const newExpandedJobs = new Set(prevExpandedJobs);
+      if (newExpandedJobs.has(jobId)) {
+        newExpandedJobs.delete(jobId);
+      } else {
+        newExpandedJobs.add(jobId);
+      }
+      return newExpandedJobs;
+    });
+  };
+
   const handleJobClick = (jobId: number) => {
     dispatch(setSelectedJob(jobId));
     router.push(`/pages/job/${jobId}`);
@@ -69,6 +83,9 @@ const JobCard: React.FC<JobCardProps> = ({ searchCriteria }) => {
       )}
       {filteredJobs.length > 0 &&
         filteredJobs.map((job: any) => {
+          const isExpanded = expandedJobs.has(job.id.toString());
+          const truncatedDescription =
+            job?.description?.split(" ")?.slice(0, 30).join(" ") + " ...";
           return (
             <Card
               key={job.id}
@@ -94,9 +111,20 @@ const JobCard: React.FC<JobCardProps> = ({ searchCriteria }) => {
                 <div className="text-gray-600">Salary: {job?.salary}</div>
               </div>
               <p className="text-sm text-gray-600 mb-4">
-                {typeof job.description === "string"
-                  ? job?.description
-                  : "No description available"}
+                {typeof job.description === "string" &&
+                job.description.length > 150 ? (
+                  <>
+                    {isExpanded ? job.description : truncatedDescription}
+                    <span
+                      onClick={(e) => toggleExpandJob(job.id.toString(), e)}
+                      className="text-blue-500 cursor-pointer"
+                    >
+                      {isExpanded ? " See Less" : " See More"}
+                    </span>
+                  </>
+                ) : (
+                  job?.description || "No description available"
+                )}
               </p>
               <div className="flex justify-between items-center">
                 <div className="flex items-center">
