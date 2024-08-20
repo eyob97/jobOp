@@ -78,7 +78,7 @@ const SignUpPage = () => {
 
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const {error } = useSelector((state: RootState) => state.auth);
+  const error = useSelector((state: RootState) => state?.auth?.error);
 
   useEffect(() => {
     if (error) {
