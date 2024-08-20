@@ -24,14 +24,14 @@ const SignIn: React.FC = () => {
 
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const error = useSelector((state: RootState) => state?.auth?.error);
+  // const error = useSelector((state: RootState) => state?.auth?.error);
 
-  useEffect(() => {
-    if (error) {
-      setErrors({ general: error });
-      console.error("Auth error:", error);
-    }
-  }, [error]);
+  // useEffect(() => {
+  //   if (error) {
+  //     setErrors({ general: error });
+  //     console.error("Auth error:", error);
+  //   }
+  // }, [error]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({

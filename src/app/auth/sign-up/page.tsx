@@ -78,13 +78,13 @@ const SignUpPage = () => {
 
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const error = useSelector((state: RootState) => state?.auth?.error);
+  // const error = useSelector((state: RootState) => state?.auth?.error);
 
-  useEffect(() => {
-    if (error) {
-      setErrors({ general: error });
-    }
-  }, [error]);
+  // useEffect(() => {
+  //   if (error) {
+  //     setErrors({ general: error });
+  //   }
+  // }, [error]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
