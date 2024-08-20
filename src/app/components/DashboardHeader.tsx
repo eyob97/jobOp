@@ -64,11 +64,15 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       }
     }
   };
-
   const linkClasses = (tab: string) => ({
     color: activeTab === tab ? "rgba(255, 196, 36, 1)" : "white",
     transform: activeTab === tab ? "translateY(-2px)" : "none",
     transition: "transform 0.2s, color 0.2s",
+    backgroundColor: "transparent",
+    "&:hover": {
+      color: activeTab === tab ? "rgba(255, 196, 36, 1)" : "white",
+      backgroundColor: "transparent",
+    },
   });
   return (
     <Navbar fluid className="bg-green-800">
