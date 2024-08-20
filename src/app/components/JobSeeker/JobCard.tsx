@@ -21,7 +21,7 @@ const JobCard: React.FC<JobCardProps> = ({ searchCriteria }) => {
   const dispatch = useDispatch<AppDispatch>();
   const jobs = useSelector((state: RootState) => state.jobs.jobs);
   const isLoading = useSelector(
-    (state: RootState) => state.jobs.isLoading || {}
+    (state: RootState) => state.jobs.isLoading || null
   );
   const error = useSelector((state: RootState) => state.jobs.error);
   const [savedJobs, setSavedJobs] = useState<Set<string>>(new Set());
