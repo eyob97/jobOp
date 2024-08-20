@@ -34,7 +34,7 @@ export function UploadJobCard() {
   const [extractedJob, setExtractedJob] = useState();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const { job_post_file, jobSeekerData, isLoading, error } = useSelector(
-    (state: RootState) => state.resume
+    (state: RootState) => state.resume || {}
   );
   const { token } = useSelector((state: RootState) => state.auth);
 

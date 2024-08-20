@@ -7,22 +7,26 @@ import { fetchFiles, deleteFile } from "../redux/letterSlice";
 import { Button, Card, Dropdown } from "flowbite-react";
 import { HiDotsVertical, HiMail } from "react-icons/hi";
 import { Document, Page, pdfjs } from "react-pdf";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 interface DocumentsProps {
-  letterType: 'Cover Letter' | 'Motivation Letter';
-  onGenerate: (letterType: 'Cover Letter' | 'Motivation Letter') => void;
+  letterType: "Cover Letter" | "Motivation Letter";
+  onGenerate: (letterType: "Cover Letter" | "Motivation Letter") => void;
 }
 
 const Documents: React.FC<DocumentsProps> = ({ letterType, onGenerate }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter(); 
+  const router = useRouter();
   const [files, setFiles] = useState<any[]>([]);
   const [numPages, setNumPages] = useState<number | null>(null);
-  const isLoading = useSelector((state: RootState) => state.letters.coverLetter.isLoading);
-  const error = useSelector((state: RootState) => state.letters.coverLetter.error);
+  const isLoading = useSelector(
+    (state: RootState) => state.letters.coverLetter.isLoading || {}
+  );
+  const error = useSelector(
+    (state: RootState) => state.letters.coverLetter.error
+  );
 
   useEffect(() => {
     dispatch(fetchFiles())
@@ -34,16 +38,16 @@ const Documents: React.FC<DocumentsProps> = ({ letterType, onGenerate }) => {
   const handleDelete = async (fileId: number) => {
     try {
       await dispatch(deleteFile(fileId)).unwrap();
-      setFiles(files.filter(file => file.id !== fileId));
+      setFiles(files.filter((file) => file.id !== fileId));
     } catch (err) {
-      console.error('Failed to delete file:', err);
+      console.error("Failed to delete file:", err);
     }
   };
 
   const handleDownload = (fileUrl: string) => {
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = fileUrl;
-    link.download = 'file.pdf'; 
+    link.download = "file.pdf";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -74,7 +78,7 @@ const Documents: React.FC<DocumentsProps> = ({ letterType, onGenerate }) => {
             type="submit"
             className="rounded-full text-black"
             style={{ backgroundColor: "#FFC424", color: "#000" }}
-            onClick={() => onGenerate('Cover Letter')}
+            onClick={() => onGenerate("Cover Letter")}
           >
             Generate Cover Letter
           </Button>
@@ -82,7 +86,7 @@ const Documents: React.FC<DocumentsProps> = ({ letterType, onGenerate }) => {
             type="submit"
             className="rounded-full text-black"
             style={{ backgroundColor: "#FFC424", color: "#000" }}
-            onClick={() => onGenerate('Motivation Letter')}
+            onClick={() => onGenerate("Motivation Letter")}
           >
             Generate Motivation Letter
           </Button>
@@ -111,12 +115,20 @@ const Documents: React.FC<DocumentsProps> = ({ letterType, onGenerate }) => {
                   />
                 }
               >
-                {file.file_type === 'Resume' ? (
-                  <Dropdown.Item onClick={() => handleDownload(file.file)}>Download</Dropdown.Item>
+                {file.file_type === "Resume" ? (
+                  <Dropdown.Item onClick={() => handleDownload(file.file)}>
+                    Download
+                  </Dropdown.Item>
                 ) : (
-                  <Dropdown.Item onClick={() => handleViewDocument(file.id, file.file_type)}>View</Dropdown.Item>
+                  <Dropdown.Item
+                    onClick={() => handleViewDocument(file.id, file.file_type)}
+                  >
+                    View
+                  </Dropdown.Item>
                 )}
-                <Dropdown.Item onClick={() => handleDelete(file.id)}>Delete</Dropdown.Item>
+                <Dropdown.Item onClick={() => handleDelete(file.id)}>
+                  Delete
+                </Dropdown.Item>
               </Dropdown>
             </div>
             <h3 className="text-xl font-semibold truncate mt-6">

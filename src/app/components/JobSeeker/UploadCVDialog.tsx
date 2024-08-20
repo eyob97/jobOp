@@ -31,7 +31,7 @@ export function UploadCVCard() {
   const [errors, setErrors] = useState<FormErrors>({});
   const dispatch = useDispatch<AppDispatch>();
   const { pdf_file, jobSeekerData, isLoading, error } = useSelector(
-    (state: RootState) => state.resume
+    (state: RootState) => state.resume || {}
   );
   const { token } = useSelector((state: RootState) => state.auth);
 
