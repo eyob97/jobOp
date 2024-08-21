@@ -20,6 +20,7 @@ import { logout } from "../redux/authSlice";
 import { AppDispatch, RootState } from "../redux/store";
 import { updateUser } from "../redux/authSlice";
 import { fetchFiles } from "../redux/letterSlice";
+import { updateUserPhoto } from "../utils/api";
 
 interface DashboardHeaderProps {
   onTabChange: (tab: string) => void;
@@ -37,6 +38,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const user = useSelector((state: RootState) => state?.auth?.user);
   const [resume, setResume] = useState(false);
+  const [profileImage, setProfileImage] = useState(user?.image);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -48,10 +50,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     router.push(path);
   };
 
-  const handleUploadClick = () => {
-    console.log("Upload button clicked");
-    fileInputRef.current?.click();
-  };
+  // useEffect(() => {}, []);
 
   useEffect(() => {
     dispatch(fetchFiles())
@@ -64,28 +63,26 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       .catch((err) => console.error(err));
   }, [dispatch]);
 
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    console.log("File change event triggered");
-
     const file = event.target.files?.[0];
     if (file && user) {
-      console.log("Selected file:", file);
-      const formData: any = new FormData();
-      formData.append("image", file);
-      formData.append("id", user.id);
-
       try {
-        await dispatch(updateUser(formData)).unwrap();
-        alert("Image uploaded successfully!");
+        const updatedUser = await updateUserPhoto(user.id, file);
+        setProfileImage(updatedUser.image);
       } catch (error) {
-        console.error("Error uploading image:", error);
+        console.log("error", error);
         alert("Failed to upload image. Please try again.");
       }
+    } else {
+      console.log("No file selected or user is undefined");
     }
   };
-
   const linkClasses = (tab: string) => ({
     color: activeTab === tab ? "rgba(255, 196, 36, 1)" : "white",
     transform: activeTab === tab ? "translateY(-2px)" : "none",
@@ -190,9 +187,9 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           {user ? (
             <Dropdown
               label={
-                user?.image ? (
+                profileImage ? (
                   <Avatar
-                    img={user?.image}
+                    img={profileImage}
                     alt={`${user?.first_name} ${user?.last_name}`}
                     rounded
                     style={{ width: "31px", height: "26px" }}
@@ -227,23 +224,15 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   {user.email}
                 </span>
               </DropdownHeader>
-              <DropdownItem>
-                <button onClick={handleUploadClick}>Upload Photo</button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={handleFileChange}
-                />
+              <DropdownItem onClick={handleUploadClick}>
+                Upload photo
               </DropdownItem>
-              {/* <input
-                ref={fileInputRef}
+              <input
                 type="file"
-                accept="image/*"
-                style={{ display: "none" }}
+                ref={fileInputRef}
                 onChange={handleFileChange}
-              /> */}
+                accept="image/*"
+              />
               <DropdownDivider />
               <DropdownItem onClick={handleLogout}>Sign out</DropdownItem>
             </Dropdown>
