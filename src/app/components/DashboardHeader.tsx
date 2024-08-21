@@ -49,6 +49,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   };
 
   const handleUploadClick = () => {
+    console.log("Upload button clicked");
     fileInputRef.current?.click();
   };
 
@@ -66,18 +67,25 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    console.log("File change event triggered");
+
     const file = event.target.files?.[0];
     if (file && user) {
       console.log("Selected file:", file);
+      const formData: any = new FormData();
+      formData.append("image", file);
+      formData.append("id", user.id);
+
       try {
-        await dispatch(updateUser({ id: user.id, image: file }));
+        await dispatch(updateUser(formData)).unwrap();
         alert("Image uploaded successfully!");
       } catch (error) {
-        console.log("error", error);
+        console.error("Error uploading image:", error);
         alert("Failed to upload image. Please try again.");
       }
     }
   };
+
   const linkClasses = (tab: string) => ({
     color: activeTab === tab ? "rgba(255, 196, 36, 1)" : "white",
     transform: activeTab === tab ? "translateY(-2px)" : "none",
@@ -219,16 +227,23 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   {user.email}
                 </span>
               </DropdownHeader>
-              <DropdownItem onClick={handleUploadClick}>
-                Upload photo
+              <DropdownItem>
+                <button onClick={handleUploadClick}>Upload Photo</button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
+                />
               </DropdownItem>
-              <input
-                type="file"
+              {/* <input
                 ref={fileInputRef}
-                onChange={handleFileChange}
-                className="hidden"
+                type="file"
                 accept="image/*"
-              />
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              /> */}
               <DropdownDivider />
               <DropdownItem onClick={handleLogout}>Sign out</DropdownItem>
             </Dropdown>

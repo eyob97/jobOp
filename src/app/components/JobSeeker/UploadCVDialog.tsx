@@ -64,7 +64,10 @@ export function UploadCVCard() {
       .unwrap()
       .then((data) => {
         data.map((file: any) => {
-          if (file.file_type === "Resume") setResume(true);
+          if (file.file_type === "Resume") {
+            setView("create");
+            setResume(true);
+          }
         });
       })
       .catch((err) => console.error(err));
@@ -148,7 +151,7 @@ export function UploadCVCard() {
       <h2 className="mb-5 text-lg font-bold text-black">Let's start</h2>
       <h2 className="mb-5 text-lg font-normal text-black">
         {resume
-          ? "You cna update your existing cv"
+          ? "You can update your existing cv"
           : "You can upload an existing CV and edit it later or create a new one from scratch"}
       </h2>
       <div className="flex justify-center gap-4">
