@@ -86,15 +86,19 @@ const JobCard: React.FC<JobCardProps> = ({ searchCriteria }) => {
           const isExpanded = expandedJobs.has(job.id.toString());
           const truncatedDescription =
             job?.description?.split(" ")?.slice(0, 30).join(" ") + " ...";
+
+          const cardClass = job.is_applied
+            ? "bg-green-100 border-green-500"
+            : "bg-white border-gray-200";
           return (
             <Card
               key={job.id}
-              className="max-w-sm cursor-pointer"
+              className={`max-w-sm cursor-pointer ${cardClass}`}
               onClick={() => handleJobClick(job.id)}
             >
               <div className="flex justify-between items-center mb-2">
                 <h3 className="text-lg font-medium">{job.title}</h3>
-                <h5 className="text-lg font-medium">
+                <h5 className="text-xl font-medium text-red-500 hover:text-sky-400">
                   {job?.is_applied ? "Applied" : undefined}
                 </h5>
               </div>
