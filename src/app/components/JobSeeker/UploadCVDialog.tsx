@@ -18,6 +18,7 @@ import {
   clearError,
 } from "@/app/redux/resumeSlice";
 import { RootState, AppDispatch } from "@/app/redux/store";
+import { fetchFiles } from "@/app/redux/letterSlice";
 
 interface FormErrors {
   general?: string;
@@ -30,6 +31,7 @@ export function UploadCVCard() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [errors, setErrors] = useState<FormErrors>({});
   const dispatch = useDispatch<AppDispatch>();
+  const [resume, setResume] = useState(false);
   const { pdf_file, jobSeekerData, isLoading, error } = useSelector(
     (state: RootState) => state.resume
   );
@@ -56,6 +58,17 @@ export function UploadCVCard() {
       dispatch(clearError());
     }
   }, [error, dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchFiles())
+      .unwrap()
+      .then((data) => {
+        data.map((file: any) => {
+          if (file.file_type === "Resume") setResume(true);
+        });
+      })
+      .catch((err) => console.error(err));
+  }, [dispatch]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
@@ -134,8 +147,9 @@ export function UploadCVCard() {
     <div className="text-center">
       <h2 className="mb-5 text-lg font-bold text-black">Let's start</h2>
       <h2 className="mb-5 text-lg font-normal text-black">
-        You can upload an existing CV and edit it later or create a new one from
-        scratch
+        {resume
+          ? "You cna update your existing cv"
+          : "You can upload an existing CV and edit it later or create a new one from scratch"}
       </h2>
       <div className="flex justify-center gap-4">
         <Button
@@ -155,7 +169,7 @@ export function UploadCVCard() {
           }}
         >
           <HiPencil className="mb-2 h-6 w-6 text-gray-500 dark:text-gray-400" />
-          <span>Create CV</span>
+          {resume ? <span>Update CV</span> : <span>Create CV</span>}
         </Button>
       </div>
     </div>

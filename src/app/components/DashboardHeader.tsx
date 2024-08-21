@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Avatar,
   Button,
@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/authSlice";
 import { AppDispatch, RootState } from "../redux/store";
 import { updateUser } from "../redux/authSlice";
+import { fetchFiles } from "../redux/letterSlice";
 
 interface DashboardHeaderProps {
   onTabChange: (tab: string) => void;
@@ -34,7 +35,9 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const user = useSelector((state: RootState) => state.auth?.user);
+  const user = useSelector((state: RootState) => state?.auth?.user);
+  const [resume, setResume] = useState(false);
+
   const handleLogout = () => {
     dispatch(logout());
     router.push("/auth/sign-in");
@@ -48,6 +51,17 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const handleUploadClick = () => {
     fileInputRef.current?.click();
   };
+
+  useEffect(() => {
+    dispatch(fetchFiles())
+      .unwrap()
+      .then((data) => {
+        data.map((file: any) => {
+          if (file.file_type === "Resume") setResume(true);
+        });
+      })
+      .catch((err) => console.error(err));
+  }, [dispatch]);
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -74,6 +88,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       backgroundColor: "transparent",
     },
   });
+
   return (
     <Navbar fluid className="bg-green-800">
       <div className="flex items-center justify-between w-full px-4">
@@ -106,7 +121,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                       handleNavigation("upload", "/dashboard#upload-cv")
                     }
                   >
-                    Upload CV
+                    {resume ? "My Cv" : "Upload CV"}
                   </NavbarLink>
                   <NavbarLink
                     href="/dashboard#documents"
