@@ -1,11 +1,15 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/app/redux/store";
 import { fetchApplicants } from "@/app/redux/jobSlice";
+import { useRouter } from "next/navigation";
 
 const ApplicationsTable: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+  const [activeRow, setActiveRow] = useState<number | null>(null);
+
   const { applicants, isLoading, error } = useSelector(
     (state: RootState) => state.jobs
   );
@@ -43,6 +47,10 @@ const ApplicationsTable: React.FC = () => {
     }
   };
 
+  const handleRowClick = (applicantId: number) => {
+    router.push(`/applicant/${applicantId}`);
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -78,7 +86,23 @@ const ApplicationsTable: React.FC = () => {
             </thead>
             <tbody>
               {applicants.map((applicant) => (
-                <tr key={applicant.id}>
+                <tr
+                  key={applicant.id}
+                  onClick={() => handleRowClick(applicant.id)}
+                  onMouseEnter={() => setActiveRow(applicant.id)}
+                  onMouseLeave={() => setActiveRow(null)}
+                  className={`cursor-pointer transition-colors ${
+                    activeRow === applicant.id
+                      ? "bg-gray-100"
+                      : "hover:bg-gray-50"
+                  }`}
+                  style={{
+                    backgroundColor:
+                      activeRow === applicant.id ? "#f0f0f0" : "transparent",
+                    transition: "background-color 0.3s ease",
+                    cursor: "pointer",
+                  }}
+                >
                   <td className="px-6 py-4 border-b border-gray-200">
                     {applicant.job.job_title}
                   </td>
