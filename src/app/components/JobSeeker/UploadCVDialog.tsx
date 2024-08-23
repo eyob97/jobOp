@@ -19,6 +19,7 @@ import {
 } from "@/app/redux/resumeSlice";
 import { RootState, AppDispatch } from "@/app/redux/store";
 import { fetchFiles } from "@/app/redux/letterSlice";
+import { getAuthDataFromLocalStorage } from "@/app/utils/localstorage";
 
 interface FormErrors {
   general?: string;
@@ -35,7 +36,8 @@ export function UploadCVCard() {
   const { pdf_file, jobSeekerData, isLoading, error } = useSelector(
     (state: RootState) => state.resume
   );
-  const { token } = useSelector((state: RootState) => state.auth);
+  // const { token } = useSelector((state: RootState) => state.auth);
+  const { token } = getAuthDataFromLocalStorage();
 
   useEffect(() => {
     if (token) {
