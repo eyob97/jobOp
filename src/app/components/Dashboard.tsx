@@ -17,9 +17,11 @@ import JobPostForm from "./Employer/JobPostForm";
 import { UploadJobCard } from "./Employer/UploadJob";
 import DashboardFooter from "./DashboardFooter";
 import Applications from "@/app/components/Employer/Applications";
+import { getAuthDataFromLocalStorage } from "../utils/localstorage";
 
 const Dashboard: React.FC = () => {
-  const user = useSelector((state: RootState) => state.auth?.user);
+  // const user = useSelector((state: RootState) => state.auth?.user);
+  const { user } = getAuthDataFromLocalStorage();
   const selectedJob = useSelector((state: RootState) => state.jobs.selectedJob);
   const [activeTab, setActiveTab] = useState("filter");
   const [viewLetter, setViewLetter] = useState(false);
