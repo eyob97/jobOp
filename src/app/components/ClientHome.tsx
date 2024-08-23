@@ -237,16 +237,21 @@ const ClientHome: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="col-sm-12 col-md-6 col-lg-6 position-relative">
+              <div className="col-sm-12 col-md-6 col-lg-6 position-relative  justify-content-center align-items-center">
                 <img
                   src="/landing_assets/images/before1.png"
                   alt="Background"
-                  className="img-fluid before-img"
+                  style={{ marginLeft: 180 }}
+                  className="img-fluid before-img position-absolute  start-0 w-90 h-100 "
                 />
                 <img
                   src="/landing_assets/images/imageCirclePng.png"
                   alt="Foreground"
-                  className="img-fluid image-circle-img"
+                  className="img-fluid image-circle-img position-relative"
+                  style={{
+                    width: "60%",
+                    height: "90%",
+                  }}
                 />
               </div>
             </div>
