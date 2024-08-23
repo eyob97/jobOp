@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 const testimonials = [
   {
@@ -51,26 +53,39 @@ const Testimonials = () => {
 
           <div className="col-sm d-flex justify-content-end">
             <div
-              className={`button-1 ${currentIndex !== 0 ? 'active' : ''}`}
+              className={`button-1 ${currentIndex !== 0 ? "active" : ""}`}
               role="button"
               aria-label="Previous Testimonial"
               onClick={handlePrev}
             >
-              <img
+              <ArrowBackIosNewIcon
+                style={{ color: currentIndex !== 0 ? "#000" : "#ccc" }}
+              />
+
+              {/* <img
                 className="vector-77"
                 src="/landing_assets/vectors/vector40_x2.svg"
-              />
+              /> */}
             </div>
             <div
-              className={`button-2 ${currentIndex + 2 < testimonials.length ? 'active' : ''}`}
+              className={`button-2 ${
+                currentIndex + 2 < testimonials.length ? "active" : ""
+              }`}
               role="button"
               aria-label="Next Testimonial"
               onClick={handleNext}
             >
+              <ArrowForwardIosIcon
+                style={{
+                  color:
+                    currentIndex + 2 < testimonials.length ? "#000" : "#ccc",
+                }}
+              />
+              {/* 
               <img
                 className="vector-78"
                 src="/landing_assets/vectors/vector56_x2.svg"
-              />
+              /> */}
             </div>
           </div>
         </div>
@@ -137,7 +152,9 @@ const Testimonials = () => {
                   )}`}
                   style={{
                     backgroundColor:
-                      Math.floor(currentIndex / 2) === index ? "#116034" : "#E5E5E5",
+                      Math.floor(currentIndex / 2) === index
+                        ? "#116034"
+                        : "#E5E5E5",
                   }}
                 ></div>
               )
