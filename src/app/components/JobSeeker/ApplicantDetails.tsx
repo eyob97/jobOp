@@ -54,39 +54,39 @@ const ApplicantDetails = () => {
           <div>
             <h4 className="text-2xl font-semibold mb-3">Job Details</h4>
             <p>
-              <strong>Title:</strong> {job.job_title}
+              <strong>Title:</strong> {job?.job_title}
             </p>
             <p>
-              <strong>Description:</strong> {job.description}
+              <strong>Description:</strong> {job?.description}
             </p>
             <p>
-              <strong>Responsibilities:</strong> {job.responsibilities}
+              <strong>Responsibilities:</strong> {job?.responsibilities}
             </p>
             <p>
-              <strong>Location:</strong> {job.location}
+              <strong>Location:</strong> {job?.location}
             </p>
             <p>
               <strong>Skills Required:</strong>{" "}
-              {job.predefined_skills.join(", ")}
+              {job?.predefined_skills?.join(", ")}
             </p>
             <p>
-              <strong>Status:</strong> {job.status}
+              <strong>Status:</strong> {job?.status}
             </p>
           </div>
 
           <div>
             <h4 className="text-2xl font-semibold mb-3">Applicant Details</h4>
             <img
-              src={applicant.seeker.user.image}
-              alt={`${applicant.seeker.user.first_name} ${applicant.seeker.user.last_name}`}
+              src={applicant?.seeker?.user?.image}
+              alt={`${applicant?.seeker?.user?.first_name} ${applicant?.seeker?.user?.last_name}`}
               className="w-32 h-32 rounded-full mb-4"
             />
             <p>
-              <strong>Name:</strong> {applicant.seeker.user.first_name}{" "}
-              {applicant.seeker.user.last_name}
+              <strong>Name:</strong> {applicant?.seeker?.user?.first_name}{" "}
+              {applicant?.seeker?.user?.last_name}
             </p>
             <p>
-              <strong>Email:</strong> {applicant.seeker.user.email}
+              <strong>Email:</strong> {applicant?.seeker?.user?.email}
             </p>
           </div>
         </div>
@@ -97,24 +97,24 @@ const ApplicantDetails = () => {
             <li className="mb-2">
               <strong>Resume:</strong>{" "}
               <a
-                href={resume.file}
+                href={resume?.file}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-500 hover:underline"
               >
-                {resume.file_name}
+                {resume?.file_name}
               </a>
             </li>
             {cover_letter && (
               <li className="mb-2">
                 <strong>Cover Letter:</strong>{" "}
                 <a
-                  href={cover_letter.file}
+                  href={cover_letter?.file}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:underline"
                 >
-                  {cover_letter.file_name}
+                  {cover_letter?.file_name}
                 </a>
               </li>
             )}
@@ -122,12 +122,12 @@ const ApplicantDetails = () => {
               <li>
                 <strong>Motivation Letter:</strong>{" "}
                 <a
-                  href={motivation_letter.file}
+                  href={motivation_letter?.file}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:underline"
                 >
-                  {motivation_letter.file_name}
+                  {motivation_letter?.file_name}
                 </a>
               </li>
             )}
