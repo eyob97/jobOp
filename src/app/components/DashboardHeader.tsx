@@ -21,6 +21,7 @@ import { AppDispatch, RootState } from "../redux/store";
 import { updateUser } from "../redux/authSlice";
 import { fetchFiles } from "../redux/letterSlice";
 import { updateUserPhoto } from "../utils/api";
+import { getAuthDataFromLocalStorage } from "../utils/localstorage";
 
 interface DashboardHeaderProps {
   onTabChange: (tab: string) => void;
@@ -36,7 +37,9 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const user = useSelector((state: RootState) => state?.auth?.user);
+  // const user = useSelector((state: RootState) => state?.auth?.user);
+  const { user } = getAuthDataFromLocalStorage();
+
   const [resume, setResume] = useState(false);
   const [profileImage, setProfileImage] = useState(user?.image);
 
