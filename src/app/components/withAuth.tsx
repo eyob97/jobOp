@@ -1,27 +1,26 @@
-"use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 
-interface WithAuthOptions {
-  allowUnauthenticatedAccess?: boolean;
-}
-
-const withAuth = (
-  WrappedComponent: React.ComponentType,
-  options?: WithAuthOptions
-) => {
-  const Wrapper = (props: any) => {
+const withAuth = (WrappedComponent: React.ComponentType) => {
+  const Wrapper: React.FC = (props) => {
     const router = useRouter();
-    const authState = useSelector((state: RootState) => state.auth);
-    const { user, isLoading } = authState || { user: null, isLoading: false };
+    const [isLoading, setIsLoading] = useState(true);
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
-      if (!isLoading && !user && !options?.allowUnauthenticatedAccess) {
-        router.replace("/auth/sign-in");
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
       }
-    }, [user, isLoading, router]);
+
+      if (!storedUser) {
+        router.replace("/auth/sign-in");
+      } else {
+        setIsLoading(false);
+      }
+    }, [router]);
 
     if (isLoading) {
       return <div>Loading...</div>;
