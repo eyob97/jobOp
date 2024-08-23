@@ -125,9 +125,6 @@ export const loginUser = createAsyncThunk(
 
       return data;
     } catch (error: any) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("userId");
-      localStorage.removeItem("user");
       const errorMessage =
         error.response?.data?.message || "An error occurred during login";
       return rejectWithValue(errorMessage);
