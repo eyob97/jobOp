@@ -126,7 +126,7 @@ export const loginUser = createAsyncThunk(
       return data;
     } catch (error: any) {
       const errorMessage =
-        error.response?.data?.message || "An error occurred during login";
+        error.response?.data || "An error occurred during login";
       return rejectWithValue(errorMessage);
     }
   }
