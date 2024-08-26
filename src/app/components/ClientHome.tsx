@@ -51,7 +51,7 @@ const ClientHome: React.FC = () => {
                 </div>
                 <div className="col-lg-5 text-center">
                   <img
-                    src="/landing_assets/images/Group 1057.svg"
+                    src="/landing_assets/images/image 1057.svg"
                     alt="Phone Chat"
                     className="phone-chat img-fluid"
                   />

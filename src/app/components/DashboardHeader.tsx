@@ -52,8 +52,9 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     onTabChange(tab);
     router.push(path);
   };
-
-  // useEffect(() => {}, []);
+  useEffect(() => {
+    setProfileImage(user?.image);
+  }, []);
 
   useEffect(() => {
     dispatch(fetchFiles())
@@ -78,6 +79,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       try {
         const updatedUser = await updateUserPhoto(user.id, file);
         setProfileImage(updatedUser.image);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
       } catch (error) {
         console.log("error", error);
         alert("Failed to upload image. Please try again.");
@@ -227,7 +229,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                   {user.email}
                 </span>
               </DropdownHeader>
-              <DropdownItem onClick={handleUploadClick}>
+              <DropdownItem onClick={handleUploadClick} disabled={true}>
                 Upload photo
               </DropdownItem>
               <input
