@@ -9,10 +9,12 @@ import { useDispatch } from "react-redux";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
+import { UploadJobCard } from "./UploadJob";
 
 const EmployerDashboard: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const [activeTab, setActiveTab] = useState("filter");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [jobs, setJobs] = useState([]);
@@ -34,6 +36,7 @@ const EmployerDashboard: React.FC = () => {
   }, [dispatch]);
 
   const handleNavigation = (tab: string, path: string) => {
+    //changing tabs
     router.push(path);
   };
 
@@ -53,6 +56,9 @@ const EmployerDashboard: React.FC = () => {
                 type="button"
                 className="rounded-full text-black flex items-center"
                 style={{ backgroundColor: "#fff", color: "#000" }}
+                onClick={() =>
+                  handleNavigation("upload-job", "/dashboard#upload-job")
+                }
               >
                 <HiDownload className="mt-1 mr-1" />
                 Upload PDF
