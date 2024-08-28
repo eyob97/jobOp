@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Header from "./LandingPage/Header";
+import Header from "./LandingPage/HeaderV2";
 import DynamicFooter from "./LandingPage/Footer";
 
 const TermsOfServiceComponent: React.FC = () => {
