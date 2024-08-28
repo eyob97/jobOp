@@ -218,8 +218,8 @@ const page = () => {
                     <div>
                       <strong>Salary:</strong>
                       {selectedJob?.fixed_salary
-                        ? `$${selectedJob.fixed_salary}`
-                        : `$${selectedJob?.min_salary} - $${selectedJob?.max_salary}`}
+                        ? ` R${selectedJob.fixed_salary}`
+                        : ` R${selectedJob?.min_salary} - $${selectedJob?.max_salary}`}
                     </div>
                   </div>
                   <div className="flex items-center">
