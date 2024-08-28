@@ -4,17 +4,21 @@ import React, { useEffect, useState } from "react";
 import { Button, Card, Spinner, Alert } from "flowbite-react";
 import { HiDownload, HiPlus } from "react-icons/hi";
 import { AppDispatch, RootState } from "@/app/redux/store";
-import { fetchEmployerJobs, setSelectedJob } from "@/app/redux/jobSlice";
+import {
+  fetchEmployerJobs,
+  setActiveTab,
+  setSelectedJob,
+} from "@/app/redux/jobSlice";
 import { useDispatch } from "react-redux";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { UploadJobCard } from "./UploadJob";
+import { useSelector } from "react-redux";
 
 const EmployerDashboard: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const [activeTab, setActiveTab] = useState("filter");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [jobs, setJobs] = useState([]);
@@ -37,9 +41,8 @@ const EmployerDashboard: React.FC = () => {
     };
     fetchJobs();
   }, [dispatch]);
-
   const handleNavigation = (tab: string, path: string) => {
-    //changing tabs
+    dispatch(setActiveTab(tab));
     router.push(path);
   };
 
