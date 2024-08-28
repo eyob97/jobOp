@@ -44,7 +44,7 @@ const EmployerDashboard: React.FC = () => {
   };
 
   const handleClick = (jobId: number) => {
-    dispatch(setSelectedJob(jobId));
+    // dispatch(setSelectedJob(jobId));
     router.push(`/job/${jobId}`);
   };
 
@@ -87,10 +87,7 @@ const EmployerDashboard: React.FC = () => {
             </div>
           </div>
         </div>
-        <div
-          style={{ border: "1px solid red" }}
-          className="p-6 bg-white rounded-lg shadow-md w-100"
-        >
+        <div className="p-6 bg-white rounded-lg shadow-md w-100">
           {loading && (
             <div className="flex justify-center">
               <Spinner size="lg" aria-label="Loading jobs" />
@@ -104,10 +101,7 @@ const EmployerDashboard: React.FC = () => {
             </div>
           )}
           {!loading && !error && (
-            <div
-              style={{ border: "1px solid red" }}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mx-5"
-            >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mx-5">
               {jobs.length > 0 ? (
                 jobs.map((job: any) => {
                   const isExpanded = expandedJobs[job.id];
