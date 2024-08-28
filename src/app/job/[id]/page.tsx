@@ -6,7 +6,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import CustomButton from "@/app/components/CustomButton";
 import { FaArrowRight } from "react-icons/fa";
 import { CalendarBlank, MapTrifold } from "phosphor-react";
-import { fetchEmployerJobs } from "@/app/redux/jobSlice";
+import { fetchEmployerJobs, setActiveTab } from "@/app/redux/jobSlice";
 import DashboardHeader from "@/app/components/DashboardHeader";
 import { useParams, useRouter } from "next/navigation";
 import { Button, Card } from "flowbite-react";
@@ -18,8 +18,9 @@ const page = () => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const [jobs, setJobs] = useState([]);
+  const activeTab = useSelector((state: any) => state.jobs.activeTab);
   const [selectedJob, setSelectJob] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState("filter");
+  // const [activeTab, setActiveTab] = useState("filter");
   const user = useSelector((state: RootState) => state.auth?.user);
 
   useEffect(() => {
@@ -61,10 +62,14 @@ const page = () => {
       lastName?.charAt(0) || ""
     }`.toUpperCase();
   };
+
+  const handleTabChange = (newTab: string) => {
+    dispatch(setActiveTab(newTab));
+  };
   return (
     <>
       <DashboardHeader
-        onTabChange={setActiveTab}
+        onTabChange={handleTabChange}
         activeTab={activeTab}
         userType={user?.user_type || "employer"}
       />

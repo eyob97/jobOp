@@ -5,7 +5,11 @@ import { useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { Button, Card } from "flowbite-react";
 import { useDispatch } from "react-redux";
-import { fetchEmployerJobs, updateApplicantStatus } from "@/app/redux/jobSlice";
+import {
+  fetchEmployerJobs,
+  setActiveTab,
+  updateApplicantStatus,
+} from "@/app/redux/jobSlice";
 import DashboardHeader from "../DashboardHeader";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,7 +24,8 @@ type ApplicantStatus =
 const ApplicantProfile = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const [activeTab, setActiveTab] = useState("filter");
+  // const [activeTab, setActiveTab] = useState("filter");
+  const activeTab = useSelector((state: any) => state.jobs.activeTab);
   const user = useSelector((state: RootState) => state.auth?.user);
   const { id, applicantId } = useParams<{ id: string; applicantId: string }>();
   const [selectedApplicant, setSelectedApplicant] = useState<any>(null);
@@ -53,6 +58,9 @@ const ApplicantProfile = () => {
     fetchJobs();
   }, [dispatch, id, applicantId]);
 
+  const handleTabChange = (newTab: string) => {
+    dispatch(setActiveTab(newTab));
+  };
   const handleChangeStatus = async (status: ApplicantStatus) => {
     try {
       await dispatch(
@@ -105,7 +113,7 @@ const ApplicantProfile = () => {
   return (
     <>
       <DashboardHeader
-        onTabChange={setActiveTab}
+        onTabChange={handleTabChange}
         activeTab={activeTab}
         userType={user?.user_type || "employer"}
       />
