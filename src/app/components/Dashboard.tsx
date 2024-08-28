@@ -18,22 +18,36 @@ import { UploadJobCard } from "./Employer/UploadJob";
 import DashboardFooter from "./DashboardFooter";
 import Applications from "@/app/components/Employer/Applications";
 import { getAuthDataFromLocalStorage } from "../utils/localstorage";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setActiveTab } from "../redux/jobSlice";
 
 const Dashboard: React.FC = () => {
   // const user = useSelector((state: RootState) => state.auth?.user);
   const { user } = getAuthDataFromLocalStorage();
   const selectedJob = useSelector((state: RootState) => state.jobs.selectedJob);
-  const [activeTab, setActiveTab] = useState("filter");
+  // const [activeTab, setActiveTab] = useState("filter");
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const activeTab = useSelector((state: any) => state.jobs.activeTab);
   const [viewLetter, setViewLetter] = useState(false);
   const [showLetterForm, setShowLetterForm] = useState(false);
   const [letterType, setLetterType] = useState<
     "Cover Letter" | "Motivation Letter"
   >("Cover Letter");
 
+  useEffect(() => {
+    if (activeTab) {
+      setActiveTab(activeTab);
+      router.push(`/dashboard#${activeTab}`);
+    }
+  }, [activeTab]);
   const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
+    dispatch(setActiveTab(tab)); // Dispatch the action to update the active tab in Redux
+    // setActiveTab(tab);
     setViewLetter(false);
     setShowLetterForm(false);
+    // router.push(`/dashboard#${tab}`); // Add this line
   };
 
   const handleGenerate = (type: "Cover Letter" | "Motivation Letter") => {

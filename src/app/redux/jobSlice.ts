@@ -28,6 +28,7 @@ interface Applicant {
 interface JobState {
   jobs: Job[];
   selectedJob: Job | null;
+  activeTab?: string | null;
   isLoading: boolean;
   error: string | null;
   applicants: Applicant[];
@@ -36,6 +37,7 @@ interface JobState {
 const initialState: JobState = {
   jobs: [],
   selectedJob: null,
+  activeTab: "filter",
   isLoading: false,
   error: null,
   applicants: [],
@@ -201,6 +203,12 @@ const jobSlice = createSlice({
     clearSelectedJob(state) {
       state.selectedJob = null;
     },
+    setActiveTab(state, action: PayloadAction<string>) {
+      state.activeTab = action.payload;
+    },
+    clearActiveTab(state) {
+      state.activeTab = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -277,5 +285,10 @@ const jobSlice = createSlice({
   },
 });
 
-export const { setSelectedJob, clearSelectedJob } = jobSlice.actions;
+export const {
+  setSelectedJob,
+  clearSelectedJob,
+  setActiveTab,
+  clearActiveTab,
+} = jobSlice.actions;
 export default jobSlice.reducer;

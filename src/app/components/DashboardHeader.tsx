@@ -14,6 +14,8 @@ import {
   NavbarLink,
   NavbarToggle,
 } from "flowbite-react";
+import Link from "next/link";
+
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/authSlice";
@@ -22,6 +24,7 @@ import { updateUser } from "../redux/authSlice";
 import { fetchFiles } from "../redux/letterSlice";
 import { updateUserPhoto } from "../utils/api";
 import { getAuthDataFromLocalStorage } from "../utils/localstorage";
+import { setActiveTab } from "../redux/jobSlice";
 
 interface DashboardHeaderProps {
   onTabChange: (tab: string) => void;
@@ -34,10 +37,10 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   activeTab,
   userType,
 }) => {
+  console.log("acitiveTab", activeTab);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  // const user = useSelector((state: RootState) => state?.auth?.user);
   const { user } = getAuthDataFromLocalStorage();
 
   const [resume, setResume] = useState(false);
@@ -48,9 +51,9 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     router.push("/auth/sign-in");
   };
 
-  const handleNavigation = (tab: string, path: string) => {
+  const handleNavigation = (tab: string) => {
     onTabChange(tab);
-    router.push(path);
+    // router.push(path);
   };
   useEffect(() => {
     setProfileImage(user?.image);
@@ -115,74 +118,65 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             <ul className="flex flex-col lg:flex-row space-x-0 lg:space-x-4 lg:items-center">
               {userType === "Job Seeker" ? (
                 <>
-                  <NavbarLink
-                    href="/dashboard#find-job"
-                    style={linkClasses("filter")}
-                    onClick={() =>
-                      handleNavigation("filter", "/dashboard#find-job")
-                    }
-                  >
-                    Filter Dashboard
-                  </NavbarLink>
-                  <NavbarLink
-                    href="/dashboard#upload-cv"
-                    style={linkClasses("upload")}
-                    onClick={() =>
-                      handleNavigation("upload", "/dashboard#upload-cv")
-                    }
-                  >
-                    {resume ? "My Cv" : "Upload CV"}
-                  </NavbarLink>
-                  <NavbarLink
-                    href="/dashboard#documents"
-                    style={linkClasses("documents")}
-                    onClick={() =>
-                      handleNavigation("documents", "/dashboard#documents")
-                    }
-                  >
-                    Documents
-                  </NavbarLink>
-                  <NavbarLink
-                    href="/dashboard#applications"
-                    style={linkClasses("applications")}
-                    onClick={() =>
-                      handleNavigation(
-                        "applications",
-                        "/dashboard#applications"
-                      )
-                    }
-                  >
-                    Applications
-                  </NavbarLink>
+                  <Link href="/dashboard#find-job" passHref legacyBehavior>
+                    <NavbarLink
+                      style={linkClasses("filter")}
+                      onClick={() => handleNavigation("filter")}
+                    >
+                      Filter Dashboard
+                    </NavbarLink>
+                  </Link>
+                  <Link href="/dashboard#upload-cv" passHref legacyBehavior>
+                    <NavbarLink
+                      style={linkClasses("upload")}
+                      onClick={() => handleNavigation("upload")}
+                    >
+                      {resume ? "My CV" : "Upload CV"}
+                    </NavbarLink>
+                  </Link>
+                  <Link href="/dashboard#documents" passHref legacyBehavior>
+                    <NavbarLink
+                      style={linkClasses("documents")}
+                      onClick={() => handleNavigation("documents")}
+                    >
+                      Documents
+                    </NavbarLink>
+                  </Link>
+                  <Link href="/dashboard#applications" passHref legacyBehavior>
+                    <NavbarLink
+                      style={linkClasses("applications")}
+                      onClick={() => handleNavigation("applications")}
+                    >
+                      Applications
+                    </NavbarLink>
+                  </Link>
                 </>
               ) : (
                 <>
-                  <NavbarLink
-                    href="/dashboard#post"
-                    style={linkClasses("post")}
-                    onClick={() => handleNavigation("post", "/dashboard#post")}
-                  >
-                    Jobs
-                  </NavbarLink>
-                  <NavbarLink
-                    href="/dashboard#upload-job"
-                    style={linkClasses("upload-job")}
-                    onClick={() =>
-                      handleNavigation("upload-job", "/dashboard#upload-job")
-                    }
-                  >
-                    Job Post
-                  </NavbarLink>
-
-                  <NavbarLink
-                    href="/dashboard#applicants"
-                    style={linkClasses("applicants")}
-                    onClick={() =>
-                      handleNavigation("applicants", "/dashboard#applicants")
-                    }
-                  >
-                    Applications
-                  </NavbarLink>
+                  <Link href="/dashboard#post" passHref legacyBehavior>
+                    <NavbarLink
+                      style={linkClasses("post")}
+                      onClick={() => handleNavigation("post")}
+                    >
+                      Jobs
+                    </NavbarLink>
+                  </Link>
+                  <Link href="/dashboard#upload-job" passHref legacyBehavior>
+                    <NavbarLink
+                      style={linkClasses("upload-job")}
+                      onClick={() => handleNavigation("upload-job")}
+                    >
+                      Job Post
+                    </NavbarLink>
+                  </Link>
+                  <Link href="/dashboard#applicants" passHref legacyBehavior>
+                    <NavbarLink
+                      style={linkClasses("applicants")}
+                      onClick={() => handleNavigation("applicants")}
+                    >
+                      Applications
+                    </NavbarLink>
+                  </Link>
                 </>
               )}
             </ul>
@@ -208,18 +202,14 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="M15.5003 15.2981C14.2224 15.2981 12.9731 14.9277 11.9105 14.2337C10.8479 13.5397 10.0197 12.5533 9.53064 11.3992C9.04158 10.2452 8.91362 8.97529 9.16294 7.75015C9.41226 6.525 10.0277 5.39964 10.9313 4.51636C11.835 3.63308 12.9863 3.03156 14.2397 2.78786C15.4932 2.54417 16.7924 2.66924 17.9731 3.14727C19.1537 3.62529 20.1629 4.4348 20.8729 5.47343C21.5829 6.51206 21.9619 7.73315 21.9619 8.9823C21.96 10.6568 21.2786 12.2621 20.0672 13.4462C18.8559 14.6302 17.2135 15.2962 15.5003 15.2981ZM15.5003 5.47352C14.7903 5.47352 14.0963 5.67931 13.506 6.06486C12.9156 6.45041 12.4555 6.9984 12.1838 7.63955C11.9121 8.28069 11.841 8.98619 11.9796 9.66682C12.1181 10.3475 12.46 10.9727 12.962 11.4634C13.464 11.9541 14.1037 12.2883 14.8 12.4236C15.4963 12.559 16.2181 12.4895 16.8741 12.224C17.53 11.9584 18.0906 11.5087 18.4851 10.9317C18.8795 10.3547 19.0901 9.67627 19.0901 8.9823C19.0901 8.05171 18.7119 7.15924 18.0387 6.50122C17.3655 5.8432 16.4524 5.47352 15.5003 5.47352Z"
-                      fill="white"
-                    />
-                    <path
-                      d="M23.3978 29.3332H7.60289C7.22207 29.3332 6.85684 29.1853 6.58756 28.9221C6.31827 28.6589 6.16699 28.3019 6.16699 27.9297V23.7191C6.16927 21.8587 6.92641 20.075 8.27233 18.7594C9.61825 17.4439 11.4431 16.7038 13.3465 16.7016H17.6542C19.5576 16.7038 21.3824 17.4439 22.7283 18.7594C24.0742 20.075 24.8314 21.8587 24.8337 23.7191V27.9297C24.8337 28.3019 24.6824 28.6589 24.4131 28.9221C24.1438 29.1853 23.7786 29.3332 23.3978 29.3332ZM9.03879 26.5262H21.9619V23.7191C21.9619 22.6024 21.508 21.5315 20.7002 20.7418C19.8923 19.9522 18.7966 19.5086 17.6542 19.5086H13.3465C12.204 19.5086 11.1083 19.9522 10.3005 20.7418C9.49263 21.5315 9.03879 22.6024 9.03879 23.7191V26.5262Z"
+                      d="M15.5003 15.2981C14.2224 15.2981 12.9731 14.9277 11.9105 14.2337C10.8479 13.5397 10.0197 12.5533 9.53064 11.3992C9.04158 10.2452 8.91362 8.97529 9.16294 7.75015C9.41226 6.525 10.0277 5.39964 10.9313 4.51636C11.835 3.63308 12.9863 3.03156 14.2397 2.78786C15.4932 2.54417 16.7924 2.66924 17.9731 3.14727C19.1537 3.62529 20.1629 4.4348 20.8729 5.47343C21.5829 6.51206 21.9619 7.73315 21.9619 8.9823C21.96 10.6568 21.2786 12.2621 20.0672 13.4462C18.8559 14.6302 17.2135 15.2962 15.5003 15.2981ZM15.5003 5.47352C14.7903 5.47352 14.0963 5.67931 13.506 6.06486C12.9156 6.45041 12.4555 6.9984 12.1838 7.63955C11.9121 8.28069 11.841 8.98619 11.9796 9.66682C12.1181 10.3475 12.46 10.9727 12.962 11.4634C13.464 11.9541 14.1037 12.2883 14.8 12.4236C15.4963 12.559 16.2181 12.4895 16.8741 12.224C17.53 11.9584 18.0906 11.5087 18.4851 10.9317C18.8795 10.3547 19.0901 9.67627 19.0901 8.9823C19.0901 8.05171 18.7119 7.15924 18.0387 6.50122C17.3655 5.8432 16.4524 5.47352 15.5003 5.47352ZM26.5814 25.8195H4.41912C3.41015 25.8195 2.44249 25.4226 1.73147 24.7102C1.02046 23.9979 0.623535 23.0298 0.623535 22.0196C0.624612 18.3014 2.28736 15.4043 5.20334 13.8452C8.1188 12.2871 11.7124 12.2871 14.6278 13.8452C15.1256 14.0966 15.7006 14.2312 16.2848 14.2312C16.869 14.2312 17.444 14.0966 17.9417 13.8452C20.8572 12.2871 24.4508 12.2871 27.3662 13.8452C30.2822 15.4043 31.9449 18.3014 31.946 22.0196C31.946 23.0298 31.5491 23.9979 30.8381 24.7102C30.1271 25.4226 29.1594 25.8195 28.1505 25.8195H26.5814Z"
                       fill="white"
                     />
                   </svg>
                 )
               }
               arrowIcon={false}
-              inline
+              inline={true}
             >
               <DropdownHeader className="overflow-visible">
                 <span className="block text-sm">
@@ -242,18 +232,24 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
               <DropdownItem onClick={handleLogout}>Sign out</DropdownItem>
             </Dropdown>
           ) : (
-            <Button
-              className="text-black"
-              onClick={() => router.push("/auth/sign-in")}
-              gradientDuoTone="greenToYellow"
-            >
-              Sign in
+            <Button onClick={() => router.push("/auth/sign-in")}>
+              Sign In
             </Button>
           )}
         </div>
+        <input
+          type="file"
+          accept="image/*"
+          style={{ display: "none" }}
+          ref={fileInputRef}
+          onChange={handleFileChange}
+        />
       </div>
     </Navbar>
   );
 };
 
 export default DashboardHeader;
+function setSelectedTab(tab: string): any {
+  throw new Error("Function not implemented.");
+}
