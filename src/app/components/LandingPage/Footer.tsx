@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState, FC } from "react";
 
 const DynamicFooter = ({}) => {
@@ -23,8 +24,12 @@ const DynamicFooter = ({}) => {
           <div className="row contact-form">
             <div className="col-lg-6">
               <div className="policy-term">
-                <span className="item-link-about-us"> Privacy Policy </span>
-                <span className="item-link-carrer"> Terms of Service </span>
+                <Link href="/privacy-policy" legacyBehavior>
+                  <a className="item-link-about-us">Privacy Policy</a>
+                </Link>
+                <Link href="/terms-of-service" legacyBehavior>
+                  <a className="item-link-carrer">Terms of Service</a>
+                </Link>
               </div>
               <div className="career-blog">
                 <span className="item-link-blogs"> Careers </span>
