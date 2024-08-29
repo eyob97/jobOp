@@ -106,14 +106,18 @@ const SignIn: React.FC = () => {
       title="Sign In"
       subtitle={
         <span>
-          Don't have an account?{" "}
+          Don't have an account?
           <Link href="/auth/sign-up" legacyBehavior>
-            <a className="text-[#116034] bold-text">Sign up</a>
+            <span className="text-[#116034] bold-text cursor-pointer">
+              Sign up
+            </span>
           </Link>
           <br />
-          Did you forget your password?{" "}
+          Did you forget your password?
           <Link href="/auth/reset-password" legacyBehavior>
-            <a className="text-[#116034] bold-text">Reset password</a>
+            <span className="text-[#116034] bold-text cursor-pointer">
+              Reset password
+            </span>
           </Link>
         </span>
       }

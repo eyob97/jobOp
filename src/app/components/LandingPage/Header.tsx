@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
+import Link from "next/link";
 
 const Header = () => {
   const router = useRouter();
@@ -60,36 +61,36 @@ const Header = () => {
     <header id="header" className="fixed-top">
       <div className="container d-flex align-items-center justify-content-between">
         <h1 className="logo">
-          <a href="#home" style={{ display: "flex", alignItems: "center" }}>
+          <Link href="#home" style={{ display: "flex", alignItems: "center" }}>
             <img src="/landing_assets/vectors/group3_x2.svg" alt="Logo" />
-          </a>
+          </Link>
         </h1>
         <nav id="navbar" className="navbar">
           <ul>
             <li>
-              <a className="nav-link scrollto active" href="#home">
+              <Link className="nav-link scrollto active" href="#home">
                 Home
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="nav-link scrollto" href="#about">
+              <Link className="nav-link scrollto" href="#about">
                 About Us
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="nav-link scrollto" href="#how-it-works">
+              <Link className="nav-link scrollto" href="#how-it-works">
                 How It Works
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="nav-link scrollto" href="#pricing">
+              <Link className="nav-link scrollto" href="#pricing">
                 Pricing
-              </a>
+              </Link>
             </li>
             <li>
-              <a className="nav-link scrollto" href="#contact">
+              <Link className="nav-link scrollto" href="#contact">
                 Contact
-              </a>
+              </Link>
             </li>
             <div className="form-container ml-3">
               <button

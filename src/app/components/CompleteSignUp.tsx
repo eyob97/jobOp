@@ -8,11 +8,15 @@ import { verifyCompleteSignUp, sendOTP } from "@/app/redux/authSlice";
 import { RootState, AppDispatch } from "@/app/redux/store";
 import { Field } from "@/app/components/LandingPage/FormSkeleton";
 import { CountryDropdown } from "react-country-region-selector";
+import Link from "next/link";
 
-const FormSkeleton = dynamic(() => import('@/app/components/LandingPage/FormSkeleton'), {
-  ssr: false,
-  loading: () => <div>Loading...</div>,
-});
+const FormSkeleton = dynamic(
+  () => import("@/app/components/LandingPage/FormSkeleton"),
+  {
+    ssr: false,
+    loading: () => <div>Loading...</div>,
+  }
+);
 
 interface FormErrors {
   code?: string;
@@ -82,32 +86,33 @@ const CompleteSignUp = () => {
     setErrors({});
     setMessage("");
 
-    const payload = userType === "Employer"
-      ? {
-          otp: formData.code,
-          phone_number: formData.phone_number,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          company_name: formData.companyName,
-          location: formData.location,
-          password: formData.password,
-          confirm_password: formData.confirmPassword,
-        }
-      : {
-          otp: formData.code,
-          phone_number: formData.phone_number,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          password: formData.password,
-          confirm_password: formData.confirmPassword,
-        };
+    const payload =
+      userType === "Employer"
+        ? {
+            otp: formData.code,
+            phone_number: formData.phone_number,
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            company_name: formData.companyName,
+            location: formData.location,
+            password: formData.password,
+            confirm_password: formData.confirmPassword,
+          }
+        : {
+            otp: formData.code,
+            phone_number: formData.phone_number,
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            password: formData.password,
+            confirm_password: formData.confirmPassword,
+          };
 
     try {
       const resultAction = await dispatch(verifyCompleteSignUp(payload));
       if (verifyCompleteSignUp.fulfilled.match(resultAction)) {
         setMessage("Verification successful. Redirecting...");
         setTimeout(() => {
-          router.push('/auth/sign-in');
+          router.push("/auth/sign-in");
         }, 2000);
       } else {
         const errorPayload = resultAction.payload as any;
@@ -130,7 +135,9 @@ const CompleteSignUp = () => {
       }
     } catch (error) {
       console.error("Submit error:", error);
-      setErrors({ general: "An unexpected error occurred. Please try again later." });
+      setErrors({
+        general: "An unexpected error occurred. Please try again later.",
+      });
     }
   };
 
@@ -143,7 +150,7 @@ const CompleteSignUp = () => {
     try {
       const resultAction = await dispatch(sendOTP(payload));
       if (sendOTP.fulfilled.match(resultAction)) {
-        setMessage('OTP sent successfully.');
+        setMessage("OTP sent successfully.");
       } else {
         const resendError = resultAction.payload as any;
         if (resendError?.user) {
@@ -265,14 +272,18 @@ const CompleteSignUp = () => {
           <span>
             Provide the code we just sent to your phone <br />
             Didn’t get a code?{" "}
-            <a href="#" className="text-[#116034] bold-text" onClick={handleResend}>
+            <a
+              href="#"
+              className="text-[#116034] bold-text"
+              onClick={handleResend}
+            >
               Send again
             </a>
             <br />
-            Already have an account?{" "}
-            <a href="/auth/sign-in" className="text-[#116034] bold-text">
+            Already have an account?
+            <Link href="/auth/sign-in" className="text-[#116034] bold-text">
               Sign in
-            </a>
+            </Link>
           </span>
         }
         fields={fields}
@@ -281,11 +292,7 @@ const CompleteSignUp = () => {
         showCheckbox={false}
         generalError={errors.general}
       />
-      {message && (
-        <div className="text-green-500 mt-4">
-          {message}
-        </div>
-      )}
+      {message && <div className="text-green-500 mt-4">{message}</div>}
     </div>
   );
 };
