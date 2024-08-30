@@ -73,7 +73,7 @@ const Documents: React.FC<DocumentsProps> = ({ letterType, onGenerate }) => {
     <div className="min-h-screen w-full flex flex-col items-start justify-start bg-[rgba(35,149,85,0.19)] p-4">
       <div className="w-full flex justify-between items-center bg-white p-4 shadow-md mb-4">
         <h2 className="text-2xl font-bold mb-2">Your documents</h2>
-        <div className="flex gap-4">
+        <div className="block  gap-4 w-full sm:flex sm:justify-end">
           <Button
             type="submit"
             className="rounded-full text-black"
@@ -92,11 +92,12 @@ const Documents: React.FC<DocumentsProps> = ({ letterType, onGenerate }) => {
           </Button>
         </div>
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 w-full">
+
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-full">
         {files.map((file: any) => (
           <Card
             key={file.id}
-            className="p-4 relative rounded border"
+            className="w-full p-4 relative rounded border"
             style={{
               borderColor: "rgba(214, 235, 223, 1)",
               borderWidth: "1px",
@@ -135,17 +136,6 @@ const Documents: React.FC<DocumentsProps> = ({ letterType, onGenerate }) => {
               {file.file_name || "Untitled"}
             </h3>
             <p className="text-gray-500">{file.file_type}</p>
-            {/* {file.file && (
-              <div className="mt-4">
-                <Document
-                  file={file.file}
-                  onLoadSuccess={onDocumentLoadSuccess}
-                  loading={<div>Loading PDF...</div>}
-                >
-                  <Page pageNumber={1} width={300} />
-                </Document>
-              </div>
-            )} */}
           </Card>
         ))}
       </div>

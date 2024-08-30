@@ -17,14 +17,12 @@ import {
 import Link from "next/link";
 
 import { useRouter } from "next/navigation";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { logout } from "../redux/authSlice";
-import { AppDispatch, RootState } from "../redux/store";
-import { updateUser } from "../redux/authSlice";
+import { AppDispatch } from "../redux/store";
 import { fetchFiles } from "../redux/letterSlice";
 import { updateUserPhoto } from "../utils/api";
 import { getAuthDataFromLocalStorage } from "../utils/localstorage";
-import { setActiveTab } from "../redux/jobSlice";
 
 interface DashboardHeaderProps {
   onTabChange: (tab: string) => void;
@@ -37,7 +35,6 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   activeTab,
   userType,
 }) => {
-  console.log("acitiveTab", activeTab);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -45,7 +42,11 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
   const [resume, setResume] = useState(false);
   const [profileImage, setProfileImage] = useState(user?.image);
+  const [isOpen, setIsOpen] = useState(false);
 
+  const handleToggle = () => {
+    setIsOpen(!isOpen);
+  };
   const handleLogout = () => {
     dispatch(logout());
     router.push("/auth/sign-in");
@@ -53,22 +54,20 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
   const handleNavigation = (tab: string) => {
     onTabChange(tab);
-    // router.push(path);
   };
-  useEffect(() => {
-    setProfileImage(user?.image);
-  }, []);
 
   useEffect(() => {
+    setProfileImage(user?.image);
+
     dispatch(fetchFiles())
       .unwrap()
       .then((data) => {
-        data.map((file: any) => {
-          if (file.file_type === "Resume") setResume(true);
-        });
+        if (data.some((file: any) => file.file_type === "Resume")) {
+          setResume(true);
+        }
       })
       .catch((err) => console.error(err));
-  }, [dispatch]);
+  }, [dispatch, user?.image]);
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
