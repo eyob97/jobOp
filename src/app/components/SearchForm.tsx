@@ -37,10 +37,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
   return (
     <form
-      className="max-w-7xl mx-auto p-2 bg-white shadow-md rounded-full  grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 items-center"
+      className="max-w-7xl mx-auto p-4 bg-white shadow-md rounded-full grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 items-center"
       onSubmit={handleSearch}
     >
-      <div className="relative flex-grow min-w-[200px] col-span-1 sm:col-span-1 lg:col-span-4">
+      <div className="relative col-span-1 sm:col-span-1 lg:col-span-4 min-w-0">
         <HiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600" />
         <TextInput
           id="job-title"
@@ -52,7 +52,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           onChange={(e) => setJobTitle(e.target.value)}
         />
       </div>
-      <div className="relative flex-grow min-w-[200px] col-span-1 sm:col-span-1 lg:col-span-4">
+
+      <div className="relative col-span-1 sm:col-span-1 lg:col-span-4 min-w-0">
         <HiOutlineLocationMarker className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600" />
         <TextInput
           id="location"
@@ -64,10 +65,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           onChange={(e) => setLocation(e.target.value)}
         />
       </div>
-      <div className="relative flex-shrink-0 min-w-[120px] col-span-1 sm:col-span-1 lg:col-span-2">
-        <div className="inline-block relative w-full">
+
+      <div className="relative col-span-1 sm:col-span-1 lg:col-span-2 min-w-0 flex justify-center">
+        <div className="inline-block relative">
           <Button
-            className="flex items-center space-x-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full w-full lg:w-auto border-none focus:outline-none focus:ring-0 active:outline-none active:ring-0"
+            className="flex items-center space-x-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full  lg:w-auto border-none focus:outline-none focus:ring-0 active:outline-none active:ring-0"
             onClick={toggleDropdown}
             type="button"
           >
@@ -100,7 +102,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           )}
         </div>
       </div>
-      <div className="flex-shrink-0  w-full col-span-1 sm:col-span-1 lg:col-span-2">
+      <div className="col-span-1 sm:col-span-1 lg:col-span-2 flex justify-center w-full">
         <CustomButton type="submit">Find Job</CustomButton>
       </div>
     </form>
