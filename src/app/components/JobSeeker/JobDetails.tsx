@@ -157,7 +157,7 @@ const JobDetails: React.FC = () => {
             <div className="w-full border-t border-gray-200 my-4"></div>{" "}
             {/* Divider */}
             <h3 className="text-lg font-semibold mb-2">Share this job:</h3>
-            <div className="flex space-x-2">
+            <div className="block  gap-5 w-full sm:flex sm:justify-end">
               <Button
                 className="bg-gray-200 text-gray-700 rounded-full"
                 onClick={handleCopyLink}

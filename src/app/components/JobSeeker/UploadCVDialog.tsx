@@ -156,7 +156,7 @@ export function UploadCVCard() {
           ? "You can update your existing cv"
           : "You can upload an existing CV and edit it later or create a new one from scratch"}
       </h2>
-      <div className="flex justify-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-center gap-4">
         <Button
           color="text"
           className="flex flex-col items-center p-4 border border-gray-300 dark:border-gray-600 rounded-lg"
