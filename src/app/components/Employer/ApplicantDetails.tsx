@@ -121,9 +121,9 @@ const ApplicantProfile = () => {
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-extrabold mb-5">Applicant Profile</h2>
           <div className="flex items-center mb-6">
-            {selectedApplicant?.seeker?.profile_picture ? (
+            {selectedApplicant?.seeker?.user?.image ? (
               <img
-                src={selectedApplicant?.seeker?.profile_picture}
+                src={selectedApplicant?.seeker?.user?.image}
                 alt={`${selectedApplicant?.seeker?.user?.first_name} ${selectedApplicant?.seeker?.user?.last_name}`}
                 className="h-16 w-16 rounded-full mr-4 border-2 border-gray-300"
               />
