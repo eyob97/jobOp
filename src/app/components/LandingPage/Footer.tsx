@@ -25,7 +25,7 @@ const DynamicFooter = ({}) => {
             <div className="col-lg-6">
               <div className="policy-term">
                 <Link href="/privacy-policy" legacyBehavior>
-                  <a className="item-link-about-us">Privacy Policy</a>
+                  <a className="item-link-carrer">Privacy Policy</a>
                 </Link>
                 <Link href="/terms-of-service" legacyBehavior>
                   <a className="item-link-carrer">Terms of Service</a>
