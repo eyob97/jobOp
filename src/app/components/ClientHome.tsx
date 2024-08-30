@@ -26,7 +26,7 @@ const ClientHome: React.FC = () => {
         <div className="hero-content d-table">
           <div className="d-table-cell align-middle">
             <div className="container">
-              <div className="row align-items-center justify-content-between">
+              <div className="row align-items-center justify-content-between  margin-responsive">
                 <div className="col-lg-7">
                   <h1 className="text-white text-left empowering-text">
                     Empowering South Africa's Workforce

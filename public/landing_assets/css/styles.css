@@ -1978,6 +1978,7 @@ a:hover {
   width: 100%;
   top: 50%;
   transform: translateY(-50%);
+  padding-top: 100px;
 }
 
 .hero .overlay-itro {
@@ -1990,6 +1991,58 @@ a:hover {
   opacity: 0.9;
 }
 
+/* Default: No margin on wide screens */
+.margin-responsive {
+  margin-top: 0;
+}
+
+/* Apply margin only on mobile screens */
+@media (max-width: 1024px) {
+  .margin-responsive {
+    margin-top: 50px;
+  }
+}
+
+@media (max-width: 991px) {
+  .margin-responsive {
+    margin-top: 350px;
+  }
+}
+@media (max-width: 911px) {
+  .margin-responsive {
+    margin-top: 350px;
+  }
+}
+@media (max-width: 769px) {
+  .margin-responsive {
+    margin-top: 350px;
+  }
+}
+@media (max-width: 540px) {
+  .margin-responsive {
+    margin-top: 200px;
+  }
+}
+@media (max-width: 412px) {
+  .margin-responsive {
+    margin-top: 30px;
+  }
+}
+@media (max-width: 430px) {
+  .margin-responsive {
+    margin-top: 30px;
+  }
+}
+@media (max-width: 360px) {
+  .margin-responsive {
+    margin-top: 120px;
+  }
+}
+@media (max-width: 375px) {
+  .margin-responsive {
+    margin-top: 200px;
+  }
+}
 footer {
   padding: 40px 0;
   color: white;
