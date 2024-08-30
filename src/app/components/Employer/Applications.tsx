@@ -82,9 +82,9 @@ const Applications = () => {
 
   return (
     <div className="bg-[rgba(214,235,223,1)] min-h-screen p-8">
-      <div className="w-full flex justify-between items-center bg-white p-4 shadow-md mb-4">
+      <div className="w-full flex flex-col sm:flex-row justify-between items-center bg-white p-4 shadow-md mb-4">
         <h2 className="text-2xl font-bold mb-2">Job Applications</h2>
-        <div className="flex items-center">
+        <div className="w-full sm:w-auto flex items-center mt-4 sm:mt-0">
           <input
             type="text"
             placeholder="Search job applications..."

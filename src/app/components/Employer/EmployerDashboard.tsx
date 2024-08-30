@@ -64,7 +64,7 @@ const EmployerDashboard: React.FC = () => {
         <div className="p-6">
           <div className="w-full flex justify-between items-center bg-white p-4 shadow-md mb-4">
             <h2 className="text-2xl font-bold mb-2">My job posts</h2>
-            <div className="flex space-x-4">
+            <div className="block  gap-4 w-full sm:flex sm:justify-end">
               <Button
                 type="button"
                 className="rounded-full text-black flex items-center"
