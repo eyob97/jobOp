@@ -114,9 +114,9 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
                 <button
                   className={`px-4 py-2 text-sm ${
                     tab === "email"
-                      ? "text-white bg-green-500"
-                      : "text-green-500"
-                  } rounded-l`}
+                      ? "text-white bg-green-500 hover:bg-green-600"
+                      : "text-green-500 hover:text-green-600"
+                  } rounded-l focus:outline-none`}
                   onClick={() => setTab("email")}
                 >
                   Email
@@ -124,9 +124,9 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
                 <button
                   className={`px-4 py-2 text-sm ${
                     tab === "phone"
-                      ? "text-white bg-green-500"
-                      : "text-green-500"
-                  } rounded-r`}
+                      ? "text-white bg-green-500 hover:bg-green-600"
+                      : "text-green-500 hover:text-green-600"
+                  } rounded-r focus:outline-none`}
                   onClick={() => setTab("phone")}
                 >
                   Phone
@@ -143,7 +143,7 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
                     Didn’t get a code?{" "}
                     <a
                       href="#"
-                      className="text-[#116034] bold-text"
+                      className="text-[#116034] bold-text hover:text-green-700"
                       onClick={onResend}
                     >
                       Send again
@@ -233,7 +233,7 @@ const FormSkeleton: React.FC<FormSkeletonProps> = ({
               )}
               <Button
                 type="submit"
-                className="w-full rounded-full text-black"
+                className="w-full rounded-full text-black hover:bg-yellow-600 active:bg-yellow-700"
                 style={{ backgroundColor: "#FFC424", color: "#000" }}
               >
                 {buttonText}
