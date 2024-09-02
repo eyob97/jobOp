@@ -29,7 +29,9 @@ const Dashboard: React.FC = () => {
   // const [activeTab, setActiveTab] = useState("filter");
   const router = useRouter();
   const dispatch = useDispatch();
-  const activeTab = useSelector((state: any) => state.jobs.activeTab);
+  const activeTab = useSelector(
+    (state: any) => state.jobs.activeTab || "filter"
+  );
   const [viewLetter, setViewLetter] = useState(false);
   const [showLetterForm, setShowLetterForm] = useState(false);
   const [letterType, setLetterType] = useState<
