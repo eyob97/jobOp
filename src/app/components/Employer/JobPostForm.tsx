@@ -16,6 +16,7 @@ import {
   createJobPost,
   fetchEmployerCompany,
   getSkills,
+  setActiveTab,
 } from "../../redux/jobSlice";
 import { clearError } from "../../redux/resumeSlice";
 import { useRouter } from "next/navigation";
@@ -144,18 +145,6 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView, extractedJob }) => {
     }
   };
 
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setErrors({});
-  //   setSuccessMessage(null);
-
-  //   try {
-  //     await createNewJobPost();
-  //   } catch (error: any) {
-  //     setErrors({ general: error.message || "Failed to save job post." });
-  //   }
-  // };
-
   const createNewJobPost = async (updatedJobPostData: JobPost) => {
     const company: any = await dispatch(fetchEmployerCompany());
     updatedJobPostData.company = company?.payload?.data[0]?.id;
@@ -178,6 +167,11 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView, extractedJob }) => {
 
   const handleLocationChange = (val: string) => {
     setJobPostData({ ...jobPostData, location: val });
+  };
+
+  const handleNavigation = (tab: string, path: string) => {
+    dispatch(setActiveTab(tab));
+    router.push(path);
   };
 
   useEffect(() => {
@@ -529,12 +523,7 @@ const JobPostForm: React.FC<JobPostFormProps> = ({ setView, extractedJob }) => {
           <Modal.Footer>
             <Button
               color="success"
-              onClick={() => {
-                setIsModalOpen(false);
-                setTimeout(() => {
-                  router.push("/dashboard");
-                }, 300);
-              }}
+              onClick={() => handleNavigation("post", "/dashboard#post")}
             >
               Go to Job Posts
             </Button>
