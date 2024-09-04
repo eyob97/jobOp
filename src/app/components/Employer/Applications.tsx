@@ -48,7 +48,7 @@ const Applications = () => {
         const result: any = await dispatch(fetchEmployerJobs());
         const jobResponses: JobApplicationResponse[] = result.payload.data;
 
-        const transformedApplications: JobApplication[] = jobResponses.map(
+        const transformedApplications: JobApplication[] = jobResponses?.map(
           (job) => ({
             id: job.id,
             jobName: job.job_title,
@@ -71,7 +71,7 @@ const Applications = () => {
     fetchJobs();
   }, [dispatch]);
 
-  const filteredApplications = applications.filter((app) =>
+  const filteredApplications = applications?.filter((app) =>
     app.jobName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 

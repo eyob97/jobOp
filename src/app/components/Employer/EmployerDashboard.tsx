@@ -105,7 +105,7 @@ const EmployerDashboard: React.FC = () => {
           )}
           {!loading && !error && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mx-5">
-              {jobs.length > 0 ? (
+              {jobs?.length > 0 ? (
                 jobs.map((job: any) => {
                   const isExpanded = expandedJobs[job.id];
                   const description = isExpanded
